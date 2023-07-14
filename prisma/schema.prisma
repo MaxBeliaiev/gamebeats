@@ -6,14 +6,163 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
 }
 
 model User {
-  id String @id @default(uuid())
-  email String
-  password String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String    @id @default(cuid())
+  name          String?
+  surname       String?
+  password      String
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  role          UserRole  @default(SUPER_ADMIN)
+  accounts      Account[]
+  sessions      Session[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum CompetitorStatus {
+  ACTIVE
+  DELETED
+  ARCHIVED
+}
+
+model Competitor {
+  id        Int                    @id @default(autoincrement())
+  nickname  String
+  name      String
+  surname   String
+  status    CompetitorStatus       @default(ACTIVE)
+  image     String?
+  country   String?
+  birthDate DateTime?
+  deletedAt DateTime?
+  createdAt DateTime               @default(now())
+  updatedAt DateTime               @updatedAt
+  matches   MatchesOnCompetitors[]
+  wins      Result[]               @relation("WinnerToResult")
+  losses    Result[]               @relation("LoserToResult")
+}
+
+model Game {
+  id          Int          @id @default(autoincrement())
+  name        String
+  tournaments Tournament[] @relation("GameToTournament")
+}
+
+enum TournamentStatus {
+  UPCOMING
+  ONGOING
+  FINISHED
+  DELETED
+}
+
+model Tournament {
+  id        Int              @id @default(autoincrement())
+  name      String
+  gameId    Int
+  game      Game             @relation("GameToTournament", fields: [gameId], references: [id])
+  matches   Match[]          @relation("TournamentToMatch")
+  status    TournamentStatus @default(UPCOMING)
+  startedAt DateTime?
+  endedAt   DateTime?
+  deletedAt DateTime?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt @db.DateTime()
+
+  @@index([gameId])
+}
+
+enum MatchStatus {
+  UPCOMING
+  ONGOING
+  FINISHED
+  DELETED
+}
+
+model Match {
+  id           Int                    @id @default(autoincrement())
+  status       MatchStatus            @default(UPCOMING)
+  tournamentId Int
+  tournament   Tournament             @relation("TournamentToMatch", fields: [tournamentId], references: [id])
+  startedAt    DateTime?
+  endedAt      DateTime?
+  competitors  MatchesOnCompetitors[]
+  result       Result?
+
+  @@index([tournamentId])
+}
+
+model MatchesOnCompetitors {
+  match        Match      @relation(fields: [matchId], references: [id])
+  matchId      Int
+  competitor   Competitor @relation(fields: [competitorId], references: [id])
+  competitorId Int
+  assignedAt   DateTime   @default(now())
+
+  @@id([matchId, competitorId])
+  @@index([competitorId])
+  @@index([matchId])
+  @@map("matches_competitors")
+}
+
+model Result {
+  id       String     @id @default(cuid())
+  match    Match      @relation(fields: [matchId], references: [id])
+  matchId  Int        @unique
+  winner   Competitor @relation("WinnerToResult", fields: [winnerId], references: [id])
+  winnerId Int
+  loser    Competitor @relation("LoserToResult", fields: [loserId], references: [id])
+  loserId  Int
+
+  @@index([winnerId])
+  @@index([loserId])
+  @@index([matchId])
 }

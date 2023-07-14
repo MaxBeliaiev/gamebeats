@@ -1,5 +1,8 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
+import AuthProvider from '@/components/AuthProvider'
+import { Toaster } from 'react-hot-toast'
+import React from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,7 +18,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-slate-800 text-slate-100 container mx-auto p-4`}>{children}</body>
+      <body
+        className={`${inter.className} bg-slate-800 text-slate-100 min-h-full relative`}
+      >
+        <Toaster position='top-center' reverseOrder={false} />
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   )
 }

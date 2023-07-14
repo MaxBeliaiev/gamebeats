@@ -1,0 +1,1 @@
+INSERT INTO `Game` (name) VALUES ('UFC 4');

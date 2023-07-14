@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `competitor` ADD COLUMN `status` ENUM('ACTIVE', 'DELETED', 'ARCHIVED') NOT NULL DEFAULT 'ACTIVE';
