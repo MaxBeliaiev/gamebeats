@@ -1,4 +1,5 @@
 import { prisma } from '@/db'
+import TournamentPageClient from '@/app/dashboard/(routes)/tournaments/(routes)/[tournamentId]/client'
 
 interface TournamentPageProps {
   params: {
@@ -26,10 +27,7 @@ const TournamentPage = async ({
     },
   })
 
-  console.log('TOURNAMENT DATA ', tournament)
-  console.log('MATCH DATA ', tournament!.matches[0])
-
-  return <div>Tournament page: {tournament?.name}</div>
+  return <TournamentPageClient tournament={tournament} />
 }
 
 export default TournamentPage
