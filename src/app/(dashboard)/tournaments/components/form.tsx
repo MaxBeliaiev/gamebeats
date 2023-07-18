@@ -64,7 +64,7 @@ export function TournamentForm({
       router.push(`/`)
       toast.success(toastMessage)
     } catch (error: any) {
-      toast.error('Something went wrong.')
+      toast.error(error.message)
     } finally {
       setLoading(false)
     }

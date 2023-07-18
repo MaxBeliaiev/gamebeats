@@ -13,7 +13,6 @@ export async function POST(req: Request) {
       competitorTwo,
       tournamentId,
       startedAt,
-      endedAt,
       status,
     } = matchCreateReqSchema.parse(body)
 
@@ -21,15 +20,14 @@ export async function POST(req: Request) {
       return new NextResponse('Unauthorized', { status: 403 })
     }
 
-    const endedAtCalculated =
-      status && status !== MatchStatus.FINISHED ? null : endedAt
+    if (status === MatchStatus.FINISHED) {
+      return new NextResponse('Cannot create match in this status', { status: 400 })
+    }
 
     let data = {
       status: status as MatchStatus,
-      ...(endedAtCalculated && { status: MatchStatus.FINISHED }),
       tournamentId,
       startedAt,
-      endedAt: endedAtCalculated,
       competitors: {
         create: [
           {

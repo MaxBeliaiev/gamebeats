@@ -19,12 +19,8 @@ export async function PUT(
     }
 
     const body = await req.json()
-    const { competitorOne, competitorTwo, endedAt, startedAt, status } =
+    const { competitorOne, competitorTwo, startedAt, status } =
       matchUpdateReqSchema.parse(body)
-
-    // Deleting endedAt if status is not FINISHED
-    const endedAtCalculated =
-      status && status !== MatchStatus.FINISHED ? null : endedAt
 
     const match = await prisma.match.update({
       where: {
@@ -32,9 +28,8 @@ export async function PUT(
       },
       data: {
         status: status as MatchStatus,
-        ...(endedAtCalculated && { status: MatchStatus.FINISHED }),
+        ...(status === MatchStatus.FINISHED && { endedAt: new Date() }),
         startedAt,
-        endedAt: endedAtCalculated,
         competitors: {
           deleteMany: {},
           create: [
