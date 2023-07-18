@@ -39,7 +39,7 @@ const TournamentPage = async ({
   const competitors = await prisma.competitor.findMany({
     where: {
       status: {
-        not: CompetitorStatus.DELETED,
+        not: CompetitorStatus.ARCHIVED,
       },
     },
   })

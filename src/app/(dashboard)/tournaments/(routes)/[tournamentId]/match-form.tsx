@@ -62,7 +62,6 @@ export function MatchForm({
       : {
           status: MatchStatus.UPCOMING,
           startedAt: null,
-          endedAt: null,
         },
   })
   const onSubmit = async (values: MatchFormValues) => {
@@ -133,22 +132,6 @@ export function MatchForm({
                 date={field.value}
                 setDate={(date) => {
                   form.setValue('startedAt', date)
-                }}
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="endedAt"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>End time</FormLabel>
-              <DateTimePicker
-                date={field.value}
-                setDate={(date) => {
-                  form.setValue('endedAt', date)
                 }}
               />
               <FormMessage />

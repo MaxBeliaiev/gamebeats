@@ -1,11 +1,9 @@
 import * as z from 'zod'
-import { MatchStatus } from '@prisma/client'
 
 interface MatchCommonTypes {
   competitorOne: string
   competitorTwo: string
   startedAt: Date | null | string
-  endedAt: Date | null | string
   status: string
 }
 
@@ -20,28 +18,6 @@ function attachRefinements<
       {
         message: 'Cannot choose the same competitor.',
         path: ['competitorTwo'],
-      }
-    )
-    .refine(
-      ({ startedAt, endedAt }) => {
-        if (startedAt && endedAt) {
-          return startedAt < endedAt
-        }
-
-        return true
-      },
-      {
-        message: 'End time must be later than start time.',
-        path: ['endedAt'],
-      }
-    )
-    .refine(
-      ({ status, endedAt }) => {
-        return status === MatchStatus.FINISHED || endedAt === null
-      },
-      {
-        message: 'Cannot set End time if match is not in Finished status.',
-        path: ['endedAt'],
       }
     )
 }
@@ -64,17 +40,11 @@ export const matchFormSchema = attachRefinements(
         invalid_type_error: "That's not a date!",
       })
       .nullable(),
-    endedAt: z
-      .date({
-        invalid_type_error: "That's not a date!",
-      })
-      .nullable(),
   })
 )
 
 const matchReqCommon = {
   startedAt: z.string().nullable(),
-  endedAt: z.string().nullable(),
 }
 
 export const matchCreateReqSchema = attachRefinements(

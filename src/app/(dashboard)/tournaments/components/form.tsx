@@ -26,7 +26,6 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Game, Tournament } from '@prisma/client'
 import { tournamentSchema } from '@/lib/schema'
-import Link from 'next/link'
 
 interface TournamentFormProps {
   initialData?: Tournament | null

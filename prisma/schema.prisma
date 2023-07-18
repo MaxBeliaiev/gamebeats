@@ -70,25 +70,24 @@ model VerificationToken {
 
 enum CompetitorStatus {
   ACTIVE
-  DELETED
   ARCHIVED
 }
 
 model Competitor {
-  id        Int                    @id @default(autoincrement())
-  nickname  String
-  name      String
-  surname   String
-  status    CompetitorStatus       @default(ACTIVE)
-  image     String?
-  country   String?
-  birthDate DateTime?
-  deletedAt DateTime?
-  createdAt DateTime               @default(now())
-  updatedAt DateTime               @updatedAt
-  matches   MatchesOnCompetitors[]
-  wins      Result[]               @relation("WinnerToResult")
-  losses    Result[]               @relation("LoserToResult")
+  id         Int                    @id @default(autoincrement())
+  nickname   String
+  name       String
+  surname    String
+  status     CompetitorStatus       @default(ACTIVE)
+  image      String?
+  country    String?
+  birthDate  DateTime?
+  archivedAt DateTime?
+  createdAt  DateTime               @default(now())
+  updatedAt  DateTime               @updatedAt
+  matches    MatchesOnCompetitors[]
+  wins       Result[]               @relation("WinnerToResult")
+  losses     Result[]               @relation("LoserToResult")
 }
 
 model Game {
@@ -101,12 +100,11 @@ enum TournamentStatus {
   UPCOMING
   ONGOING
   FINISHED
-  DELETED
 }
 
 model Tournament {
   id        Int              @id @default(autoincrement())
-  name      String
+  name      String           @unique
   gameId    Int
   game      Game             @relation("GameToTournament", fields: [gameId], references: [id])
   matches   Match[]          @relation("TournamentToMatch")
@@ -131,7 +129,7 @@ model Match {
   id           Int                    @id @default(autoincrement())
   status       MatchStatus            @default(UPCOMING)
   tournamentId Int
-  tournament   Tournament             @relation("TournamentToMatch", fields: [tournamentId], references: [id])
+  tournament   Tournament             @relation("TournamentToMatch", fields: [tournamentId], references: [id], onDelete: Cascade)
   startedAt    DateTime?
   endedAt      DateTime?
   deletedAt    DateTime?

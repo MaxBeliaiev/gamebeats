@@ -82,20 +82,32 @@ export async function DELETE(
     }
 
     if (!params.tournamentId) {
-      return new NextResponse('Tournament id is required', { status: 400 })
+      return new NextResponse('Tournament ID is required', { status: 400 })
     }
 
-    const tournament = await prisma.tournament.update({
+    const tournament = await prisma.tournament.findUnique({
       where: {
         id: Number(params.tournamentId),
       },
-      data: {
-        status: TournamentStatus.DELETED,
-        deletedAt: moment().toDate(),
+    })
+
+    if (!tournament) {
+      return new NextResponse('No tournament found', { status: 404 })
+    }
+
+    if (tournament.status !== TournamentStatus.UPCOMING) {
+      return new NextResponse('Only Upcoming tournaments can be deleted', {
+        status: 400,
+      })
+    }
+
+    const deletedTournament = await prisma.tournament.delete({
+      where: {
+        id: tournament.id,
       },
     })
 
-    return NextResponse.json(tournament)
+    return NextResponse.json(deletedTournament)
   } catch (error) {
     console.log('[TOURNAMENT_DELETE]', error)
     return new NextResponse('Internal error', { status: 500 })

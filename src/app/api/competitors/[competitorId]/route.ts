@@ -73,24 +73,40 @@ export async function DELETE(
   { params }: { params: { competitorId: number } }
 ) {
   try {
+    const { competitorId } = params
     const session = getAuthSession()
     if (!session) {
       return new NextResponse('Unauthorized', { status: 403 })
     }
 
-    if (!params.competitorId) {
+    if (!competitorId) {
       return new NextResponse('Competitor id is required', { status: 400 })
     }
 
-    const competitor = await prisma.competitor.update({
+    const connectedMatches = await prisma.matchesOnCompetitors.findFirst({
       where: {
-        id: Number(params.competitorId),
-      },
-      data: {
-        status: CompetitorStatus.DELETED,
-        deletedAt: moment().toDate(),
+        competitorId: Number(competitorId),
       },
     })
+
+    let competitor
+    if (connectedMatches) {
+      competitor = await prisma.competitor.update({
+        where: {
+          id: Number(params.competitorId),
+        },
+        data: {
+          status: CompetitorStatus.ARCHIVED,
+          archivedAt: moment().toDate(),
+        },
+      })
+    } else {
+      competitor = await prisma.competitor.delete({
+        where: {
+          id: Number(params.competitorId),
+        },
+      })
+    }
 
     return NextResponse.json(competitor)
   } catch (error) {
