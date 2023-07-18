@@ -9,24 +9,21 @@ export default async function middleware(req: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   })
 
-  const isAdmin =
-    (session?.role === 'ADMIN') || (session?.role === 'SUPER_ADMIN')
-
   if (session) {
     if (path === '/login' || path === '/register') {
       return NextResponse.redirect(
-        new URL(isAdmin ? '/dashboard' : '/', req.url)
+        new URL('/', req.url)
       )
     }
 
-    if (!isAdmin && path.startsWith('/dashboard')) {
-      return NextResponse.redirect(new URL('/', req.url))
+    if (path === '/' ) {
+      return NextResponse.redirect(
+        new URL('/tournaments', req.url)
+      )
     }
+
   } else {
-    if (
-      (path !== '/login' && path !== '/register') ||
-      path.startsWith('/dashboard')
-    ) {
+    if (path !== '/login') {
       return NextResponse.redirect(new URL('/login', req.url))
     }
   }
@@ -34,7 +31,6 @@ export default async function middleware(req: NextRequest) {
   return NextResponse.next()
 }
 
-// See "Matching Paths" below to learn more
 export const config = {
-  matcher: ['/dashboard/:path*', '/login', '/register'],
+  matcher: [    '/((?!api|_next/static|_next/image|favicon.ico).*)',],
 }

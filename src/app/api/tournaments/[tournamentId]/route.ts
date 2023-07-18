@@ -4,6 +4,7 @@ import { prisma } from '@/db'
 import { getAuthSession } from '@/lib/auth'
 import { tournamentSchema } from '@/lib/schema'
 import moment from 'moment'
+import { TournamentStatus } from '@prisma/client'
 
 export async function GET(
   req: Request,
@@ -89,7 +90,7 @@ export async function DELETE(
         id: Number(params.tournamentId),
       },
       data: {
-        status: 'DELETED',
+        status: TournamentStatus.DELETED,
         deletedAt: moment().toDate(),
       },
     })

@@ -4,6 +4,7 @@ import { prisma } from '@/db'
 import { getAuthSession } from '@/lib/auth'
 import { competitorSchema } from '@/lib/schema'
 import moment from 'moment'
+import { CompetitorStatus } from '@prisma/client'
 
 export async function GET(
   req: Request,
@@ -86,7 +87,7 @@ export async function DELETE(
         id: Number(params.competitorId),
       },
       data: {
-        status: 'DELETED',
+        status: CompetitorStatus.DELETED,
         deletedAt: moment().toDate(),
       },
     })

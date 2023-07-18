@@ -12,11 +12,13 @@ declare module 'next-auth/jwt' {
 declare module 'next-auth' {
   import { User } from 'next-auth'
 
+  export type SessionUser =  User & {
+    id: string
+    token: string
+    role: UserRole
+    surname: string
+  }
   interface Session {
-    user: User & {
-      id: string
-      token: string
-      role: UserRole
-    }
+    user: SessionUser
   }
 }

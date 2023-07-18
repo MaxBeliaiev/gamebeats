@@ -18,11 +18,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.className} bg-slate-800 text-slate-100 min-h-full relative`}
-      >
-        <Toaster position='top-center' reverseOrder={false} />
-        <AuthProvider>{children}</AuthProvider>
+      <body className={`${inter.className} min-h-full relative`}>
+        <Toaster position="top-center" reverseOrder={false} />
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   )
