@@ -57,7 +57,7 @@ export const columns: ColumnDef<Tournament>[] = [
           >
             <Pencil color="blue" />
           </Link>
-          <TournamentDeleteButton tournament={row.original} />
+          <TournamentDeleteButton tournament={tournament} />
         </div>
       )
     },

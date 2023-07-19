@@ -7,8 +7,8 @@ import React from 'react'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'GameBeats',
-  description: 'UFC4 Tournaments Streams',
+  title: 'Admin GameBeats',
+  description: 'UFC4 Tournaments & Streams',
 }
 
 export default function RootLayout({

@@ -61,7 +61,6 @@ export function MatchForm({
         }
       : {
           status: MatchStatus.UPCOMING,
-          startedAt: null,
         },
   })
   const onSubmit = async (values: MatchFormValues) => {

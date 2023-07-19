@@ -61,7 +61,7 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { matchId: number } }
+  { params: { matchId } }: { params: { matchId: string } }
 ) {
   try {
     const session = getAuthSession()
@@ -69,21 +69,29 @@ export async function DELETE(
       return new NextResponse('Unauthorized', { status: 403 })
     }
 
-    if (!params.matchId) {
+    if (!matchId) {
       return new NextResponse('Match ID is required', { status: 400 })
     }
 
-    const match = await prisma.match.update({
+    const match = await prisma.match.findUnique({
       where: {
-        id: Number(params.matchId),
-      },
-      data: {
-        status: MatchStatus.DELETED,
-        deletedAt: new Date(),
+        id: Number(matchId),
       },
     })
 
-    return NextResponse.json(match)
+    if (match?.status !== MatchStatus.UPCOMING) {
+      return new NextResponse('Only Upcoming matches can be deleted', {
+        status: 400,
+      })
+    }
+
+    const deletedMatch = await prisma.match.delete({
+      where: {
+        id: Number(matchId),
+      },
+    })
+
+    return NextResponse.json(deletedMatch)
   } catch (error) {
     console.log('[MATCH_DELETE]', error)
     return new NextResponse('Internal error', { status: 500 })

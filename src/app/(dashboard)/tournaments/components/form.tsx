@@ -25,7 +25,9 @@ import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Game, Tournament } from '@prisma/client'
-import { tournamentSchema } from '@/lib/schema'
+import { tournamentFormSchema } from '@/lib/schemas/tournament'
+import { getAxiosErrorMessage } from '@/lib/utils'
+import { DateTimePicker } from '@/components/ui/date-time-picker'
 
 interface TournamentFormProps {
   initialData?: Tournament | null
@@ -33,7 +35,7 @@ interface TournamentFormProps {
   games: Game[]
 }
 
-type TournamentFormValues = z.infer<typeof tournamentSchema>
+type TournamentFormValues = z.infer<typeof tournamentFormSchema>
 
 export function TournamentForm({
   initialData,
@@ -46,7 +48,7 @@ export function TournamentForm({
     ? 'Tournament updated!'
     : 'Tournament created!'
   const form = useForm<TournamentFormValues>({
-    resolver: zodResolver(tournamentSchema),
+    resolver: zodResolver(tournamentFormSchema),
     defaultValues: initialData || {
       name: 'UFC 4 Tournament',
       gameId: games[0]?.id,
@@ -64,7 +66,7 @@ export function TournamentForm({
       router.push(`/`)
       toast.success(toastMessage)
     } catch (error: any) {
-      toast.error(error.message)
+      toast.error(getAxiosErrorMessage(error))
     } finally {
       setLoading(false)
     }
@@ -82,6 +84,22 @@ export function TournamentForm({
               <FormControl>
                 <Input placeholder="Enter tournament name" {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="startedAt"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Start time</FormLabel>
+              <DateTimePicker
+                date={field.value}
+                setDate={(date) => {
+                  form.setValue('startedAt', date)
+                }}
+              />
               <FormMessage />
             </FormItem>
           )}

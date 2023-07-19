@@ -20,6 +20,14 @@ const TournamentPage = async ({
     },
     include: {
       matches: {
+        orderBy: [
+          {
+            status: 'asc',
+          },
+          {
+            startedAt: 'desc',
+          },
+        ],
         include: {
           result: true,
           competitors: {

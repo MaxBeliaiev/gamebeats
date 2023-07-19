@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server'
-
 import { prisma } from '@/db'
 import { getAuthSession } from '@/lib/auth'
-import { tournamentSchema } from '@/lib/schema'
-import moment from 'moment'
-import { TournamentStatus } from '@prisma/client'
+import { tournamentUpdateReqSchema } from '@/lib/schemas/tournament'
+import { MatchStatus, TournamentStatus } from '@prisma/client'
 
 export async function GET(
   req: Request,
@@ -35,7 +33,7 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params }: { params: { tournamentId: number } }
+  { params: { tournamentId } }: { params: { tournamentId: number } }
 ) {
   try {
     const session = getAuthSession()
@@ -43,24 +41,55 @@ export async function PUT(
       return new NextResponse('Unauthorized', { status: 403 })
     }
 
-    if (!params.tournamentId) {
+    if (!tournamentId) {
       return new NextResponse('Tournament id is required', { status: 400 })
     }
 
     const body = await req.json()
-    const { name, gameId } = tournamentSchema.parse(body)
+    const { name, gameId, startedAt, status } =
+      tournamentUpdateReqSchema.parse(body)
 
     if (!name) {
       return new NextResponse('Name is required', { status: 400 })
     }
 
+    if (status && status !== TournamentStatus.ONGOING) {
+      const matches = await prisma.match.findMany({
+        where: {
+          tournamentId: Number(tournamentId),
+        },
+      })
+
+      if (
+        status === TournamentStatus.UPCOMING &&
+        matches.some((match) => match.status !== MatchStatus.UPCOMING)
+      ) {
+        return new NextResponse(
+          'Cannot make tournament Upcoming with ongoing/finished matches in it',
+          { status: 400 }
+        )
+      } else if (
+        status === TournamentStatus.FINISHED &&
+        matches.some((match) => match.status !== MatchStatus.FINISHED)
+      ) {
+        return new NextResponse(
+          'Cannot finish tournament with unfinished matches in it',
+          { status: 400 }
+        )
+      }
+    }
+
     const tournament = await prisma.tournament.update({
       where: {
-        id: Number(params.tournamentId),
+        id: Number(tournamentId),
       },
       data: {
         name,
         gameId,
+        startedAt,
+        status: status as TournamentStatus,
+        ...(status === TournamentStatus.FINISHED && { endedAt: new Date() }),
+        ...(status === TournamentStatus.ONGOING && { endedAt: null }),
       },
     })
 

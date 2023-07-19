@@ -3,7 +3,7 @@ import * as z from 'zod'
 interface MatchCommonTypes {
   competitorOne: string
   competitorTwo: string
-  startedAt: Date | null | string
+  startedAt?: Date | string | null
   status: string
 }
 
@@ -12,14 +12,13 @@ function attachRefinements<
   T extends z.ZodTypeDef,
   I,
 >(schema: z.ZodType<O, T, I>) {
-  return schema
-    .refine(
-      ({ competitorOne, competitorTwo }) => competitorOne !== competitorTwo,
-      {
-        message: 'Cannot choose the same competitor.',
-        path: ['competitorTwo'],
-      }
-    )
+  return schema.refine(
+    ({ competitorOne, competitorTwo }) => competitorOne !== competitorTwo,
+    {
+      message: 'Cannot choose the same competitor.',
+      path: ['competitorTwo'],
+    }
+  )
 }
 
 const matchCommon = {
@@ -37,14 +36,24 @@ export const matchFormSchema = attachRefinements(
     ...matchCommon,
     startedAt: z
       .date({
-        invalid_type_error: "That's not a date!",
+        required_error: 'Start date is required',
+        invalid_type_error: "Please choose correct date",
+      }).nullable()
+      .transform((value, ctx): Date | undefined => {
+        if (value == null) {
+          ctx.addIssue({
+            code: 'custom',
+            message: 'Date cannot be null',
+          })
+        } else {
+          return value
+        }
       })
-      .nullable(),
   })
 )
 
 const matchReqCommon = {
-  startedAt: z.string().nullable(),
+  startedAt: z.string(),
 }
 
 export const matchCreateReqSchema = attachRefinements(

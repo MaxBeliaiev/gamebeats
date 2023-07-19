@@ -1,13 +1,15 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/db'
 import { getAuthSession } from '@/lib/auth'
-import { tournamentSchema } from '@/lib/schema'
+import { Prisma } from '.prisma/client'
+import PrismaClientKnownRequestError = Prisma.PrismaClientKnownRequestError
+import { tournamentCreateReqSchema } from '@/lib/schemas/tournament'
 
 export async function POST(req: Request) {
   try {
     const session = getAuthSession()
     const body = await req.json()
-    const { name, gameId } = tournamentSchema.parse(body)
+    const { name, gameId, startedAt } = tournamentCreateReqSchema.parse(body)
 
     if (!session) {
       return new NextResponse('Unauthorized', { status: 403 })
@@ -21,12 +23,19 @@ export async function POST(req: Request) {
       data: {
         name,
         gameId,
+        startedAt,
       },
     })
 
     return NextResponse.json(tournament)
   } catch (error) {
+    let errorResp = 'Internal error'
+    if (error instanceof PrismaClientKnownRequestError) {
+      if (error?.code === 'P2002') {
+        errorResp = 'Tournament name must be unique'
+      }
+    }
     console.log('[TOURNAMENTS_POST]', error)
-    return new NextResponse('Internal error', { status: 500 })
+    return new NextResponse(errorResp, { status: 500 })
   }
 }

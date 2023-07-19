@@ -14,13 +14,19 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { useRef, useState } from 'react'
 import { useInteractOutside } from 'react-aria'
+import { addDays } from 'date-fns'
 
 interface DateTimePickerProps {
-  date: Date | null
-  setDate: (date: Date | null) => void
+  date?: Date
+  setDate: (date?: Date) => void
+  disablePastDays?: boolean
 }
 
-export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
+export function DateTimePicker({
+  date,
+  setDate,
+  disablePastDays = true,
+}: DateTimePickerProps) {
   const [open, setOpen] = useState(false)
   const [selectedDateTime, setSelectedDateTime] =
     React.useState<DateTime | null>(date ? DateTime.fromJSDate(date) : null)
@@ -78,7 +84,7 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {date ? (
+            {selectedDateTime ? (
               selectedDateTime!.toFormat('DDD HH:mm')
             ) : (
               <span>Pick a date</span>
@@ -89,7 +95,7 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
           variant="outline"
           onClick={() => {
             setSelectedDateTime(null)
-            setDate(null)
+            setDate(undefined)
           }}
           className="rounded-l-none border-l-0 px-3"
           type="button"
@@ -100,6 +106,11 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
       <PopoverContent ref={contentRef} className="w-auto p-0">
         <Calendar
           mode="single"
+          disabled={(date) =>
+            disablePastDays
+              ? date < addDays(new Date(), -1)
+              : false
+          }
           selected={selectedDateTime ? selectedDateTime.toJSDate() : undefined}
           onSelect={handleSelect}
           initialFocus

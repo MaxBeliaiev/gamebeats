@@ -9,6 +9,9 @@ export const columns: ColumnDef<Competitor>[] = [
   {
     accessorKey: 'nickname',
     header: 'Nickname',
+    cell: ({ row }) => (
+      <span className="font-semibold">{row.original.nickname}</span>
+    ),
   },
   {
     accessorKey: 'name',
@@ -32,7 +35,7 @@ export const columns: ColumnDef<Competitor>[] = [
           >
             <Pencil color="blue" />
           </Link>
-          <CompetitorDeleteButton competitor={row.original} />
+          <CompetitorDeleteButton competitor={competitor} />
         </div>
       )
     },

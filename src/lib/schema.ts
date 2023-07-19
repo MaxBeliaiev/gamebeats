@@ -24,16 +24,3 @@ export const competitorSchema = z.object({
     }),
   country: z.string().nullable(),
 })
-
-export const tournamentSchema = z.object({
-  name: z
-    .string({
-      required_error: 'Name is required',
-    })
-    .min(2, {
-      message: 'Name must be at least 2 characters.',
-    }),
-  gameId: z.number({
-    required_error: 'Please choose game.',
-  }),
-})

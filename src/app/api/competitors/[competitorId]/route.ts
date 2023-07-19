@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/db'
 import { getAuthSession } from '@/lib/auth'
 import { competitorSchema } from '@/lib/schema'
-import moment from 'moment'
 import { CompetitorStatus } from '@prisma/client'
 
 export async function GET(
@@ -70,7 +69,7 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { competitorId: number } }
+  { params }: { params: { competitorId: string } }
 ) {
   try {
     const { competitorId } = params
@@ -93,11 +92,11 @@ export async function DELETE(
     if (connectedMatches) {
       competitor = await prisma.competitor.update({
         where: {
-          id: Number(params.competitorId),
+          id: Number(competitorId),
         },
         data: {
           status: CompetitorStatus.ARCHIVED,
-          archivedAt: moment().toDate(),
+          archivedAt: new Date(),
         },
       })
     } else {
