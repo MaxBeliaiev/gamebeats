@@ -51,9 +51,7 @@ export function MatchForm({
           competitorOne: String(initialData.competitors[0]?.competitorId),
           competitorTwo: String(initialData.competitors[1]?.competitorId),
         }
-      : {
-          status: MatchStatus.UPCOMING,
-        },
+      : {},
   })
   const onSubmit = async (values: MatchFormValues) => {
     try {
