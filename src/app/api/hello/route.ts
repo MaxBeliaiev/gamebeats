@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server'
+import { prisma } from '@/db'
 
 export async function GET(req: Request) {
-  return NextResponse.json({ hello: 'world' })
+  const matches = await prisma.match.findMany()
+
+  return NextResponse.json({ hello: matches })
 }
