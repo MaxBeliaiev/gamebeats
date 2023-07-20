@@ -19,6 +19,7 @@ import { Match, MatchesOnCompetitors, MatchStatus } from '@prisma/client'
 import { matchFormSchema } from '@/lib/schemas/match'
 import Combobox from '@/components/ui/combobox'
 import { DateTimePicker } from '@/components/ui/date-time-picker'
+import { getAxiosErrorMessage } from '@/lib/utils'
 
 interface MatchFormProps {
   initialData?: Match & {
@@ -65,8 +66,8 @@ export function MatchForm({
       router.push(`/tournaments/${tournamentId}`)
       toast.success(toastMessage)
       onSuccess && onSuccess()
-    } catch (error: any) {
-      toast.error('Something went wrong.')
+    } catch (e: any) {
+      toast.error(getAxiosErrorMessage(e))
     } finally {
       setLoading(false)
     }

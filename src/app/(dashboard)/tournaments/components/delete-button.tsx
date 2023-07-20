@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import DeleteButton from '@/components/ui/delete-button'
 import { Button } from '@/components/ui/button'
 import WithTooltip from '@/components/ui/with-tooltip'
+import { getAxiosErrorMessage } from '@/lib/utils'
 const TournamentDeleteButton = ({
   tournament: { name, id, matches },
 }: {
@@ -27,7 +28,7 @@ const TournamentDeleteButton = ({
         router.refresh()
         toast.success(`Tournament ${name} has been successfully deleted!`)
       } catch (e: any) {
-        toast.error('Something went wrong.')
+        toast.error(getAxiosErrorMessage(e))
       }
     }
   }

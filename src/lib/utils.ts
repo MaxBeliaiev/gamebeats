@@ -7,4 +7,4 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const getAxiosErrorMessage = (error: AxiosError): string =>
-  (error.response?.data as string) || error.message
+  (error.response?.data as string) || error.message || 'Something went wrong'

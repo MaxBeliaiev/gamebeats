@@ -117,7 +117,7 @@ const MatchDeleteButton = ({ match: { id, status } }: { match: any }) => {
         router.refresh()
         toast.success(`Match has been successfully deleted!`)
       } catch (e: any) {
-        toast.error('Something went wrong.')
+        toast.error(getAxiosErrorMessage(e))
       }
     }
   }

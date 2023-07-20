@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast'
 import { Competitor } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import DeleteButton from '@/components/ui/delete-button'
+import { getAxiosErrorMessage } from '@/lib/utils'
 const CompetitorDeleteButton = ({
   competitor: { name, id },
 }: {
@@ -19,7 +20,7 @@ const CompetitorDeleteButton = ({
         router.refresh()
         toast.success(`${name} has been successfully deleted!`)
       } catch (e: any) {
-        toast.error('Something went wrong.')
+        toast.error(getAxiosErrorMessage(e))
       }
     }
   }

@@ -65,8 +65,8 @@ export function TournamentForm({
       router.refresh()
       router.push(`/`)
       toast.success(toastMessage)
-    } catch (error: any) {
-      toast.error(getAxiosErrorMessage(error))
+    } catch (e: any) {
+      toast.error(getAxiosErrorMessage(e))
     } finally {
       setLoading(false)
     }

@@ -18,6 +18,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Competitor } from '@prisma/client'
 import { competitorSchema } from '@/lib/schema'
+import { getAxiosErrorMessage } from '@/lib/utils'
 
 interface CompetitorFormProps {
   initialData?: Competitor | null
@@ -56,7 +57,7 @@ export function CompetitorForm({
       router.push(`/competitors`)
       toast.success(toastMessage)
     } catch (error: any) {
-      toast.error('Something went wrong.')
+      toast.error(getAxiosErrorMessage(e))
     } finally {
       setLoading(false)
     }
