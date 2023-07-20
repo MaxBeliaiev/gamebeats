@@ -1,14 +1,19 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { signIn } from 'next-auth/react'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import axios from 'axios'
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    axios('/api/hello')
+  }, [])
 
   return (
     <form

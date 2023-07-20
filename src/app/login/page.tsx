@@ -1,5 +1,4 @@
 import LoginForm from '@/app/login/LoginForm'
-import { prisma } from '@/db'
 
 export default function Login() {
   return (
