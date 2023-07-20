@@ -19,10 +19,6 @@ interface TournamentsClientProps {
 const TournamentsClient = ({ data }: TournamentsClientProps) => {
   const router = useRouter()
 
-  useEffect(() => {
-    axios('https://bogdan-products-api.vercel.app/products')
-  }, [])
-
   return (
     <PageLayout>
       <div className="flex justify-between items-center">
