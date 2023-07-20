@@ -9,8 +9,9 @@ import { Button } from '@/components/ui/button'
 import { useCreateMatchModal } from '@/hooks/use-create-match-modal'
 import ActionsHeader from '@/app/(dashboard)/tournaments/(routes)/[tournamentId]/actions-header'
 import MatchActions from '@/app/(dashboard)/tournaments/(routes)/[tournamentId]/actions'
+import { Tournament } from '@prisma/client'
 
-export const columns: ColumnDef<any>[] = [
+export const getMatchColumns = (tournament: Tournament): ColumnDef<any>[] => [
   {
     accessorKey: 'competitors',
     header: '',
@@ -56,6 +57,8 @@ export const columns: ColumnDef<any>[] = [
   {
     id: 'actions',
     header: () => <ActionsHeader />,
-    cell: ({ row }) => <MatchActions match={row.original} />,
+    cell: ({ row }) => (
+      <MatchActions tournament={tournament} match={row.original} />
+    ),
   },
 ]

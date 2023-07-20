@@ -19,14 +19,6 @@ import { Match, MatchesOnCompetitors, MatchStatus } from '@prisma/client'
 import { matchFormSchema } from '@/lib/schemas/match'
 import Combobox from '@/components/ui/combobox'
 import { DateTimePicker } from '@/components/ui/date-time-picker'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import MatchBadge from '@/app/(dashboard)/tournaments/components/match-badge'
 
 interface MatchFormProps {
   initialData?: Match & {
@@ -133,30 +125,6 @@ export function MatchForm({
                   form.setValue('startedAt', date)
                 }}
               />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="status"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Status</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger className='w-4/12 text-center'>
-                    <SelectValue placeholder="Select a verified email to display" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {Object.entries(MatchStatus).map(([id, label]) => (
-                    <SelectItem key={id} value={id}>
-                      <MatchBadge status={id as MatchStatus} />
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
               <FormMessage />
             </FormItem>
           )}

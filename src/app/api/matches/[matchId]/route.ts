@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/db'
 import { getAuthSession } from '@/lib/auth'
-import { matchUpdateReqSchema } from '@/lib/schemas/match'
+import { matchPatchReqSchema, matchUpdateReqSchema } from '@/lib/schemas/match'
 import { MatchStatus } from '@prisma/client'
 
 export async function PUT(
@@ -49,6 +49,39 @@ export async function PUT(
             },
           ],
         },
+      },
+    })
+
+    return NextResponse.json(match)
+  } catch (error) {
+    console.log('[MATCH_PUT]', error)
+    return new NextResponse('Internal error', { status: 500 })
+  }
+}
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: { matchId: number } }
+) {
+  try {
+    const session = getAuthSession()
+    if (!session) {
+      return new NextResponse('Unauthorized', { status: 403 })
+    }
+
+    if (!params.matchId) {
+      return new NextResponse('Match ID is required', { status: 400 })
+    }
+
+    const body = await req.json()
+    const { status } = matchPatchReqSchema.parse(body)
+
+    const match = await prisma.match.update({
+      where: {
+        id: Number(params.matchId),
+      },
+      data: {
+        status: status as MatchStatus,
       },
     })
 

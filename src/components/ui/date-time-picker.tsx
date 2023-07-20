@@ -60,8 +60,8 @@ export function DateTimePicker({
   })
 
   const footer = selectedDateTime ? (
-    <div className="px-4 pt-0 pb-4">
-      <Label>Time</Label>
+    <div className="px-4 pt-0 pb-2 flex-row flex items-center gap-2 h-11">
+      <Label>Time:</Label>
       <Input
         type="time"
         onChange={handleTimeChange}
@@ -69,23 +69,23 @@ export function DateTimePicker({
       />
     </div>
   ) : (
-    <p className="text-center pb-2">Please select a date!</p>
+    <p className="text-center pb-2 h-11">Please select a date!</p>
   )
 
   return (
-    <Popover onOpenChange={setOpen} open={open}>
+    <Popover open={open} onOpenChange={setOpen} modal>
       <div className="flex items-center">
         <PopoverTrigger asChild className="z-10">
           <Button
             variant="outline"
             className={cn(
               'w-[280px] justify-start text-left font-normal rounded-r-none',
-              !date && 'text-muted-foreground'
+              !selectedDateTime && 'text-muted-foreground'
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
             {selectedDateTime ? (
-              selectedDateTime!.toFormat('DDD HH:mm')
+              selectedDateTime.toFormat('DDD HH:mm')
             ) : (
               <span>Pick a date</span>
             )}

@@ -2,9 +2,9 @@
 import PageLayout from '@/components/page-layout'
 import Heading from '@/components/heading'
 import { Separator } from '@/components/ui/separator'
-import StatusButtons from '@/app/(dashboard)/tournaments/components/status-buttons'
+import TournamentStatusButtons from '@/app/(dashboard)/tournaments/components/tournament-status-buttons'
 import { DataTable } from '@/components/ui/data-table'
-import { columns } from '@/app/(dashboard)/tournaments/(routes)/[tournamentId]/columns'
+import { getMatchColumns } from '@/app/(dashboard)/tournaments/(routes)/[tournamentId]/columns'
 
 interface TournamentPageClientProps {
   tournament: any
@@ -15,10 +15,10 @@ const TournamentPageClient = ({ tournament }: TournamentPageClientProps) => {
     <PageLayout>
       <div className="flex justify-between items-center">
         <Heading text={tournament.name} />
-        <StatusButtons tournament={tournament} />
+        <TournamentStatusButtons tournament={tournament} />
       </div>
       <Separator />
-      <DataTable columns={columns} data={tournament.matches} />
+      <DataTable columns={getMatchColumns(tournament)} data={tournament.matches} />
     </PageLayout>
   )
 }

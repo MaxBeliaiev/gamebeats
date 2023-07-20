@@ -4,7 +4,6 @@ interface MatchCommonTypes {
   competitorOne: string
   competitorTwo: string
   startedAt?: Date | string | null
-  status: string
 }
 
 function attachRefinements<
@@ -28,7 +27,6 @@ const matchCommon = {
   competitorTwo: z.string({
     required_error: 'Competitor 2 is required',
   }),
-  status: z.string(),
 }
 
 export const matchFormSchema = attachRefinements(
@@ -37,8 +35,9 @@ export const matchFormSchema = attachRefinements(
     startedAt: z
       .date({
         required_error: 'Start date is required',
-        invalid_type_error: "Please choose correct date",
-      }).nullable()
+        invalid_type_error: 'Please choose correct date',
+      })
+      .nullable()
       .transform((value, ctx): Date | undefined => {
         if (value == null) {
           ctx.addIssue({
@@ -48,7 +47,7 @@ export const matchFormSchema = attachRefinements(
         } else {
           return value
         }
-      })
+      }),
   })
 )
 
@@ -70,5 +69,10 @@ export const matchUpdateReqSchema = attachRefinements(
   z.object({
     ...matchCommon,
     ...matchReqCommon,
+    status: z.string(),
   })
 )
+
+export const matchPatchReqSchema = z.object({
+  status: z.string(),
+})

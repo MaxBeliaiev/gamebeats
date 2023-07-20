@@ -12,19 +12,21 @@ interface StatusButtonsProps {
   tournament: any
 }
 
-const StatusButtons = ({ tournament: { id, name, gameId, startedAt, matches, status } }: StatusButtonsProps) => {
+const TournamentStatusButtons = ({ tournament: { id, name, gameId, startedAt, matches, status } }: StatusButtonsProps) => {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const handleUpdateTournament = async (status: string) => {
     const agree = confirm(`Are you sure you want to change tournament status to ${status}?`)
     if (agree) {
       try {
+        setLoading(true)
         await axios.put(`/api/tournaments/${id}`, {
           name,
           gameId,
           startedAt,
           status,
         })
+        setLoading(false)
         router.refresh()
         toast.success(
           `Tournament ${name} has been successfully updated!`
@@ -55,7 +57,7 @@ const StatusButtons = ({ tournament: { id, name, gameId, startedAt, matches, sta
           >
             <Button
               variant="info"
-              disabled={hasNotOnlyUpcomingMatches}
+              disabled={hasNotOnlyUpcomingMatches || loading}
               onClick={() => handleUpdateTournament(MatchStatus.UPCOMING)}
             >
               Upcoming
@@ -65,6 +67,7 @@ const StatusButtons = ({ tournament: { id, name, gameId, startedAt, matches, sta
         {status !== 'ONGOING' && (
           <Button
             variant="success"
+            disabled={loading}
             onClick={() => handleUpdateTournament(MatchStatus.ONGOING)}
           >
             Ongoing
@@ -77,7 +80,7 @@ const StatusButtons = ({ tournament: { id, name, gameId, startedAt, matches, sta
           >
             <Button
               variant="destructive"
-              disabled={hasUnfinishedMatches}
+              disabled={hasUnfinishedMatches || loading}
               onClick={() => handleUpdateTournament(MatchStatus.FINISHED)}
             >
               Finish
@@ -89,4 +92,4 @@ const StatusButtons = ({ tournament: { id, name, gameId, startedAt, matches, sta
   )
 }
 
-export default StatusButtons
+export default TournamentStatusButtons
