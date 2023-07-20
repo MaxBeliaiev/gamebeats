@@ -56,7 +56,7 @@ export function CompetitorForm({
       router.refresh()
       router.push(`/competitors`)
       toast.success(toastMessage)
-    } catch (error: any) {
+    } catch (e: any) {
       toast.error(getAxiosErrorMessage(e))
     } finally {
       setLoading(false)
