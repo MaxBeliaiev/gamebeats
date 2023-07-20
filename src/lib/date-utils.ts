@@ -1,6 +1,6 @@
-import moment from 'moment'
+import { format } from 'date-fns'
 
-const dateTimeFormat = 'DD/MM/YYYY H:mm'
+const dateTimeFormat = 'dd/MM/yyyy H:mm'
 
-export const formatDateTime = (date: any, format = dateTimeFormat) =>
-  moment(date).format(format)
+export const formatDateTime = (date: any, formatStr = dateTimeFormat) =>
+  format(date, formatStr)

@@ -1,5 +1,3 @@
-import Link from 'next/link'
-import React from 'react'
 import { getAuthSession } from '@/lib/auth'
 import UserMenu from '@/components/user-menu'
 import NavLink from '@/components/nav-link'
