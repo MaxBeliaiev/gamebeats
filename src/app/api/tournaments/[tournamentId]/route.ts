@@ -42,7 +42,7 @@ export async function PUT(
     }
 
     if (!tournamentId) {
-      return new NextResponse('Tournament id is required', { status: 400 })
+      return new NextResponse('Tournament ID is required', { status: 400 })
     }
 
     const body = await req.json()

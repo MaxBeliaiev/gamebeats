@@ -47,5 +47,5 @@ export const tournamentCreateReqSchema = z.object({
 export const tournamentUpdateReqSchema = z.object({
   ...tournamentCommon,
   ...tournamentReqCommon,
-  status: z.string()
+  status: z.string().optional()
 })
