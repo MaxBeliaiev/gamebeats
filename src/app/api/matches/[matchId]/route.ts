@@ -81,6 +81,7 @@ export async function PATCH(
       },
       data: {
         status: status as MatchStatus,
+        ...(status === MatchStatus.FINISHED && { endedAt: new Date() }),
       },
     })
 

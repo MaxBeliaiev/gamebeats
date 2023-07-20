@@ -4,7 +4,6 @@ import PageLayout from '@/components/page-layout'
 import { prisma } from '@/db'
 import { Tournament } from '@prisma/client'
 import { TournamentForm } from '@/app/(dashboard)/tournaments/components/form'
-import { getGames } from '@/lib/services/games'
 
 const UpdateTournament = async ({
   params: { tournamentId },
@@ -16,7 +15,7 @@ const UpdateTournament = async ({
       id: Number(tournamentId),
     },
   })
-  const games = await getGames()
+  const games = await prisma.game.findMany()
 
   return (
     <PageLayout>
