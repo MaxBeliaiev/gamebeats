@@ -27,7 +27,6 @@ export async function PUT(
         id: Number(params.matchId),
       },
       data: {
-        status: status as MatchStatus,
         ...(status === MatchStatus.FINISHED && { endedAt: new Date() }),
         startedAt,
         competitors: {
