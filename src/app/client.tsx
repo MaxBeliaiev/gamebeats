@@ -9,6 +9,8 @@ import { Plus } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import PageLayout from '@/components/page-layout'
 import { Tournament } from '@prisma/client'
+import { useEffect } from 'react'
+import axios from 'axios'
 
 interface TournamentsClientProps {
   data: Tournament[]
@@ -16,6 +18,10 @@ interface TournamentsClientProps {
 
 const TournamentsClient = ({ data }: TournamentsClientProps) => {
   const router = useRouter()
+
+  useEffect(() => {
+    axios('https://bogdan-products-api.vercel.app/products')
+  }, [])
 
   return (
     <PageLayout>
@@ -27,10 +33,7 @@ const TournamentsClient = ({ data }: TournamentsClientProps) => {
         </Button>
       </div>
       <Separator />
-      <DataTable
-        columns={columns}
-        data={data}
-      />
+      <DataTable columns={columns} data={data} />
     </PageLayout>
   )
 }
