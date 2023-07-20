@@ -59,11 +59,12 @@ export function TournamentForm({
       setLoading(true)
       if (initialData) {
         await axios.put(`/api/tournaments/${tournamentId}`, values)
+        await axios('/api/hello')
       } else {
         await axios.post(`/api/tournaments`, values)
       }
-      router.refresh()
-      router.push(`/`)
+      // router.refresh()
+      // router.push(`/`)
       toast.success(toastMessage)
     } catch (error: any) {
       toast.error(getAxiosErrorMessage(error))

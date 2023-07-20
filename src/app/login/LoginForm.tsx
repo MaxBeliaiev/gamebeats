@@ -11,10 +11,6 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
-  useEffect(() => {
-    axios('/api/hello')
-  }, [])
-
   return (
     <form
       onSubmit={async (e) => {
