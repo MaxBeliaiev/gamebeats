@@ -6,7 +6,7 @@ import { MatchStatus } from '@prisma/client'
 
 export async function PUT(
   req: Request,
-  { params }: { params: { matchId: number } }
+  { params }: { params: { matchId: string } }
 ) {
   try {
     const session = getAuthSession()
@@ -24,30 +24,12 @@ export async function PUT(
 
     const match = await prisma.match.update({
       where: {
-        id: Number(params.matchId),
+        id: params.matchId,
       },
       data: {
         ...(status === MatchStatus.FINISHED && { endedAt: new Date() }),
         startedAt,
-        competitors: {
-          deleteMany: {},
-          create: [
-            {
-              competitor: {
-                connect: {
-                  id: Number(competitorOne),
-                },
-              },
-            },
-            {
-              competitor: {
-                connect: {
-                  id: Number(competitorTwo),
-                },
-              },
-            },
-          ],
-        },
+        competitorsIds: [competitorOne, competitorTwo],
       },
     })
 
@@ -60,7 +42,7 @@ export async function PUT(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { matchId: number } }
+  { params }: { params: { matchId: string } }
 ) {
   try {
     const session = getAuthSession()
@@ -77,7 +59,7 @@ export async function PATCH(
 
     const match = await prisma.match.update({
       where: {
-        id: Number(params.matchId),
+        id: params.matchId,
       },
       data: {
         status: status as MatchStatus,
@@ -108,7 +90,7 @@ export async function DELETE(
 
     const match = await prisma.match.findUnique({
       where: {
-        id: Number(matchId),
+        id: matchId,
       },
     })
 
@@ -120,7 +102,7 @@ export async function DELETE(
 
     const deletedMatch = await prisma.match.delete({
       where: {
-        id: Number(matchId),
+        id: matchId,
       },
     })
 

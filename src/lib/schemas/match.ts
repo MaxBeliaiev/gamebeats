@@ -59,7 +59,7 @@ export const matchCreateReqSchema = attachRefinements(
   z.object({
     ...matchCommon,
     ...matchReqCommon,
-    tournamentId: z.number({
+    tournamentId: z.string({
       required_error: 'Tournament ID is required',
     }),
   })

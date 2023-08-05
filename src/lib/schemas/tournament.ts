@@ -8,7 +8,7 @@ const tournamentCommon = {
     .min(2, {
       message: 'Name must be at least 2 characters',
     }),
-  disciplineId: z.number({
+  disciplineId: z.string({
     required_error: 'Please choose game',
   }),
 }

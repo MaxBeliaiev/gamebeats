@@ -7,7 +7,7 @@ import { CompetitorStatus } from '@prisma/client'
 
 export async function GET(
   req: Request,
-  { params }: { params: { competitorId: number } }
+  { params }: { params: { competitorId: string } },
 ) {
   const session = getAuthSession()
   if (!session) {
@@ -34,7 +34,7 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params }: { params: { competitorId: number } }
+  { params }: { params: { competitorId: string } },
 ) {
   try {
     const session = getAuthSession()
@@ -51,7 +51,7 @@ export async function PUT(
 
     const competitor = await prisma.competitor.update({
       where: {
-        id: Number(params.competitorId),
+        id: params.competitorId,
       },
       data: {
         name,
@@ -69,7 +69,7 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { competitorId: string } }
+  { params }: { params: { competitorId: string } },
 ) {
   try {
     const { competitorId } = params
@@ -82,9 +82,11 @@ export async function DELETE(
       return new NextResponse('Competitor id is required', { status: 400 })
     }
 
-    const connectedMatches = await prisma.matchesOnCompetitors.findFirst({
+    const connectedMatches = await prisma.match.findFirst({
       where: {
-        competitorId: Number(competitorId),
+        competitorsIds: {
+          has: competitorId,
+        },
       },
     })
 
@@ -92,7 +94,7 @@ export async function DELETE(
     if (connectedMatches) {
       competitor = await prisma.competitor.update({
         where: {
-          id: Number(competitorId),
+          id: competitorId,
         },
         data: {
           status: CompetitorStatus.ARCHIVED,
@@ -102,7 +104,7 @@ export async function DELETE(
     } else {
       competitor = await prisma.competitor.delete({
         where: {
-          id: Number(params.competitorId),
+          id: competitorId,
         },
       })
     }

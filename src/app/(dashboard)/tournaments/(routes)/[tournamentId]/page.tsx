@@ -13,10 +13,9 @@ interface TournamentPageProps {
 const TournamentPage = async ({
   params: { tournamentId },
 }: TournamentPageProps) => {
-  const tournamentIdNum = Number(tournamentId)
   const tournament = await prisma.tournament.findUnique({
     where: {
-      id: Number(tournamentIdNum),
+      id: tournamentId,
     },
     include: {
       matches: {
@@ -28,14 +27,6 @@ const TournamentPage = async ({
             startedAt: 'desc',
           },
         ],
-        include: {
-          result: true,
-          competitors: {
-            include: {
-              competitor: true,
-            },
-          },
-        },
       },
     },
   })
@@ -51,11 +42,11 @@ const TournamentPage = async ({
     <>
       <CreateMatchModalProvider
         competitors={competitors}
-        tournamentId={tournamentIdNum}
+        tournamentId={tournamentId}
       />
       <UpdateMatchModalProvider
         competitors={competitors}
-        tournamentId={tournamentIdNum}
+        tournamentId={tournamentId}
       />
       <TournamentPageClient tournament={tournament} />
     </>

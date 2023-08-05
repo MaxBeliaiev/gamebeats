@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/db'
 import { getAuthSession } from '@/lib/auth'
 import { matchCreateReqSchema } from '@/lib/schemas/match'
-import { MatchStatus } from '@prisma/client'
 
 export async function POST(req: Request) {
   try {
@@ -22,24 +21,7 @@ export async function POST(req: Request) {
     let data = {
       tournamentId,
       startedAt,
-      competitors: {
-        create: [
-          {
-            competitor: {
-              connect: {
-                id: Number(competitorOne),
-              },
-            },
-          },
-          {
-            competitor: {
-              connect: {
-                id: Number(competitorTwo),
-              },
-            },
-          },
-        ],
-      },
+      competitorsIds: [competitorOne, competitorTwo],
     }
 
     const match = await prisma.match.create({

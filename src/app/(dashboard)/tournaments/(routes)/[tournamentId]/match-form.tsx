@@ -15,7 +15,7 @@ import {
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Match, MatchesOnCompetitors, MatchStatus } from '@prisma/client'
+import { Match } from '@prisma/client'
 import { matchFormSchema } from '@/lib/schemas/match'
 import Combobox from '@/components/ui/combobox'
 import { DateTimePicker } from '@/components/ui/date-time-picker'
@@ -23,9 +23,9 @@ import { getAxiosErrorMessage } from '@/lib/utils'
 
 interface MatchFormProps {
   initialData?: Match & {
-    competitors: Array<MatchesOnCompetitors>
+    competitors: Array<string>
   }
-  tournamentId?: number
+  tournamentId?: string
   competitors: Array<{
     label: string
     value: string
@@ -49,8 +49,8 @@ export function MatchForm({
     defaultValues: initialData
       ? {
           ...initialData,
-          competitorOne: String(initialData.competitors[0]?.competitorId),
-          competitorTwo: String(initialData.competitors[1]?.competitorId),
+          competitorOne: initialData.competitors[0],
+          competitorTwo: initialData.competitors[1],
         }
       : {},
   })
@@ -60,6 +60,7 @@ export function MatchForm({
       if (initialData) {
         await axios.put(`/api/matches/${initialData.id}`, values)
       } else {
+        console.log({ ...values, tournamentId })
         await axios.post(`/api/matches`, { ...values, tournamentId })
       }
       router.refresh()

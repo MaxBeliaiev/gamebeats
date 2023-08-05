@@ -6,7 +6,7 @@ import { MatchStatus, TournamentStatus } from '@prisma/client'
 
 export async function GET(
   req: Request,
-  { params }: { params: { tournamentId: number } }
+  { params }: { params: { tournamentId: string } }
 ) {
   const session = getAuthSession()
   if (!session) {
@@ -33,7 +33,7 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params: { tournamentId } }: { params: { tournamentId: number } }
+  { params: { tournamentId } }: { params: { tournamentId: string } }
 ) {
   try {
     const session = getAuthSession()
@@ -56,7 +56,7 @@ export async function PUT(
     if (status && status !== TournamentStatus.ONGOING) {
       const matches = await prisma.match.findMany({
         where: {
-          tournamentId: Number(tournamentId),
+          tournamentId
         },
       })
 
@@ -81,7 +81,7 @@ export async function PUT(
 
     const tournament = await prisma.tournament.update({
       where: {
-        id: Number(tournamentId),
+        id: tournamentId,
       },
       data: {
         name,
@@ -102,7 +102,7 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { tournamentId: number } }
+  { params }: { params: { tournamentId: string } }
 ) {
   try {
     const session = getAuthSession()
@@ -116,7 +116,7 @@ export async function DELETE(
 
     const tournament = await prisma.tournament.findUnique({
       where: {
-        id: Number(params.tournamentId),
+        id: params.tournamentId,
       },
     })
 

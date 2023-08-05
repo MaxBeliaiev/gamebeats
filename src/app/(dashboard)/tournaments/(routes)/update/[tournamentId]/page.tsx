@@ -12,7 +12,7 @@ const UpdateTournament = async ({
 }) => {
   const tournament = await prisma.tournament.findUnique({
     where: {
-      id: Number(tournamentId),
+      id: tournamentId,
     },
   })
   const games = await prisma.discipline.findMany()

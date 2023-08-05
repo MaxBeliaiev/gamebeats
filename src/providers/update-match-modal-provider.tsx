@@ -6,7 +6,7 @@ import { Competitor } from '@prisma/client'
 
 interface UpdateMatchModalProviderProps {
   competitors: Competitor[]
-  tournamentId: number
+  tournamentId: string
 }
 
 export const UpdateMatchModalProvider = ({ competitors, tournamentId }: UpdateMatchModalProviderProps) => {

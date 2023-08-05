@@ -111,7 +111,7 @@ export function TournamentForm({
             <FormItem>
               <FormLabel>Game</FormLabel>
               <Select
-                onValueChange={(value) => field.onChange(Number(value))}
+                onValueChange={(value) => field.onChange(value)}
                 defaultValue={String(field.value)}
               >
                 <FormControl>

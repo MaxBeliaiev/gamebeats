@@ -58,7 +58,7 @@
     "zustand": "^4.3.9"
   },
   "devDependencies": {
-    "@prisma/client": "^4.16.2",
+    "@prisma/client": "^5.0.0",
     "@types/bcrypt": "^5.0.0",
     "@types/luxon": "^3.3.0",
     "eslint-config-prettier": "^8.8.0",

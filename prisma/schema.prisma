@@ -6,24 +6,22 @@ generator client {
 }
 
 datasource db {
-  provider          = "mysql"
-  url               = env("DATABASE_URL")
-  relationMode      = "prisma"
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  provider = "mongodb"
+  url      = env("MONGO_DATABASE_URL")
 }
 
 model Account {
-  id                String  @id @default(cuid())
-  userId            String
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String? @db.String
+  access_token      String? @db.String
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String? @db.String
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -33,9 +31,9 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   sessionToken String   @unique
-  userId       String
+  userId       String   @db.ObjectId
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -48,7 +46,7 @@ enum UserRole {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
   surname       String?
   password      String
@@ -61,6 +59,7 @@ model User {
 }
 
 model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
   identifier String
   token      String   @unique
   expires    DateTime
@@ -74,29 +73,25 @@ enum CompetitorStatus {
 }
 
 model Competitor {
-  id          Int                    @id @default(autoincrement())
-  nickname    String
-  name        String
-  surname     String
-  status      CompetitorStatus       @default(ACTIVE)
-  image       String?
-  country     String?
-  birthDate   DateTime?
-  archivedAt  DateTime?
-  createdAt   DateTime               @default(now())
-  updatedAt   DateTime               @updatedAt
-  matches     MatchesOnCompetitors[]
-  gameWins    GameResult[]           @relation("WinnerToGameResult")
-  gameLosses  GameResult[]           @relation("LoserToGameResult")
-  results     GameResult[]
-  matchWins   MatchResult[]          @relation("WinnerToMatchResult")
-  matchLosses MatchResult[]          @relation("LoserToMatchResult")
+  id         String           @id @default(auto()) @map("_id") @db.ObjectId
+  nickname   String
+  name       String
+  surname    String
+  status     CompetitorStatus @default(ACTIVE)
+  image      String?
+  country    String?
+  birthDate  DateTime?
+  archivedAt DateTime?
+  createdAt  DateTime?        @default(now())
+  updatedAt  DateTime?        @updatedAt
 }
 
 model Discipline {
-  id          Int          @id @default(autoincrement())
-  name        String       @map("discipline_name")
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
   tournaments Tournament[] @relation("DisciplineToTournament")
+  createdAt   DateTime?    @default(now())
+  updatedAt   DateTime?    @updatedAt
 }
 
 enum TournamentStatus {
@@ -106,17 +101,17 @@ enum TournamentStatus {
 }
 
 model Tournament {
-  id           Int              @id @default(autoincrement())
+  id           String           @id @default(auto()) @map("_id") @db.ObjectId
   name         String           @unique
-  disciplineId Int              @unique
+  disciplineId String           @db.ObjectId
   discipline   Discipline       @relation("DisciplineToTournament", fields: [disciplineId], references: [id])
   matches      Match[]          @relation("TournamentToMatch")
   status       TournamentStatus @default(UPCOMING)
   startedAt    DateTime
   endedAt      DateTime?
   deletedAt    DateTime?
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt @db.DateTime()
+  createdAt    DateTime?        @default(now())
+  updatedAt    DateTime?        @updatedAt
 
   @@index([disciplineId])
 }
@@ -127,71 +122,37 @@ enum MatchStatus {
   FINISHED
 }
 
+type MatchResultType {
+  winnerId String @db.ObjectId
+  loserId  String @db.ObjectId
+}
+
+type GameResultType {
+  winnerId String @db.ObjectId
+  loserId  String @db.ObjectId
+}
+
+type GameType {
+  startedAt DateTime
+  endedAt   DateTime?
+  deletedAt DateTime?
+  result    GameResultType?
+}
+
 model Match {
-  id           Int                    @id @default(autoincrement())
-  status       MatchStatus            @default(UPCOMING)
-  tournamentId Int
-  tournament   Tournament             @relation("TournamentToMatch", fields: [tournamentId], references: [id], onDelete: Cascade)
-  startedAt    DateTime
-  endedAt      DateTime?
-  deletedAt    DateTime?
-  competitors  MatchesOnCompetitors[]
-  gamesCount   Int                    @default(1)
-  result       MatchResult?
+  id             String           @id @default(auto()) @map("_id") @db.ObjectId
+  status         MatchStatus      @default(UPCOMING)
+  tournamentId   String           @db.ObjectId
+  tournament     Tournament       @relation("TournamentToMatch", fields: [tournamentId], references: [id], onDelete: Cascade)
+  competitorsIds String[]         @db.ObjectId
+  gamesCount     Int              @default(1)
+  games          GameType[]
+  result         MatchResultType?
+  startedAt      DateTime
+  endedAt        DateTime?
+  deletedAt      DateTime?
+  createdAt      DateTime?        @default(now())
+  updatedAt      DateTime?        @updatedAt
 
   @@index([tournamentId])
-}
-
-model Game {
-  id         Int         @id @default(autoincrement())
-  startedAt  DateTime
-  endedAt    DateTime?
-  deletedAt  DateTime?
-  resultId   String?
-  GameResult GameResult?
-}
-
-model MatchesOnCompetitors {
-  match        Match      @relation(fields: [matchId], references: [id], onDelete: Cascade)
-  matchId      Int
-  competitor   Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
-  competitorId Int
-
-  @@id([matchId, competitorId])
-  @@index([competitorId])
-  @@index([matchId])
-  @@map("matches_competitors")
-}
-
-model MatchResult {
-  id       String     @id @default(cuid())
-  match    Match      @relation(fields: [matchId], references: [id])
-  matchId  Int        @unique
-  winner   Competitor @relation("WinnerToMatchResult", fields: [winnerId], references: [id])
-  winnerId Int
-  loser    Competitor @relation("LoserToMatchResult", fields: [loserId], references: [id])
-  loserId  Int
-
-  @@index([winnerId])
-  @@index([loserId])
-  @@index([matchId])
-  @@map("match_result")
-}
-
-model GameResult {
-  id           Int         @id @default(autoincrement())
-  game         Game        @relation(fields: [gameId], references: [id])
-  gameId       Int         @unique
-  winner       Competitor  @relation("WinnerToGameResult", fields: [winnerId], references: [id])
-  winnerId     Int
-  loser        Competitor  @relation("LoserToGameResult", fields: [loserId], references: [id])
-  loserId      Int
-  Competitor   Competitor? @relation(fields: [competitorId], references: [id])
-  competitorId Int?
-
-  @@index([winnerId])
-  @@index([loserId])
-  @@index([gameId])
-  @@index([competitorId])
-  @@map("game_result")
 }

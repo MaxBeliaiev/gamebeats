@@ -15,7 +15,7 @@ const UpdateCompetitor = async ({
 }: UpdateCompetitorProps) => {
   const competitor = await prisma.competitor.findUnique({
     where: {
-      id: Number(competitorId),
+      id: competitorId,
     },
   })
 
@@ -23,7 +23,7 @@ const UpdateCompetitor = async ({
     <PageLayout>
       <Heading text={`Update competitor ${competitor?.name}`} />
       <Separator />
-      <CompetitorForm initialData={competitor} competitorId={Number(competitorId)} />
+      <CompetitorForm initialData={competitor} competitorId={competitorId} />
     </PageLayout>
   )
 }
