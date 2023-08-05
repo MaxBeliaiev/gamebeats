@@ -15,6 +15,7 @@ const Dashboard = async () => {
       matches: true,
     },
   })
+
   return <TournamentsClient data={tournaments} />
 }
 export default Dashboard
