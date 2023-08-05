@@ -24,7 +24,7 @@ import { Input } from '@/components/ui/input'
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Game, Tournament } from '@prisma/client'
+import { Discipline, Tournament } from '@prisma/client'
 import { tournamentFormSchema } from '@/lib/schemas/tournament'
 import { getAxiosErrorMessage } from '@/lib/utils'
 import { DateTimePicker } from '@/components/ui/date-time-picker'
@@ -32,7 +32,7 @@ import { DateTimePicker } from '@/components/ui/date-time-picker'
 interface TournamentFormProps {
   initialData?: Tournament | null
   tournamentId?: Tournament['id']
-  games: Game[]
+  games: Discipline[]
 }
 
 type TournamentFormValues = z.infer<typeof tournamentFormSchema>
@@ -51,7 +51,7 @@ export function TournamentForm({
     resolver: zodResolver(tournamentFormSchema),
     defaultValues: initialData || {
       name: 'UFC 4 Tournament',
-      gameId: games[0]?.id,
+      disciplineId: games[0]?.id,
     },
   })
   const onSubmit = async (values: TournamentFormValues) => {
@@ -106,7 +106,7 @@ export function TournamentForm({
         />
         <FormField
           control={form.control}
-          name="gameId"
+          name="disciplineId"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Game</FormLabel>

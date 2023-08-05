@@ -15,7 +15,7 @@ const UpdateTournament = async ({
       id: Number(tournamentId),
     },
   })
-  const games = await prisma.game.findMany()
+  const games = await prisma.discipline.findMany()
 
   return (
     <PageLayout>

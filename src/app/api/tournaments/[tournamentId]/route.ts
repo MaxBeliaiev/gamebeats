@@ -46,7 +46,7 @@ export async function PUT(
     }
 
     const body = await req.json()
-    const { name, gameId, startedAt, status } =
+    const { name, disciplineId, startedAt, status } =
       tournamentUpdateReqSchema.parse(body)
 
     if (!name) {
@@ -85,7 +85,7 @@ export async function PUT(
       },
       data: {
         name,
-        gameId,
+        disciplineId,
         startedAt,
         status: status as TournamentStatus,
         ...(status === TournamentStatus.FINISHED && { endedAt: new Date() }),

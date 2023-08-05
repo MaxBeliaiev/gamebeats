@@ -9,7 +9,7 @@ export async function POST(req: Request) {
   try {
     const session = getAuthSession()
     const body = await req.json()
-    const { name, gameId, startedAt } = tournamentCreateReqSchema.parse(body)
+    const { name, disciplineId, startedAt } = tournamentCreateReqSchema.parse(body)
 
     if (!session) {
       return new NextResponse('Unauthorized', { status: 403 })
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     const tournament = await prisma.tournament.create({
       data: {
         name,
-        gameId,
+        disciplineId,
         startedAt,
       },
     })

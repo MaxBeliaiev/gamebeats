@@ -1,6 +1,6 @@
 'use client'
 import { Button } from '@/components/ui/button'
-import { Match, MatchStatus, Result } from '@prisma/client'
+import { Match, MatchStatus, MatchResult } from '@prisma/client'
 import WithTooltip from '@/components/ui/with-tooltip'
 import { useState } from 'react'
 import axios from 'axios'
@@ -12,7 +12,7 @@ interface StatusButtonsProps {
   tournament: any
 }
 
-const TournamentStatusButtons = ({ tournament: { id, name, gameId, startedAt, matches, status } }: StatusButtonsProps) => {
+const TournamentStatusButtons = ({ tournament: { id, name, disciplineId, startedAt, matches, status } }: StatusButtonsProps) => {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const handleUpdateTournament = async (status: string) => {
@@ -22,7 +22,7 @@ const TournamentStatusButtons = ({ tournament: { id, name, gameId, startedAt, ma
         setLoading(true)
         await axios.put(`/api/tournaments/${id}`, {
           name,
-          gameId,
+          disciplineId,
           startedAt,
           status,
         })
@@ -38,12 +38,12 @@ const TournamentStatusButtons = ({ tournament: { id, name, gameId, startedAt, ma
   }
 
   const hasUnfinishedMatches = matches.some(
-    (match: Match & { result: Result }) =>
+    (match: Match & { result: MatchResult }) =>
       match.status !== MatchStatus.FINISHED || match.result
   )
 
   const hasNotOnlyUpcomingMatches = matches.some(
-    (match: Match & { result: Result }) => match.status !== MatchStatus.UPCOMING
+    (match: Match & { result: MatchResult }) => match.status !== MatchStatus.UPCOMING
   )
 
   return (
