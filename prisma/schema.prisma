@@ -106,6 +106,7 @@ model Tournament {
   disciplineId String           @db.ObjectId
   discipline   Discipline       @relation("DisciplineToTournament", fields: [disciplineId], references: [id])
   matches      Match[]          @relation("TournamentToMatch")
+  testProp     Int
   status       TournamentStatus @default(UPCOMING)
   startedAt    DateTime
   endedAt      DateTime?

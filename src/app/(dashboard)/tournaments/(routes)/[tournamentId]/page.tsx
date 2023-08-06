@@ -2,9 +2,8 @@ import { prisma } from '@/db'
 import TournamentPageClient from '@/app/(dashboard)/tournaments/(routes)/[tournamentId]/client'
 import { CreateMatchModalProvider } from '@/providers/create-match-modal-provider'
 import { UpdateMatchModalProvider } from '@/providers/update-match-modal-provider'
-import { CompetitorStatus, MatchStatus, TournamentStatus } from '@prisma/client'
-import { hash } from 'bcrypt'
-import { addDays } from 'date-fns'
+import { CompetitorStatus } from '@prisma/client'
+import { fetchTournament } from '@/lib/actions/tournament'
 
 interface TournamentPageProps {
   params: {
@@ -15,23 +14,24 @@ interface TournamentPageProps {
 const TournamentPage = async ({
                                 params: { tournamentId },
                               }: TournamentPageProps) => {
-  const tournament = await prisma.tournament.findUnique({
-    where: {
-      id: tournamentId,
-    },
-    include: {
-      matches: {
-        orderBy: [
-          {
-            status: 'asc',
-          },
-          {
-            startedAt: 'desc',
-          },
-        ],
-      },
-    },
-  })
+  const tournament = await fetchTournament(tournamentId)
+  // const tournament = await prisma.tournament.findUnique({
+  //   where: {
+  //     id: tournamentId,
+  //   },
+  //   include: {
+  //     matches: {
+  //       orderBy: [
+  //         {
+  //           status: 'asc',
+  //         },
+  //         {
+  //           startedAt: 'desc',
+  //         },
+  //       ],
+  //     },
+  //   },
+  // })
   const allCompetitors = await prisma.competitor.findMany({
     where: {
       status: {
