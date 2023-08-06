@@ -4,15 +4,17 @@ import { CreateMatchModalProvider } from '@/providers/create-match-modal-provide
 import { UpdateMatchModalProvider } from '@/providers/update-match-modal-provider'
 import { CompetitorStatus, MatchStatus, TournamentStatus } from '@prisma/client'
 import { hash } from 'bcrypt'
+import { addDays } from 'date-fns'
 
 interface TournamentPageProps {
   params: {
     tournamentId: string
   }
 }
+
 const TournamentPage = async ({
-  params: { tournamentId },
-}: TournamentPageProps) => {
+                                params: { tournamentId },
+                              }: TournamentPageProps) => {
   const tournament = await prisma.tournament.findUnique({
     where: {
       id: tournamentId,
@@ -30,7 +32,7 @@ const TournamentPage = async ({
       },
     },
   })
-  const competitors = await prisma.competitor.findMany({
+  const allCompetitors = await prisma.competitor.findMany({
     where: {
       status: {
         not: CompetitorStatus.ARCHIVED,
@@ -41,11 +43,11 @@ const TournamentPage = async ({
   return (
     <>
       <CreateMatchModalProvider
-        competitors={competitors}
+        competitors={allCompetitors}
         tournamentId={tournamentId}
       />
       <UpdateMatchModalProvider
-        competitors={competitors}
+        competitors={allCompetitors}
         tournamentId={tournamentId}
       />
       <TournamentPageClient tournament={tournament} />
