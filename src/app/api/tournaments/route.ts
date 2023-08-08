@@ -4,6 +4,7 @@ import { getAuthSession } from '@/lib/auth'
 import { Prisma } from '.prisma/client'
 import PrismaClientKnownRequestError = Prisma.PrismaClientKnownRequestError
 import { tournamentCreateReqSchema } from '@/lib/schemas/tournament'
+import { Discipline } from '@prisma/client'
 
 export async function POST(req: Request) {
   try {
@@ -22,7 +23,7 @@ export async function POST(req: Request) {
     const tournament = await prisma.tournament.create({
       data: {
         name,
-        disciplineId,
+        disciplineId: disciplineId as Discipline,
         startedAt,
       },
     })

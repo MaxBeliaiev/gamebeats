@@ -2,8 +2,7 @@ import { prisma } from '@/db'
 import TournamentPageClient from '@/app/(dashboard)/tournaments/(routes)/[tournamentId]/client'
 import { CreateMatchModalProvider } from '@/providers/create-match-modal-provider'
 import { UpdateMatchModalProvider } from '@/providers/update-match-modal-provider'
-import { CompetitorStatus, MatchStatus, TournamentStatus } from '@prisma/client'
-import { hash } from 'bcrypt'
+import { CompetitorStatus } from '@prisma/client'
 
 interface TournamentPageProps {
   params: {
@@ -29,7 +28,6 @@ const TournamentPage = async ({
           },
         ],
         include: {
-          result: true,
           competitors: {
             include: {
               competitor: true,

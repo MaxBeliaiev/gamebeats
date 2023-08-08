@@ -2,11 +2,11 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/db'
 import { getAuthSession } from '@/lib/auth'
 import { tournamentUpdateReqSchema } from '@/lib/schemas/tournament'
-import { MatchStatus, TournamentStatus } from '@prisma/client'
+import { Discipline, MatchStatus, TournamentStatus } from '@prisma/client'
 
 export async function GET(
   req: Request,
-  { params }: { params: { tournamentId: number } }
+  { params }: { params: { tournamentId: number } },
 ) {
   const session = getAuthSession()
   if (!session) {
@@ -33,7 +33,7 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params: { tournamentId } }: { params: { tournamentId: number } }
+  { params: { tournamentId } }: { params: { tournamentId: number } },
 ) {
   try {
     const session = getAuthSession()
@@ -66,7 +66,7 @@ export async function PUT(
       ) {
         return new NextResponse(
           'Cannot make tournament Upcoming with ongoing/finished matches in it',
-          { status: 400 }
+          { status: 400 },
         )
       } else if (
         status === TournamentStatus.FINISHED &&
@@ -74,7 +74,7 @@ export async function PUT(
       ) {
         return new NextResponse(
           'Cannot finish tournament with unfinished matches in it',
-          { status: 400 }
+          { status: 400 },
         )
       }
     }
@@ -85,7 +85,7 @@ export async function PUT(
       },
       data: {
         name,
-        disciplineId,
+        disciplineId: disciplineId as Discipline,
         startedAt,
         status: status as TournamentStatus,
         ...(status === TournamentStatus.FINISHED && { endedAt: new Date() }),
@@ -102,7 +102,7 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { tournamentId: number } }
+  { params }: { params: { tournamentId: number } },
 ) {
   try {
     const session = getAuthSession()

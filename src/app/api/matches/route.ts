@@ -46,6 +46,12 @@ export async function POST(req: Request) {
       data,
     })
 
+    await prisma.game.create({
+      data: {
+        matchId: match.id,
+      },
+    })
+
     return NextResponse.json(match)
   } catch (error) {
     console.log('[MATCHES_POST]', error)

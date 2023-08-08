@@ -32,16 +32,14 @@ import { DateTimePicker } from '@/components/ui/date-time-picker'
 interface TournamentFormProps {
   initialData?: Tournament | null
   tournamentId?: Tournament['id']
-  games: Discipline[]
 }
 
 type TournamentFormValues = z.infer<typeof tournamentFormSchema>
 
 export function TournamentForm({
-  initialData,
-  tournamentId,
-  games,
-}: TournamentFormProps) {
+                                 initialData,
+                                 tournamentId,
+                               }: TournamentFormProps) {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const toastMessage = initialData
@@ -51,7 +49,7 @@ export function TournamentForm({
     resolver: zodResolver(tournamentFormSchema),
     defaultValues: initialData || {
       name: 'UFC 4 Tournament',
-      disciplineId: games[0]?.id,
+      disciplineId: Discipline.UFC,
     },
   })
   const onSubmit = async (values: TournamentFormValues) => {
@@ -74,15 +72,15 @@ export function TournamentForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
         <FormField
           control={form.control}
-          name="name"
+          name='name'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter tournament name" {...field} />
+                <Input placeholder='Enter tournament name' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -90,9 +88,9 @@ export function TournamentForm({
         />
         <FormField
           control={form.control}
-          name="startedAt"
+          name='startedAt'
           render={({ field }) => (
-            <FormItem className="flex flex-col">
+            <FormItem className='flex flex-col'>
               <FormLabel>Start time</FormLabel>
               <DateTimePicker
                 date={field.value}
@@ -106,7 +104,7 @@ export function TournamentForm({
         />
         <FormField
           control={form.control}
-          name="disciplineId"
+          name='disciplineId'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Game</FormLabel>
@@ -116,13 +114,13 @@ export function TournamentForm({
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
+                    <SelectValue placeholder='Select a verified email to display' />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {games.map(({ id, name }) => (
-                    <SelectItem key={id} value={String(id)}>
-                      {name}
+                  {Object.values(Discipline).map(discipline => (
+                    <SelectItem key={discipline} value={discipline}>
+                      {discipline}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -131,7 +129,7 @@ export function TournamentForm({
             </FormItem>
           )}
         />
-        <Button variant="success" disabled={loading} type="submit">
+        <Button variant='success' disabled={loading} type='submit'>
           Save
         </Button>
       </form>

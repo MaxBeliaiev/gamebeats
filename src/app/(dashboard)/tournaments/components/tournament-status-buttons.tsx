@@ -1,6 +1,6 @@
 'use client'
 import { Button } from '@/components/ui/button'
-import { Match, MatchStatus, MatchResult } from '@prisma/client'
+import { Match, MatchStatus } from '@prisma/client'
 import WithTooltip from '@/components/ui/with-tooltip'
 import { useState } from 'react'
 import axios from 'axios'
@@ -38,12 +38,12 @@ const TournamentStatusButtons = ({ tournament: { id, name, disciplineId, started
   }
 
   const hasUnfinishedMatches = matches.some(
-    (match: Match & { result: MatchResult }) =>
-      match.status !== MatchStatus.FINISHED || match.result
+    (match: Match) =>
+      match.status !== MatchStatus.FINISHED || match.winnerId
   )
 
   const hasNotOnlyUpcomingMatches = matches.some(
-    (match: Match & { result: MatchResult }) => match.status !== MatchStatus.UPCOMING
+    (match: Match) => match.status !== MatchStatus.UPCOMING
   )
 
   return (

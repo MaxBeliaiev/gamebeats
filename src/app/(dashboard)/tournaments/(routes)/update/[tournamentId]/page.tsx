@@ -15,7 +15,6 @@ const UpdateTournament = async ({
       id: Number(tournamentId),
     },
   })
-  const games = await prisma.discipline.findMany()
 
   return (
     <PageLayout>
@@ -23,7 +22,6 @@ const UpdateTournament = async ({
       <Separator />
       <TournamentForm
         initialData={tournament}
-        games={games}
         tournamentId={tournamentId}
       />
     </PageLayout>

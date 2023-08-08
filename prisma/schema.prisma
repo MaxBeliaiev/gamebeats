@@ -74,29 +74,26 @@ enum CompetitorStatus {
 }
 
 model Competitor {
-  id          Int                    @id @default(autoincrement())
-  nickname    String
-  name        String
-  surname     String
-  status      CompetitorStatus       @default(ACTIVE)
-  image       String?
-  country     String?
-  birthDate   DateTime?
-  archivedAt  DateTime?
-  createdAt   DateTime               @default(now())
-  updatedAt   DateTime               @updatedAt
-  matches     MatchesOnCompetitors[]
-  gameWins    GameResult[]           @relation("WinnerToGameResult")
-  gameLosses  GameResult[]           @relation("LoserToGameResult")
-  results     GameResult[]
-  matchWins   MatchResult[]          @relation("WinnerToMatchResult")
-  matchLosses MatchResult[]          @relation("LoserToMatchResult")
+  id         Int              @id @default(autoincrement())
+  nickname   String
+  name       String
+  surname    String
+  status     CompetitorStatus @default(ACTIVE)
+  image      String?
+  country    String?
+  birthDate  DateTime?
+  archivedAt DateTime?
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  matches    MatchesOnCompetitors[]
+  wonMatches Match[]                @relation("WinnerToMatch")
+  games      Game[]                 @relation("WinnerToGame")
+  ufcStats   UfcStatistics[]        @relation("CompetitorToUfcStats")
 }
 
-model Discipline {
-  id          Int          @id @default(autoincrement())
-  name        String       @map("discipline_name")
-  tournaments Tournament[] @relation("DisciplineToTournament")
+enum Discipline {
+  UFC
 }
 
 enum TournamentStatus {
@@ -108,15 +105,15 @@ enum TournamentStatus {
 model Tournament {
   id           Int              @id @default(autoincrement())
   name         String           @unique
-  disciplineId Int              @unique
-  discipline   Discipline       @relation("DisciplineToTournament", fields: [disciplineId], references: [id])
-  matches      Match[]          @relation("TournamentToMatch")
+  disciplineId Discipline       @default(UFC)
   status       TournamentStatus @default(UPCOMING)
   startedAt    DateTime
   endedAt      DateTime?
   deletedAt    DateTime?
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt @db.DateTime()
+
+  matches Match[] @relation("TournamentToMatch")
 
   @@index([disciplineId])
 }
@@ -127,39 +124,77 @@ enum MatchStatus {
   FINISHED
 }
 
-model Match {
-  id           Int                    @id @default(autoincrement())
-  status       MatchStatus            @default(UPCOMING)
-  tournamentId Int
-  tournament   Tournament             @relation("TournamentToMatch", fields: [tournamentId], references: [id], onDelete: Cascade)
-  startedAt    DateTime
-  endedAt      DateTime?
-  deletedAt    DateTime?
-  competitors  MatchesOnCompetitors[]
-  gamesCount   Int                    @default(1)
-  result       MatchResult?
-  games        Game[]                 @relation("MatchToGame")
-  createdAt    DateTime               @default(now())
-  updatedAt    DateTime               @updatedAt @db.DateTime()
+enum MatchFormat {
+  BO1
+}
 
+model Match {
+  id             Int                    @id @default(autoincrement())
+  status         MatchStatus            @default(UPCOMING)
+  tournamentId   Int
+  winnerId       Int?
+  competitors    MatchesOnCompetitors[]
+  format         MatchFormat            @default(BO1)
+  teamLeftScore  Int                    @default(0)
+  teamRightScore Int                    @default(0)
+  startedAt      DateTime
+  endedAt        DateTime?
+  deletedAt      DateTime?
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt @db.DateTime()
+
+  tournament Tournament  @relation("TournamentToMatch", fields: [tournamentId], references: [id], onDelete: Cascade)
+  winner     Competitor? @relation("WinnerToMatch", fields: [winnerId], references: [id])
+  games      Game[]      @relation("MatchToGame")
+
+  @@index([winnerId])
   @@index([tournamentId])
 }
 
-model Game {
-  id        Int         @id @default(autoincrement())
-  startedAt DateTime
-  endedAt   DateTime?
-  deletedAt DateTime?
-  resultId  String?
-  matchId   Int
-  match     Match       @relation("MatchToGame", fields: [matchId], references: [id], onDelete: Cascade)
-  result    GameResult? @relation("GameToResult")
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt @db.DateTime()
+enum GameStatus {
+  UPCOMING
+  ONGOING
+  FINISHED
+}
 
-  ufcLiveStats UfcLiveStat[] @relation("GameToUfcLiveStat")
+model Game {
+  id             Int        @id @default(autoincrement())
+  matchId        Int
+  winnerId       Int?
+  status         GameStatus @default(UPCOMING)
+  liveStatistics Json?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt @db.DateTime()
+  deletedAt      DateTime?
+  startedAt      DateTime?
+  endedAt        DateTime?
+
+  match  Match       @relation("MatchToGame", fields: [matchId], references: [id], onDelete: Cascade)
+  winner Competitor? @relation("WinnerToGame", fields: [winnerId], references: [id])
 
   @@index([matchId])
+  @@index([winnerId])
+}
+
+// model UfcResultDetails {
+//   winMethod String @default('knockout')
+//   round Int 2
+//         winTime 1:15
+// }
+
+model UfcStatistics {
+  id               Int @id @default(autoincrement())
+  competitorId     Int @default(0)
+  knockouts        Int @default(0)
+  wins             Int @default(0)
+  losses           Int @default(0)
+  decisionWins     Int @default(0)
+  submissions      Int @default(0)
+  submissionLosses Int @default(0)
+
+  competitor Competitor? @relation("CompetitorToUfcStats", fields: [competitorId], references: [id])
+
+  @@index([competitorId])
 }
 
 model MatchesOnCompetitors {
@@ -173,60 +208,3 @@ model MatchesOnCompetitors {
   @@index([matchId])
   @@map("matches_competitors")
 }
-
-model MatchResult {
-  id        String     @id @default(cuid())
-  match     Match      @relation(fields: [matchId], references: [id])
-  matchId   Int        @unique
-  winner    Competitor @relation("WinnerToMatchResult", fields: [winnerId], references: [id])
-  winnerId  Int
-  loser     Competitor @relation("LoserToMatchResult", fields: [loserId], references: [id])
-  loserId   Int
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt @db.DateTime()
-
-  @@index([winnerId])
-  @@index([loserId])
-  @@index([matchId])
-  @@map("match_result")
-}
-
-model GameResult {
-  id           Int         @id @default(autoincrement())
-  game         Game        @relation("GameToResult", fields: [gameId], references: [id])
-  gameId       Int         @unique
-  winner       Competitor  @relation("WinnerToGameResult", fields: [winnerId], references: [id])
-  winnerId     Int
-  loser        Competitor  @relation("LoserToGameResult", fields: [loserId], references: [id])
-  loserId      Int
-  Competitor   Competitor? @relation(fields: [competitorId], references: [id])
-  competitorId Int?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt @db.DateTime()
-
-  ufcResultData UfcResult? @relation("ResultToUfcResult")
-
-  @@index([winnerId])
-  @@index([loserId])
-  @@index([gameId])
-  @@index([competitorId])
-  @@map("game_result")
-}
-
-model UfcResult {
-  id        Int        @id @default(autoincrement())
-  winMethod String
-  resultId  Int        @unique
-  result    GameResult @relation("ResultToUfcResult", fields: [resultId], references: [id])
-
-  @@index([resultId])
-}
-
-// model UfcLiveStat {
-//   id        Int    @id @default(autoincrement())
-//   winMethod String
-//   gameId    Int    @unique
-//   game      Game   @relation("GameToUfcLiveStat", fields: [gameId], references: [id])
-//
-//   @@index([gameId])
-// }

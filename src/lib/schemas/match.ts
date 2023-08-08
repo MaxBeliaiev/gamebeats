@@ -69,7 +69,6 @@ export const matchUpdateReqSchema = attachRefinements(
   z.object({
     ...matchCommon,
     ...matchReqCommon,
-    status: z.string(),
   })
 )
 

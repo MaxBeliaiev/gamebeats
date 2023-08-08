@@ -19,7 +19,7 @@ export async function PUT(
     }
 
     const body = await req.json()
-    const { competitorOne, competitorTwo, startedAt, status } =
+    const { competitorOne, competitorTwo, startedAt } =
       matchUpdateReqSchema.parse(body)
 
     const match = await prisma.match.update({
@@ -27,7 +27,6 @@ export async function PUT(
         id: Number(params.matchId),
       },
       data: {
-        ...(status === MatchStatus.FINISHED && { endedAt: new Date() }),
         startedAt,
         competitors: {
           deleteMany: {},

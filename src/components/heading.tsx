@@ -1,5 +1,5 @@
 interface HeadingProps {
-  text: string
+  text: string | React.ReactNode
 }
 
 const Heading = ({ text }: HeadingProps) => (

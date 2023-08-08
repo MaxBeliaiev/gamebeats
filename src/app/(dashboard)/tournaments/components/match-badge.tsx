@@ -7,9 +7,9 @@ interface MatchBadgeProps {
 
 const MatchBadge = ({ status }: MatchBadgeProps) => {
   const statusVariant: any = {
-    UPCOMING: 'info',
-    ONGOING: 'success',
-    FINISHED: 'destructive',
+    [MatchStatus.UPCOMING]: 'info',
+    [MatchStatus.ONGOING]: 'success',
+    [MatchStatus.FINISHED]: 'destructive',
   }
 
   return <UIBadge variant={statusVariant[status]}>{status.toLowerCase()}</UIBadge>
