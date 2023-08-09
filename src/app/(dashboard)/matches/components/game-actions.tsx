@@ -1,17 +1,8 @@
 import { CheckSquare, Play, Plus, StopCircle } from 'lucide-react'
-import {
-  Game,
-  GameStatus,
-  Match,
-  MatchStatus,
-  Tournament,
-  TournamentStatus,
-} from '@prisma/client'
+import { Game, GameStatus, Match, MatchStatus } from '@prisma/client'
 import { useRouter } from 'next/navigation'
-import axios from 'axios'
 import { toast } from 'react-hot-toast'
-import DeleteButton from '@/components/ui/delete-button'
-import { useUpdateMatchModal } from '@/hooks/use-update-match-modal'
+import { useFinishGameModal } from '@/hooks/use-finish-game-modal'
 import WithTooltip from '@/components/ui/with-tooltip'
 import { Button } from '@/components/ui/button'
 import { getAxiosErrorMessage } from '@/lib/utils'
@@ -23,37 +14,20 @@ interface MatchActionsProps {
 }
 
 const GameActions = ({ match, game }: MatchActionsProps) => {
-  const updateMatchModal = useUpdateMatchModal()
-  const handleUpdateClick = () => {
-    updateMatchModal.setMatch(match)
-    updateMatchModal.open()
-  }
-  const cannotEdit = match.status === MatchStatus.ONGOING
-
   return (
     <div className="flex items-center justify-end gap-0.5">
       <GameStatusButton match={match} game={game} />
-      <WithTooltip text="Cannot edit Ongoing match" hidden={!cannotEdit}>
-        <Button
-          variant="ghost"
-          onClick={handleUpdateClick}
-          disabled={cannotEdit}
-        >
-          <Plus color="blue" />
-        </Button>
-      </WithTooltip>
-      {/*<MatchDeleteButton match={match} />*/}
     </div>
   )
 }
 
-const GameStatusButton = ({
-  game: { id, status },
-  match,
-}: {
-  match: Match
-  game: Game
-}) => {
+const GameStatusButton = ({ game, match }: { match: Match; game: Game }) => {
+  const { id, status } = game
+  const finishGameModal = useFinishGameModal()
+  const handleEnterResultClick = () => {
+    finishGameModal.setGame(game)
+    finishGameModal.open()
+  }
   const cannotStart = match.status === MatchStatus.UPCOMING
   const router = useRouter()
   const handleUpdateGameStatus = async (status: GameStatus) => {
@@ -90,11 +64,7 @@ const GameStatusButton = ({
 
   if (status === MatchStatus.ONGOING) {
     return (
-      <Button
-        variant="ghost"
-        onClick={() => handleUpdateGameStatus(MatchStatus.FINISHED)}
-        disabled={cannotStart}
-      >
+      <Button variant="ghost" onClick={handleEnterResultClick}>
         <CheckSquare color="red" />
       </Button>
     )
@@ -102,31 +72,5 @@ const GameStatusButton = ({
 
   return null
 }
-
-// const MatchDeleteButton = ({ match: { id, status } }: { match: any }) => {
-//   const notUpcoming = status !== MatchStatus.UPCOMING
-//   const router = useRouter()
-//   const handleClick = async () => {
-//     const agree = confirm(`Are you sure you want to delete this match?`)
-//     if (agree) {
-//       try {
-//         await axios.delete(`/api/matches/${id}`)
-//         router.refresh()
-//         toast.success(`Match has been successfully deleted!`)
-//       } catch (e: any) {
-//         toast.error(getAxiosErrorMessage(e))
-//       }
-//     }
-//   }
-//
-//   return (
-//     <WithTooltip
-//       text="Only Upcoming matches can be deleted"
-//       hidden={!notUpcoming}
-//     >
-//       <DeleteButton onClick={handleClick} disabled={notUpcoming} />
-//     </WithTooltip>
-//   )
-// }
 
 export default GameActions

@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { Match } from '@prisma/client'
 
 interface useUpdateMatchModal {
   isOpen: boolean
@@ -7,7 +8,7 @@ interface useUpdateMatchModal {
   match: any
   matchId?: number | null
   setMatchId: (id: number) => void
-  setMatch: (id: number) => void
+  setMatch: (match: Match) => void
 }
 
 export const useUpdateMatchModal = create<useUpdateMatchModal>((set) => ({

@@ -137,6 +137,7 @@ model Match {
   format         MatchFormat            @default(BO1)
   teamLeftScore  Int                    @default(0)
   teamRightScore Int                    @default(0)
+  streamChannel  String                 @default("1")
   startedAt      DateTime
   endedAt        DateTime?
   deletedAt      DateTime?
@@ -176,21 +177,29 @@ model Game {
   @@index([winnerId])
 }
 
-// model UfcResultDetails {
-//   winMethod String @default('knockout')
-//   round Int 2
-//         winTime 1:15
-// }
+enum UfcWinMethods {
+  KO
+  SUB
+  DEC
+}
+
+model UfcResultDetails {
+  id        Int           @id @default(autoincrement())
+  winMethod UfcWinMethods @default(DEC)
+  round     Int
+  winTime   String
+}
 
 model UfcStatistics {
-  id               Int @id @default(autoincrement())
-  competitorId     Int @default(0)
-  knockouts        Int @default(0)
-  wins             Int @default(0)
-  losses           Int @default(0)
-  decisionWins     Int @default(0)
-  submissions      Int @default(0)
-  submissionLosses Int @default(0)
+  id           Int @id @default(autoincrement())
+  competitorId Int @default(0)
+  games        Int @default(0)
+  knockouts    Int @default(0)
+  wins         Int @default(0)
+  losses       Int @default(0)
+  decisions    Int @default(0)
+  submissions  Int @default(0)
+  draws        Int @default(0)
 
   competitor Competitor? @relation("CompetitorToUfcStats", fields: [competitorId], references: [id])
 
@@ -202,6 +211,7 @@ model MatchesOnCompetitors {
   matchId      Int
   competitor   Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
   competitorId Int
+  score        Int        @default(0)
 
   @@id([matchId, competitorId])
   @@index([competitorId])

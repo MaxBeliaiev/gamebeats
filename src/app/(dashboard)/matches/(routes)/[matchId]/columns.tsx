@@ -1,8 +1,6 @@
 'use client'
 import { ColumnDef } from '@tanstack/react-table'
 import { formatDateTime } from '@/lib/date-utils'
-import MatchBadge from '@/app/(dashboard)/tournaments/components/match-badge'
-// import GameActions from '@/app/(dashboard)/matches/(routes)/[matchId]]/actions'
 import { Match } from '@prisma/client'
 import GameStatusBadge from '@/app/(dashboard)/matches/components/game-badge'
 import GameActions from '@/app/(dashboard)/matches/components/game-actions'
@@ -19,7 +17,7 @@ export const getGameColumns = (match: Match): ColumnDef<any>[] => [
   },
   {
     accessorKey: 'startedAt',
-    header: 'Start',
+    header: 'Started',
     cell: ({
       row: {
         original: { startedAt },
@@ -28,7 +26,7 @@ export const getGameColumns = (match: Match): ColumnDef<any>[] => [
   },
   {
     accessorKey: 'endedAt',
-    header: 'End',
+    header: 'Ended',
     cell: ({
       row: {
         original: { endedAt },
@@ -41,6 +39,13 @@ export const getGameColumns = (match: Match): ColumnDef<any>[] => [
     cell: ({ row }) => {
       return <GameStatusBadge status={row.original.status} />
     },
+  },
+  {
+    accessorKey: 'winnerId',
+    header: 'Winner',
+    cell: ({ row: {
+      original: { winnerId }
+    } }) => winnerId && <span>{winnerId}</span>
   },
   {
     id: 'actions',
