@@ -77,7 +77,7 @@ export function FinishGameForm({
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Winner (leave empty if draw)</FormLabel>
-              <div className="flex flex-row">
+              <div className='flex flex-row'>
                 <Combobox
                   title="Select a winner"
                   value={field.value}
@@ -87,6 +87,16 @@ export function FinishGameForm({
                   }}
                   searchText="Search competitor..."
                 />
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    form.setValue('winnerId', '')
+                  }}
+                  className="rounded-l-none border-l-0 px-3"
+                  type="button"
+                >
+                  <Trash size={15} />
+                </Button>
               </div>
               <FormMessage />
             </FormItem>

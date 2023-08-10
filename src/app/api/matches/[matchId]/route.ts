@@ -38,6 +38,7 @@ export async function PUT(
                   id: Number(competitorOne),
                 },
               },
+              order: 1,
             },
             {
               competitor: {
@@ -45,6 +46,7 @@ export async function PUT(
                   id: Number(competitorTwo),
                 },
               },
+              order: 2,
             },
           ],
         },
@@ -81,7 +83,6 @@ export async function PATCH(
       },
       data: {
         status: status as MatchStatus,
-        ...(status === MatchStatus.FINISHED && { endedAt: new Date() }),
       },
       include: {
         games: {
@@ -90,15 +91,15 @@ export async function PATCH(
             id: 'asc',
           },
           select: {
-            id: true
-          }
+            id: true,
+          },
         },
       },
     })
 
     if (status === MatchStatus.ONGOING) {
       const [game] = match.games
-      game && (await updateGameStatus(game.id, GameStatus.ONGOING))
+      game && (await updateGameStatus(game.id, GameStatus.ONGOING, match.startedAt))
     }
 
     return NextResponse.json(match)

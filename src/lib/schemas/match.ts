@@ -1,4 +1,5 @@
 import * as z from 'zod'
+import { MatchStatus } from '@prisma/client'
 
 interface MatchCommonTypes {
   competitorOne: string
@@ -73,5 +74,11 @@ export const matchUpdateReqSchema = attachRefinements(
 )
 
 export const matchPatchReqSchema = z.object({
-  status: z.string(),
-})
+  status: z.string()
+}).refine(
+  ({ status }) => status === MatchStatus.ONGOING,
+  {
+    message: 'Invalid status.',
+    path: ['status'],
+  }
+)
