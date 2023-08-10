@@ -1,12 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { CreateMatchModal } from '@/components/modals/create-match-modal'
-import { Competitor } from '@prisma/client'
 import { FinishGameModal } from '@/components/modals/finish-game-modal'
 
 interface FinishGameModalProviderProps {
-  competitors: Competitor[]
+  competitors: Array<{nickname: string, id: number}>
 }
 
 export const FinishGameModalProvider = ({ competitors }: FinishGameModalProviderProps) => {

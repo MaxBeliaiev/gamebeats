@@ -212,6 +212,7 @@ model MatchesOnCompetitors {
   competitor   Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
   competitorId Int
   score        Int        @default(0)
+  order        Int        @default(1)
 
   @@id([matchId, competitorId])
   @@index([competitorId])

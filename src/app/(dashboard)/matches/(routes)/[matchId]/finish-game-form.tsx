@@ -50,7 +50,6 @@ export function FinishGameForm({
   })
   const onSubmit = async (values: FinishGameFormValues) => {
     try {
-      console.log(values)
       setLoading(true)
       await finishGame({
         game: initialData,
@@ -60,7 +59,6 @@ export function FinishGameForm({
         },
       })
       router.refresh()
-      // router.push(`/matches/${match.id}`)
       toast.success('Game updated!')
       onSuccess && onSuccess()
     } catch (e: any) {

@@ -9,6 +9,7 @@ interface MatchPageProps {
     matchId: string
   }
 }
+
 const MatchPage = async ({ params: { matchId } }: MatchPageProps) => {
   const matchIdNum = Number(matchId)
   const match = await prisma.match.findUnique({
@@ -18,7 +19,12 @@ const MatchPage = async ({ params: { matchId } }: MatchPageProps) => {
     include: {
       competitors: {
         include: {
-          competitor: true,
+          competitor: {
+            select: {
+              nickname: true,
+              id: true,
+            },
+          },
         },
       },
       games: true,

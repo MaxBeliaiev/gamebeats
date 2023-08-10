@@ -6,7 +6,7 @@ import { Competitor } from '@prisma/client'
 import { useFinishGameModal } from '@/hooks/use-finish-game-modal'
 
 interface FinishGameModalProps {
-  competitors: Competitor[]
+  competitors: Array<{nickname: string, id: number}>
 }
 
 export const FinishGameModal = ({

@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/db'
 import { getAuthSession } from '@/lib/auth'
 import { matchPatchReqSchema, matchUpdateReqSchema } from '@/lib/schemas/match'
-import { MatchStatus } from '@prisma/client'
+import { GameStatus, MatchStatus } from '@prisma/client'
+import { updateGameStatus } from '@/lib/actions/game'
 
 export async function PUT(
   req: Request,
@@ -82,7 +83,23 @@ export async function PATCH(
         status: status as MatchStatus,
         ...(status === MatchStatus.FINISHED && { endedAt: new Date() }),
       },
+      include: {
+        games: {
+          take: 1,
+          orderBy: {
+            id: 'asc',
+          },
+          select: {
+            id: true
+          }
+        },
+      },
     })
+
+    if (status === MatchStatus.ONGOING) {
+      const [game] = match.games
+      game && (await updateGameStatus(game.id, GameStatus.ONGOING))
+    }
 
     return NextResponse.json(match)
   } catch (error) {

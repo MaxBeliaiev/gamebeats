@@ -28,11 +28,11 @@ export const finishGame = async ({
   }
 }
 
-export const updateMatchStatus = async (id: number, status: MatchStatus) => {
+export const updateGameStatus = async (gameId: number, status: MatchStatus) => {
   try {
     await prisma.game.update({
       where: {
-        id,
+        id: gameId,
       },
       data: {
         status,

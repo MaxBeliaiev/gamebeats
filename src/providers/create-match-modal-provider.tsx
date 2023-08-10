@@ -3,9 +3,10 @@
 import { useEffect, useState } from 'react'
 import { CreateMatchModal } from '@/components/modals/create-match-modal'
 import { Competitor } from '@prisma/client'
+import { CompetitorsSelectPayload } from '@/lib/constants/competitors'
 
 interface CreateMatchModalProviderProps {
-  competitors: Competitor[]
+  competitors: CompetitorsSelectPayload
   tournamentId: number
 }
 

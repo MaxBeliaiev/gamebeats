@@ -8,12 +8,8 @@ export async function POST(req: Request) {
   try {
     const session = getAuthSession()
     const body = await req.json()
-    const {
-      competitorOne,
-      competitorTwo,
-      tournamentId,
-      startedAt,
-    } = matchCreateReqSchema.parse(body)
+    const { competitorOne, competitorTwo, tournamentId, startedAt } =
+      matchCreateReqSchema.parse(body)
 
     if (!session) {
       return new NextResponse('Unauthorized', { status: 403 })
@@ -30,6 +26,7 @@ export async function POST(req: Request) {
                 id: Number(competitorOne),
               },
             },
+            order: 1,
           },
           {
             competitor: {
@@ -37,6 +34,7 @@ export async function POST(req: Request) {
                 id: Number(competitorTwo),
               },
             },
+            order: 2,
           },
         ],
       },

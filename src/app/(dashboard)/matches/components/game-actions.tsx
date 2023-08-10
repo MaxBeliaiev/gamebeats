@@ -6,7 +6,7 @@ import { useFinishGameModal } from '@/hooks/use-finish-game-modal'
 import WithTooltip from '@/components/ui/with-tooltip'
 import { Button } from '@/components/ui/button'
 import { getAxiosErrorMessage } from '@/lib/utils'
-import { updateMatchStatus } from '@/lib/actions/game'
+import { updateGameStatus } from '@/lib/actions/game'
 
 interface MatchActionsProps {
   match: any
@@ -36,7 +36,7 @@ const GameStatusButton = ({ game, match }: { match: Match; game: Game }) => {
     )
     if (agree) {
       try {
-        await updateMatchStatus(id, status)
+        await updateGameStatus(id, status)
         router.refresh()
         toast.success(`Game is ${status.toLowerCase()} now!`)
       } catch (e: any) {
@@ -65,7 +65,7 @@ const GameStatusButton = ({ game, match }: { match: Match; game: Game }) => {
   if (status === MatchStatus.ONGOING) {
     return (
       <Button variant="ghost" onClick={handleEnterResultClick}>
-        <CheckSquare color="red" />
+        <CheckSquare color="green" />
       </Button>
     )
   }

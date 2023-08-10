@@ -26,11 +26,22 @@ const TournamentPage = async ({
           {
             startedAt: 'desc',
           },
+          {
+            id: 'desc',
+          },
         ],
         include: {
           competitors: {
+            orderBy: {
+              order: 'asc',
+            },
             include: {
-              competitor: true,
+              competitor: {
+                select: {
+                  id: true,
+                  nickname: true,
+                },
+              },
             },
           },
         },
@@ -42,6 +53,10 @@ const TournamentPage = async ({
       status: {
         not: CompetitorStatus.ARCHIVED,
       },
+    },
+    select: {
+      id: true,
+      nickname: true,
     },
   })
 
