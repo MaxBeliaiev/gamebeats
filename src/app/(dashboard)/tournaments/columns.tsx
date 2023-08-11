@@ -14,7 +14,7 @@ export const columns: ColumnDef<Tournament>[] = [
     cell: ({ row }) => {
       const { id, name } = row.original
       return (
-        <Link className={'font-semibold hover:underline'} href={{ pathname: `/tournaments/${id}` }}>{name}</Link>
+        <Link className='font-semibold hover:underline' href={{ pathname: `/tournaments/${id}` }}>{name}</Link>
       )
     },
   },

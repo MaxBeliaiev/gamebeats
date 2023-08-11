@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -15,13 +16,23 @@ import {
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Game } from '@prisma/client'
+import { Game, UfcWinMethods } from '@prisma/client'
 import Combobox from '@/components/ui/combobox'
 import { getAxiosErrorMessage } from '@/lib/utils'
 import { gameFinishFormSchema } from '@/lib/schemas/game'
 import { Trash } from 'lucide-react'
 import * as React from 'react'
-import { finishGame } from '@/lib/actions/game'
+import { finishUfcGame } from '@/lib/actions/game'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { UFC_ROUNDS } from '@/lib/constants/results'
+import { Separator } from '@/components/ui/separator'
+import { Input } from '@/components/ui/input'
 
 interface FinishGameFormProps {
   initialData: Game
@@ -40,50 +51,65 @@ export function FinishGameForm({
   onSuccess,
 }: FinishGameFormProps) {
   const [loading, setLoading] = useState(false)
+  const [showResultDetails, setShowResultDetails] = useState(false)
   const router = useRouter()
   const form = useForm<FinishGameFormValues>({
     resolver: zodResolver(gameFinishFormSchema),
     defaultValues: {
       ...initialData,
       winnerId: initialData.winnerId ? String(initialData.winnerId) : '',
+      round: 5,
+      winTime: '5:00',
+      winMethod: UfcWinMethods.DEC,
     },
   })
   const onSubmit = async (values: FinishGameFormValues) => {
-    try {
-      setLoading(true)
-      await finishGame({
-        game: initialData,
-        data: {
-          ...values,
-          winnerId: Number(values.winnerId) || null,
-        },
-      })
-      router.refresh()
-      toast.success('Game updated!')
-      onSuccess && onSuccess()
-    } catch (e: any) {
-      toast.error(getAxiosErrorMessage(e))
-    } finally {
-      setLoading(false)
+    const agree = confirm(
+      `Are you sure you want to finish this game? This action CANNOT be reverted!`
+    )
+    if (agree) {
+      try {
+        const { winnerId, round, winTime, winMethod } = values
+        setLoading(true)
+        let resultData = {
+          round,
+          winTime,
+          winMethod: winMethod as UfcWinMethods,
+        }
+
+        await finishUfcGame({
+          game: initialData,
+          winnerId: Number(winnerId) || null,
+          resultData,
+        })
+        router.refresh()
+        toast.success('Game updated!')
+        onSuccess && onSuccess()
+      } catch (e: any) {
+        toast.error(getAxiosErrorMessage(e))
+      } finally {
+        setLoading(false)
+      }
     }
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="winnerId"
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Winner (leave empty if draw)</FormLabel>
-              <div className='flex flex-row'>
+              <div className="flex flex-row">
                 <Combobox
                   title="Select a winner"
                   value={field.value}
                   data={competitors}
                   onSelect={(value) => {
                     form.setValue('winnerId', value)
+                    setShowResultDetails(true)
                   }}
                   searchText="Search competitor..."
                 />
@@ -91,6 +117,7 @@ export function FinishGameForm({
                   variant="outline"
                   onClick={() => {
                     form.setValue('winnerId', '')
+                    setShowResultDetails(false)
                   }}
                   className="rounded-l-none border-l-0 px-3"
                   type="button"
@@ -102,6 +129,82 @@ export function FinishGameForm({
             </FormItem>
           )}
         />
+        <Separator />
+        {showResultDetails && (
+          <>
+            <h5>Game result details:</h5>
+            <FormField
+              control={form.control}
+              name="winMethod"
+              render={({ field }) => (
+                <FormItem className="w-1/2">
+                  <FormLabel>Win method</FormLabel>
+                  <Select
+                    defaultValue={field.value}
+                    onValueChange={(value) => field.onChange(value)}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select win method" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.values(UfcWinMethods).map((method) => (
+                        <SelectItem key={method} value={method}>
+                          {method}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="round"
+              render={({ field }) => (
+                <FormItem className="w-1/2">
+                  <FormLabel>Round</FormLabel>
+                  <Select
+                    onValueChange={(value) => field.onChange(Number(value))}
+                    defaultValue={String(field.value)}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a verified email to display" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.values(UFC_ROUNDS).map((round) => (
+                        <SelectItem key={round} value={String(round)}>
+                          {round}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="winTime"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Win time of round</FormLabel>
+                  <FormControl>
+                    <Input placeholder="shadcn" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Format examples: 0:00, 1:25, 0:30, 2:32, 5:00
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </>
+        )}
         <Button variant="success" disabled={loading} type="submit">
           Save
         </Button>

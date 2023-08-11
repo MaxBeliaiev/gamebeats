@@ -14,16 +14,34 @@ export const getMatchColumns = (tournament: Tournament): ColumnDef<any>[] => [
     cell: ({ row }) => {
       const {
         id,
-        competitors: [cOneData, cTwoData],
+        competitors: [cOne, cTwoD],
       } = row.original
 
       return (
         <div className='flex flex-row gap-2 items-center'>
-          <Link className={'font-semibold hover:underline'} href={{ pathname: `/matches/${id}` }}>
-            <span className='font-semibold'>{cOneData.competitor.nickname}</span>
+          <Link className='font-semibold hover:underline' href={{ pathname: `/matches/${id}` }}>
+            <span>{cOne.competitor.nickname}</span>
             <span> vs. </span>
-            <span className='font-semibold'>{cTwoData.competitor.nickname}</span>
+            <span>{cTwoD.competitor.nickname}</span>
           </Link>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: 'score',
+    header: 'Score',
+    cell: ({ row }) => {
+      const {
+        id,
+        competitors: [cOne, cTwo],
+      } = row.original
+
+      return (
+        <div className='flex flex-row gap-2 items-center'>
+            <span>{cOne.score}</span>
+            <span> - </span>
+            <span>{cTwo.score}</span>
         </div>
       )
     },

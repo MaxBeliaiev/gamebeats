@@ -89,7 +89,7 @@ model Competitor {
   matches    MatchesOnCompetitors[]
   wonMatches Match[]                @relation("WinnerToMatch")
   games      Game[]                 @relation("WinnerToGame")
-  ufcStats   UfcStatistics[]        @relation("CompetitorToUfcStats")
+  ufcStats   UfcCompetitorStats[]   @relation("CompetitorToUfcStats")
 }
 
 enum Discipline {
@@ -170,8 +170,9 @@ model Game {
   startedAt      DateTime?
   endedAt        DateTime?
 
-  match  Match       @relation("MatchToGame", fields: [matchId], references: [id], onDelete: Cascade)
-  winner Competitor? @relation("WinnerToGame", fields: [winnerId], references: [id])
+  match            Match              @relation("MatchToGame", fields: [matchId], references: [id], onDelete: Cascade)
+  winner           Competitor?        @relation("WinnerToGame", fields: [winnerId], references: [id])
+  ufcResultDetails UfcResultDetails[] @relation("GameToUfcResultDetails")
 
   @@index([matchId])
   @@index([winnerId])
@@ -185,14 +186,18 @@ enum UfcWinMethods {
 
 model UfcResultDetails {
   id        Int           @id @default(autoincrement())
+  gameId    Int
   winMethod UfcWinMethods @default(DEC)
   round     Int
   winTime   String
+  game      Game?         @relation("GameToUfcResultDetails", fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@index([gameId])
 }
 
-model UfcStatistics {
+model UfcCompetitorStats {
   id           Int @id @default(autoincrement())
-  competitorId Int @default(0)
+  competitorId Int @unique
   games        Int @default(0)
   knockouts    Int @default(0)
   wins         Int @default(0)
@@ -201,7 +206,7 @@ model UfcStatistics {
   submissions  Int @default(0)
   draws        Int @default(0)
 
-  competitor Competitor? @relation("CompetitorToUfcStats", fields: [competitorId], references: [id])
+  competitor Competitor? @relation("CompetitorToUfcStats", fields: [competitorId], references: [id], onDelete: Cascade)
 
   @@index([competitorId])
 }

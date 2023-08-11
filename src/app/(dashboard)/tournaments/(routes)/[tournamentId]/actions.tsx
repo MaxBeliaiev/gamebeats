@@ -25,7 +25,7 @@ const MatchActions = ({ match, tournament }: MatchActionsProps) => {
     updateMatchModal.setMatch(match)
     updateMatchModal.open()
   }
-  const cannotEdit = match.status === MatchStatus.ONGOING
+  const cannotEdit = match.status !== MatchStatus.UPCOMING
 
   return (
     <div className="flex items-center justify-end gap-0.5">
