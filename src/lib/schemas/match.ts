@@ -28,6 +28,9 @@ const matchCommon = {
   competitorTwo: z.string({
     required_error: 'Competitor 2 is required',
   }),
+  streamChannel: z.string({
+    required_error: 'Stream channel is required'
+  }),
 }
 
 export const matchFormSchema = attachRefinements(

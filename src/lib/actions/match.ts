@@ -5,6 +5,7 @@ import { PrismaClientCommon } from '@/lib/types'
 
 export const finishMatch = async (
   match: Match,
+  winnerId: number | null,
   client: PrismaClientCommon = prisma
 ) => {
   try {
@@ -12,6 +13,7 @@ export const finishMatch = async (
       data: {
         status: MatchStatus.FINISHED,
         endedAt: new Date(),
+        winnerId,
       },
       where: {
         id: match.id,

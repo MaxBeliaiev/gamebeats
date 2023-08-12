@@ -33,7 +33,6 @@ export const getMatchColumns = (tournament: Tournament): ColumnDef<any>[] => [
     header: 'Score',
     cell: ({ row }) => {
       const {
-        id,
         competitors: [cOne, cTwo],
       } = row.original
 
@@ -42,6 +41,7 @@ export const getMatchColumns = (tournament: Tournament): ColumnDef<any>[] => [
             <span>{cOne.score}</span>
             <span> - </span>
             <span>{cTwo.score}</span>
+          <span>({row.original.format})</span>
         </div>
       )
     },
@@ -70,6 +70,10 @@ export const getMatchColumns = (tournament: Tournament): ColumnDef<any>[] => [
     cell: ({ row }) => {
       return <MatchBadge status={row.original.status} />
     },
+  },
+  {
+    accessorKey: 'streamChannel',
+    header: 'Stream',
   },
   {
     id: 'actions',

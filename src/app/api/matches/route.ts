@@ -8,7 +8,7 @@ export async function POST(req: Request) {
   try {
     const session = getAuthSession()
     const body = await req.json()
-    const { competitorOne, competitorTwo, tournamentId, startedAt } =
+    const { competitorOne, competitorTwo, tournamentId, startedAt, streamChannel } =
       matchCreateReqSchema.parse(body)
 
     if (!session) {
@@ -18,6 +18,7 @@ export async function POST(req: Request) {
     let data = {
       tournamentId,
       startedAt,
+      streamChannel,
       competitors: {
         create: [
           {

@@ -2,7 +2,7 @@ import { prisma } from '@/db'
 import TournamentPageClient from '@/app/(dashboard)/tournaments/(routes)/[tournamentId]/client'
 import { CreateMatchModalProvider } from '@/providers/create-match-modal-provider'
 import { UpdateMatchModalProvider } from '@/providers/update-match-modal-provider'
-import { CompetitorStatus } from '@prisma/client'
+import { CompetitorStatus, MatchStatus } from '@prisma/client'
 
 interface TournamentPageProps {
   params: {
@@ -21,15 +21,16 @@ const TournamentPage = async ({
       matches: {
         orderBy: [
           {
-            status: 'asc',
+            endedAt: 'asc'
           },
           {
-            startedAt: 'desc',
+            status: 'desc',
           },
           {
-            id: 'desc',
+            startedAt: 'asc',
           },
         ],
+        take: 20,
         include: {
           competitors: {
             orderBy: {
@@ -60,6 +61,21 @@ const TournamentPage = async ({
     },
   })
 
+  // @ts-ignore
+  // tournament.matches = tournament?.matches.sort((a, b) => {
+  //   if (a.status === MatchStatus.ONGOING && b.status !== MatchStatus.ONGOING) {
+  //     return -1
+  //   }
+  //
+  //   if (
+  //     a.status === MatchStatus.UPCOMING &&
+  //     b.status === MatchStatus.FINISHED
+  //   ) {
+  //     return -1
+  //   }
+  //
+  //   return 0
+  // })
   return (
     <>
       <CreateMatchModalProvider

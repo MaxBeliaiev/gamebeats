@@ -37,7 +37,7 @@ const TournamentStatusButtons = ({ tournament: { id, name, disciplineId, started
     }
   }
 
-  const hasUnfinishedMatches = matches.some(
+  const cannotFinish = !Boolean(matches.length) || matches.some(
     (match: Match) =>
       match.status !== MatchStatus.FINISHED || match.winnerId
   )
@@ -75,12 +75,12 @@ const TournamentStatusButtons = ({ tournament: { id, name, disciplineId, started
         )}
         {status !== 'FINISHED' && (
           <WithTooltip
-            text="Cannot finish tournament with unfinished matches in it"
-            hidden={!hasUnfinishedMatches}
+            text="Cannot finish tournament without matches/with unfinished matches in it"
+            hidden={!cannotFinish}
           >
             <Button
               variant="destructive"
-              disabled={hasUnfinishedMatches || loading}
+              disabled={cannotFinish || loading}
               onClick={() => handleUpdateTournament(MatchStatus.FINISHED)}
             >
               Finish

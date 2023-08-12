@@ -15,11 +15,20 @@ import {
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Match, MatchesOnCompetitors } from '@prisma/client'
+import { Match, MatchesOnCompetitors, UfcWinMethods } from '@prisma/client'
 import { matchFormSchema } from '@/lib/schemas/match'
 import Combobox from '@/components/ui/combobox'
 import { DateTimePicker } from '@/components/ui/date-time-picker'
 import { getAxiosErrorMessage } from '@/lib/utils'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import * as React from 'react'
+import { STREAM_CHANNELS } from '@/lib/constants/matches'
 
 interface MatchFormProps {
   initialData?: Match & {
@@ -52,7 +61,9 @@ export function MatchForm({
           competitorOne: String(initialData.competitors[0]?.competitorId),
           competitorTwo: String(initialData.competitors[1]?.competitorId),
         }
-      : {},
+      : {
+          streamChannel: '1',
+        },
   })
   const onSubmit = async (values: MatchFormValues) => {
     try {
@@ -124,6 +135,33 @@ export function MatchForm({
                   form.setValue('startedAt', date)
                 }}
               />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="streamChannel"
+          render={({ field }) => (
+            <FormItem className="w-1/2">
+              <FormLabel>Stream channel</FormLabel>
+              <Select
+                defaultValue={field.value}
+                onValueChange={(value) => field.onChange(value)}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select stream channel" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Object.values(STREAM_CHANNELS).map((stream) => (
+                    <SelectItem key={stream} value={stream}>
+                      {stream}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

@@ -20,7 +20,7 @@ export async function PUT(
     }
 
     const body = await req.json()
-    const { competitorOne, competitorTwo, startedAt } =
+    const { competitorOne, competitorTwo, startedAt, streamChannel } =
       matchUpdateReqSchema.parse(body)
 
     const match = await prisma.match.update({
@@ -29,6 +29,7 @@ export async function PUT(
       },
       data: {
         startedAt,
+        streamChannel,
         competitors: {
           deleteMany: {},
           create: [
@@ -77,32 +78,35 @@ export async function PATCH(
     const body = await req.json()
     const { status } = matchPatchReqSchema.parse(body)
 
-    const match = await prisma.match.update({
-      where: {
-        id: Number(params.matchId),
-      },
-      data: {
-        status: status as MatchStatus,
-      },
-      include: {
-        games: {
-          take: 1,
-          orderBy: {
-            id: 'asc',
-          },
-          select: {
-            id: true,
+    const currentTime = new Date()
+    return await prisma.$transaction(async (tx) => {
+      const match = await tx.match.update({
+        where: {
+          id: Number(params.matchId),
+        },
+        data: {
+          status: status as MatchStatus,
+        },
+        include: {
+          games: {
+            take: 1,
+            orderBy: {
+              id: 'asc',
+            },
+            select: {
+              id: true,
+            },
           },
         },
-      },
+      })
+
+      if (status === MatchStatus.ONGOING) {
+        const [game] = match.games
+        game && (await updateGameStatus(game.id, GameStatus.ONGOING, match.startedAt))
+      }
+
+      return NextResponse.json(match)
     })
-
-    if (status === MatchStatus.ONGOING) {
-      const [game] = match.games
-      game && (await updateGameStatus(game.id, GameStatus.ONGOING, match.startedAt))
-    }
-
-    return NextResponse.json(match)
   } catch (error) {
     console.log('[MATCH_PATCH]', error)
     return new NextResponse('Internal error', { status: 500 })

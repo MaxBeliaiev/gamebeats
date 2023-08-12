@@ -129,20 +129,18 @@ enum MatchFormat {
 }
 
 model Match {
-  id             Int                    @id @default(autoincrement())
-  status         MatchStatus            @default(UPCOMING)
-  tournamentId   Int
-  winnerId       Int?
-  competitors    MatchesOnCompetitors[]
-  format         MatchFormat            @default(BO1)
-  teamLeftScore  Int                    @default(0)
-  teamRightScore Int                    @default(0)
-  streamChannel  String                 @default("1")
-  startedAt      DateTime
-  endedAt        DateTime?
-  deletedAt      DateTime?
-  createdAt      DateTime               @default(now())
-  updatedAt      DateTime               @updatedAt @db.DateTime()
+  id            Int                    @id @default(autoincrement())
+  status        MatchStatus            @default(UPCOMING)
+  tournamentId  Int
+  winnerId      Int?
+  competitors   MatchesOnCompetitors[]
+  format        MatchFormat            @default(BO1)
+  streamChannel String                 @default("1")
+  startedAt     DateTime
+  endedAt       DateTime?
+  deletedAt     DateTime?
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt @db.DateTime()
 
   tournament Tournament  @relation("TournamentToMatch", fields: [tournamentId], references: [id], onDelete: Cascade)
   winner     Competitor? @relation("WinnerToMatch", fields: [winnerId], references: [id])
@@ -153,8 +151,8 @@ model Match {
 }
 
 enum GameStatus {
-  UPCOMING
   ONGOING
+  UPCOMING
   FINISHED
 }
 
@@ -178,6 +176,8 @@ model Game {
   @@index([winnerId])
 }
 
+// GameDetails?
+
 enum UfcWinMethods {
   KO
   SUB
@@ -190,21 +190,24 @@ model UfcResultDetails {
   winMethod UfcWinMethods @default(DEC)
   round     Int
   winTime   String
+  isDraw    Boolean       @default(false)
   game      Game?         @relation("GameToUfcResultDetails", fields: [gameId], references: [id], onDelete: Cascade)
+  createdAt DateTime      @default(now())
 
   @@index([gameId])
 }
 
 model UfcCompetitorStats {
-  id           Int @id @default(autoincrement())
-  competitorId Int @unique
-  games        Int @default(0)
-  knockouts    Int @default(0)
-  wins         Int @default(0)
-  losses       Int @default(0)
-  decisions    Int @default(0)
-  submissions  Int @default(0)
-  draws        Int @default(0)
+  id           Int       @id @default(autoincrement())
+  competitorId Int       @unique
+  games        Int       @default(0)
+  knockouts    Int       @default(0)
+  wins         Int       @default(0)
+  losses       Int       @default(0)
+  decisions    Int       @default(0)
+  submissions  Int       @default(0)
+  draws        Int       @default(0)
+  updatedAt    DateTime? @updatedAt @db.DateTime()
 
   competitor Competitor? @relation("CompetitorToUfcStats", fields: [competitorId], references: [id], onDelete: Cascade)
 
@@ -218,9 +221,18 @@ model MatchesOnCompetitors {
   competitorId Int
   score        Int        @default(0)
   order        Int        @default(1)
+  updatedAt    DateTime?  @updatedAt @db.DateTime()
 
   @@id([matchId, competitorId])
   @@index([competitorId])
   @@index([matchId])
   @@map("matches_competitors")
+}
+
+model Data {
+  id        Int      @id @default(autoincrement())
+  uniqueId  String
+  json      Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @db.DateTime()
 }

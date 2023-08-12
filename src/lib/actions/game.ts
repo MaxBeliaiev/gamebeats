@@ -10,7 +10,7 @@ import { prisma } from '@/db'
 import { needsToFinish } from '@/lib/helpers/match'
 import { finishMatch } from '@/lib/actions/match'
 import * as z from 'zod'
-import { ufcResultIncrementColumns } from '@/lib/constants/results'
+import { ufcResultsDbColumns } from '@/lib/constants/results'
 
 export const finishUfcGame = async (props: {
   game: Game
@@ -78,7 +78,7 @@ export const finishUfcGame = async (props: {
       competitors,
     } = match
 
-    needsToFinish(match) && (await finishMatch(match, tx))
+    needsToFinish(match) && (await finishMatch(match, winnerId, tx))
 
     const competitorIds = competitors.map((c) => c.competitor.id)
 
@@ -97,19 +97,19 @@ export const finishUfcGame = async (props: {
       })
     }
 
-    // Update stats
+    // Update competitors' stats
     if (disciplineId === Discipline.UFC) {
       if (winnerId) {
         // Update winner stats
-        const incrementStat =
-          ufcResultIncrementColumns[resultData.winMethod as UfcWinMethods]
+        const incrementWinStat =
+          ufcResultsDbColumns[resultData.winMethod as UfcWinMethods]
         const loserId = competitorIds.filter((id) => id !== winnerId)[0]
-        await prisma.ufcStatistics.upsert({
+        await prisma.ufcCompetitorStats.upsert({
           where: {
             competitorId: winnerId,
           },
           update: {
-            [incrementStat]: {
+            [incrementWinStat]: {
               increment: 1,
             },
             wins: {
@@ -123,12 +123,12 @@ export const finishUfcGame = async (props: {
             competitorId: winnerId,
             wins: 1,
             games: 1,
-            [incrementStat]: 1,
+            [incrementWinStat]: 1,
           },
         })
 
         // Update loser stats
-        await prisma.ufcStatistics.upsert({
+        await prisma.ufcCompetitorStats.upsert({
           where: {
             competitorId: loserId,
           },
@@ -148,7 +148,7 @@ export const finishUfcGame = async (props: {
         })
       } else {
         // Add draw to both players
-        await prisma.ufcStatistics.upsert({
+        await prisma.ufcCompetitorStats.upsert({
           where: {
             competitorId: competitorIds[0],
           },
@@ -167,7 +167,7 @@ export const finishUfcGame = async (props: {
           },
         })
 
-        await prisma.ufcStatistics.upsert({
+        await prisma.ufcCompetitorStats.upsert({
           where: {
             competitorId: competitorIds[1],
           },
@@ -193,10 +193,11 @@ export const finishUfcGame = async (props: {
 export const updateGameStatus = async (
   gameId: number,
   status: MatchStatus,
-  startedAt: Date | null = null
+  startedAt: Date | null = null,
+  client = prisma,
 ) => {
   try {
-    await prisma.game.update({
+    await client.game.update({
       where: {
         id: gameId,
       },
