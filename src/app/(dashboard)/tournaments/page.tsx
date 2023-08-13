@@ -14,6 +14,7 @@ const Dashboard = async () => {
         startedAt: 'asc',
       },
     ],
+    take: 10,
     include: {
       matches: true,
     },
