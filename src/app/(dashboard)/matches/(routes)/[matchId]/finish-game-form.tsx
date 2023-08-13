@@ -59,7 +59,7 @@ export function FinishGameForm({
       ...initialData,
       winnerId: initialData.winnerId ? String(initialData.winnerId) : '',
       round: 3,
-      endTime: '3:00',
+      endTime: '5:00',
       endMethod: UfcEndMethods.DEC,
     },
   })
@@ -85,7 +85,7 @@ export function FinishGameForm({
             : {
                 round: 3,
                 endMethod: UfcEndMethods.DEC,
-                endTime: '3:00',
+                endTime: '5:00',
               },
         })
         router.refresh()
@@ -203,7 +203,7 @@ export function FinishGameForm({
                     <Input placeholder="End time" {...field} />
                   </FormControl>
                   <FormDescription>
-                    Format examples: 0:00, 1:25, 0:30, 2:32, 3:00
+                    Format examples: 0:00, 1:25, 0:30, 2:32, 5:00
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
