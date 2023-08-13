@@ -16,7 +16,7 @@ import {
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Game, UfcWinMethods } from '@prisma/client'
+import { Game, UfcEndMethods } from '@prisma/client'
 import Combobox from '@/components/ui/combobox'
 import { getAxiosErrorMessage } from '@/lib/utils'
 import { gameFinishFormSchema } from '@/lib/schemas/game'
@@ -58,9 +58,9 @@ export function FinishGameForm({
     defaultValues: {
       ...initialData,
       winnerId: initialData.winnerId ? String(initialData.winnerId) : '',
-      round: 5,
-      winTime: '5:00',
-      winMethod: UfcWinMethods.DEC,
+      round: 3,
+      endTime: '5:00',
+      endMethod: UfcEndMethods.DEC,
     },
   })
   const onSubmit = async (values: FinishGameFormValues) => {
@@ -69,18 +69,24 @@ export function FinishGameForm({
     )
     if (agree) {
       try {
-        const { winnerId, round, winTime, winMethod } = values
+        const { winnerId, round, endTime, endMethod } = values
         setLoading(true)
         let resultData = {
           round,
-          winTime,
-          winMethod: winMethod as UfcWinMethods,
+          endTime,
+          endMethod: endMethod as UfcEndMethods,
         }
 
         await finishUfcGame({
           game: initialData,
           winnerId: Number(winnerId) || null,
-          resultData,
+          resultData: winnerId
+            ? resultData
+            : {
+                round: 3,
+                endMethod: UfcEndMethods.DEC,
+                endTime: '3:00',
+              },
         })
         router.refresh()
         toast.success('Game updated!')
@@ -135,10 +141,10 @@ export function FinishGameForm({
             <h5>Game result details:</h5>
             <FormField
               control={form.control}
-              name="winMethod"
+              name="endMethod"
               render={({ field }) => (
                 <FormItem className="w-1/2">
-                  <FormLabel>Win method</FormLabel>
+                  <FormLabel>End method</FormLabel>
                   <Select
                     defaultValue={field.value}
                     onValueChange={(value) => field.onChange(value)}
@@ -149,7 +155,7 @@ export function FinishGameForm({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {Object.values(UfcWinMethods).map((method) => (
+                      {Object.values(UfcEndMethods).map((method) => (
                         <SelectItem key={method} value={method}>
                           {method}
                         </SelectItem>
@@ -189,15 +195,15 @@ export function FinishGameForm({
             />
             <FormField
               control={form.control}
-              name="winTime"
+              name="endTime"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Win time of round</FormLabel>
+                  <FormLabel>End time of round</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input placeholder="End time" {...field} />
                   </FormControl>
                   <FormDescription>
-                    Format examples: 0:00, 1:25, 0:30, 2:32, 5:00
+                    Format examples: 0:00, 1:25, 0:30, 2:32, 3:00
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

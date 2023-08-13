@@ -15,7 +15,7 @@ import {
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Match, MatchesOnCompetitors, UfcWinMethods } from '@prisma/client'
+import { Match, MatchesOnCompetitors, UfcEndMethods } from '@prisma/client'
 import { matchFormSchema } from '@/lib/schemas/match'
 import Combobox from '@/components/ui/combobox'
 import { DateTimePicker } from '@/components/ui/date-time-picker'

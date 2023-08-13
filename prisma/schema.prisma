@@ -14,7 +14,7 @@ datasource db {
 
 model Account {
   id                String  @id @default(cuid())
-  userId            String
+  userId            Int
   type              String
   provider          String
   providerAccountId String
@@ -35,7 +35,7 @@ model Account {
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
-  userId       String
+  userId       Int
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -48,7 +48,7 @@ enum UserRole {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            Int    @id @default(autoincrement())
   name          String?
   surname       String?
   password      String
@@ -178,7 +178,7 @@ model Game {
 
 // GameDetails?
 
-enum UfcWinMethods {
+enum UfcEndMethods {
   KO
   SUB
   DEC
@@ -187,9 +187,9 @@ enum UfcWinMethods {
 model UfcResultDetails {
   id        Int           @id @default(autoincrement())
   gameId    Int
-  winMethod UfcWinMethods @default(DEC)
+  endMethod UfcEndMethods @default(DEC)
   round     Int
-  winTime   String
+  endTime   String
   isDraw    Boolean       @default(false)
   game      Game?         @relation("GameToUfcResultDetails", fields: [gameId], references: [id], onDelete: Cascade)
   createdAt DateTime      @default(now())

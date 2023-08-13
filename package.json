@@ -62,13 +62,18 @@
     "@types/bcrypt": "^5.0.0",
     "@types/luxon": "^3.3.0",
     "eslint-config-prettier": "^8.8.0",
+    "nodemon": "^3.0.1",
     "prettier": "3.0.0",
-    "prisma": "^5.0.0"
+    "prisma": "^5.0.0",
+    "ts-node": "^10.9.1"
   },
   "browser": {
     "fs": false,
     "os": false,
     "path": false,
     "child_process": false
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   }
 }

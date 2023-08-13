@@ -61,21 +61,6 @@ const TournamentPage = async ({
     },
   })
 
-  // @ts-ignore
-  // tournament.matches = tournament?.matches.sort((a, b) => {
-  //   if (a.status === MatchStatus.ONGOING && b.status !== MatchStatus.ONGOING) {
-  //     return -1
-  //   }
-  //
-  //   if (
-  //     a.status === MatchStatus.UPCOMING &&
-  //     b.status === MatchStatus.FINISHED
-  //   ) {
-  //     return -1
-  //   }
-  //
-  //   return 0
-  // })
   return (
     <>
       <CreateMatchModalProvider

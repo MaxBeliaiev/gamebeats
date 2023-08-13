@@ -5,10 +5,10 @@ export const gameFinishFormSchema = z.object({
   round: z.number({
     required_error: 'Round is required'
   }),
-  winTime: z.string({
+  endTime: z.string({
     required_error: 'Win time is required in format 0:00'
   }).length(4, { message: "Wrong format" }),
-  winMethod: z.string({
+  endMethod: z.string({
     required_error: 'Win method is required',
   })
 })

@@ -1,9 +1,9 @@
-import { UfcWinMethods } from '@prisma/client'
+import { UfcEndMethods } from '@prisma/client'
 
 export const UFC_ROUNDS = [1, 2, 3]
 
 export const ufcResultsDbColumns = {
-  [UfcWinMethods.DEC]: 'decisions',
-  [UfcWinMethods.KO]: 'knockouts',
-  [UfcWinMethods.SUB]: 'submissions',
+  [UfcEndMethods.DEC]: 'decisions',
+  [UfcEndMethods.KO]: 'knockouts',
+  [UfcEndMethods.SUB]: 'submissions',
 }

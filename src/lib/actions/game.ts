@@ -4,7 +4,7 @@ import {
   Game,
   GameStatus,
   MatchStatus,
-  UfcWinMethods,
+  UfcEndMethods,
 } from '@prisma/client'
 import { prisma } from '@/db'
 import { needsToFinish } from '@/lib/helpers/match'
@@ -17,8 +17,8 @@ export const finishUfcGame = async (props: {
   winnerId: number | null
   resultData: {
     round: number
-    winTime: string
-    winMethod: UfcWinMethods
+    endTime: string
+    endMethod: UfcEndMethods
   }
 }) => {
   const { game, winnerId, resultData } = z
@@ -42,11 +42,9 @@ export const finishUfcGame = async (props: {
         winnerId,
         status: GameStatus.FINISHED,
         endedAt: new Date(),
-        ...(winnerId && {
-          ufcResultDetails: {
-            create: resultData,
-          },
-        }),
+        ufcResultDetails: {
+          create: resultData,
+        },
       },
       include: {
         match: {
@@ -102,7 +100,7 @@ export const finishUfcGame = async (props: {
       if (winnerId) {
         // Update winner stats
         const incrementWinStat =
-          ufcResultsDbColumns[resultData.winMethod as UfcWinMethods]
+          ufcResultsDbColumns[resultData.endMethod as UfcEndMethods]
         const loserId = competitorIds.filter((id) => id !== winnerId)[0]
         await prisma.ufcCompetitorStats.upsert({
           where: {
@@ -194,7 +192,7 @@ export const updateGameStatus = async (
   gameId: number,
   status: MatchStatus,
   startedAt: Date | null = null,
-  client = prisma,
+  client = prisma
 ) => {
   try {
     await client.game.update({
