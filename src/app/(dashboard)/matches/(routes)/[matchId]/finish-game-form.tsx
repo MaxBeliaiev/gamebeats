@@ -59,7 +59,7 @@ export function FinishGameForm({
       ...initialData,
       winnerId: initialData.winnerId ? String(initialData.winnerId) : '',
       round: 3,
-      endTime: '5:00',
+      endTime: '3:00',
       endMethod: UfcEndMethods.DEC,
     },
   })

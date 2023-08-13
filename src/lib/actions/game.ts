@@ -43,7 +43,12 @@ export const finishUfcGame = async (props: {
         status: GameStatus.FINISHED,
         endedAt: new Date(),
         ufcResultDetails: {
-          create: resultData,
+          create: winnerId ? resultData : {
+            round: 3,
+            isDraw: true,
+            endMethod: UfcEndMethods.DEC,
+            endTime: '3:00',
+          },
         },
       },
       include: {
