@@ -30,7 +30,6 @@ const TournamentPage = async ({
             startedAt: 'asc',
           },
         ],
-        take: 20,
         include: {
           competitors: {
             orderBy: {
