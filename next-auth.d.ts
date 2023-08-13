@@ -13,7 +13,7 @@ declare module 'next-auth' {
   import { User } from 'next-auth'
 
   export type SessionUser =  User & {
-    id: string
+    id: number
     token: string
     role: UserRole
     surname: string
