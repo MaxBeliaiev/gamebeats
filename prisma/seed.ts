@@ -1,9 +1,9 @@
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 async function main() {
-  // const users = await prisma.userNew.findMany()
-
-  // await prisma.user.createMany({
+  // const users = await prisma.user.findMany()
+  //
+  // await prisma.userNew.createMany({
   //   data: users.map(user => ({
   //     name: user.name,
   //     surname: user.surname,
