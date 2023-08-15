@@ -6,6 +6,7 @@ import MatchBadge from '@/app/(dashboard)/tournaments/components/match-badge'
 import ActionsHeader from '@/app/(dashboard)/tournaments/(routes)/[tournamentId]/actions-header'
 import MatchActions from '@/app/(dashboard)/tournaments/(routes)/[tournamentId]/actions'
 import { Tournament } from '@prisma/client'
+import { streamLinks } from '@/lib/constants/matches'
 
 export const getMatchColumns = (tournament: Tournament): ColumnDef<any>[] => [
   {
@@ -18,8 +19,11 @@ export const getMatchColumns = (tournament: Tournament): ColumnDef<any>[] => [
       } = row.original
 
       return (
-        <div className='flex flex-row gap-2 items-center'>
-          <Link className='font-semibold hover:underline' href={{ pathname: `/matches/${id}` }}>
+        <div className="flex flex-row gap-2 items-center">
+          <Link
+            className="font-semibold hover:underline"
+            href={{ pathname: `/matches/${id}` }}
+          >
             <span>{cOne.competitor.nickname}</span>
             <span> vs. </span>
             <span>{cTwoD.competitor.nickname}</span>
@@ -37,10 +41,10 @@ export const getMatchColumns = (tournament: Tournament): ColumnDef<any>[] => [
       } = row.original
 
       return (
-        <div className='flex flex-row gap-2 items-center'>
-            <span>{cOne.score}</span>
-            <span> - </span>
-            <span>{cTwo.score}</span>
+        <div className="flex flex-row gap-2 items-center">
+          <span>{cOne.score}</span>
+          <span> - </span>
+          <span>{cTwo.score}</span>
           <span>({row.original.format})</span>
         </div>
       )
@@ -50,19 +54,19 @@ export const getMatchColumns = (tournament: Tournament): ColumnDef<any>[] => [
     accessorKey: 'startedAt',
     header: 'Start',
     cell: ({
-             row: {
-               original: { startedAt },
-             },
-           }) => startedAt && formatDateTime(startedAt),
+      row: {
+        original: { startedAt },
+      },
+    }) => startedAt && formatDateTime(startedAt),
   },
   {
     accessorKey: 'endedAt',
     header: 'End',
     cell: ({
-             row: {
-               original: { endedAt },
-             },
-           }) => endedAt && formatDateTime(endedAt),
+      row: {
+        original: { endedAt },
+      },
+    }) => endedAt && formatDateTime(endedAt),
   },
   {
     accessorKey: 'status',
@@ -74,6 +78,20 @@ export const getMatchColumns = (tournament: Tournament): ColumnDef<any>[] => [
   {
     accessorKey: 'streamChannel',
     header: 'Stream',
+    cell: ({ row }) => {
+      const {
+        original: { streamChannel },
+      } = row
+      return (
+        <Link
+          className="hover:underline"
+          target="_blank"
+          href={{ pathname: streamLinks[streamChannel] }}
+        >
+          {streamChannel}
+        </Link>
+      )
+    },
   },
   {
     id: 'actions',
