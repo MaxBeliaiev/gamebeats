@@ -21,7 +21,7 @@ const TournamentsClient = ({ data }: TournamentsClientProps) => {
 
   return (
     <PageLayout>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center" suppressHydrationWarning={true}>
         <Heading text="Tournaments" />
         <Button onClick={() => router.push('/tournaments/new')}>
           <Plus className="mr-1" size={20} />
