@@ -91,18 +91,6 @@ const MatchStatusButton = ({
     )
   }
 
-  // if (status === MatchStatus.ONGOING) {
-  //   return (
-  //     <Button
-  //       variant="ghost"
-  //       onClick={() => handleUpdateMatchStatus(MatchStatus.FINISHED)}
-  //       disabled={cannotStart}
-  //     >
-  //       <CheckSquare color="red" />
-  //     </Button>
-  //   )
-  // }
-
   return null
 }
 

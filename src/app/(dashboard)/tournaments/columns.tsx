@@ -1,7 +1,7 @@
 'use client'
 import { Pencil } from 'lucide-react'
 import { ColumnDef } from '@tanstack/react-table'
-import { Tournament } from '@prisma/client'
+import { Tournament, TournamentStatus } from '@prisma/client'
 import Link from 'next/link'
 import { formatDateTime } from '@/lib/date-utils'
 import TournamentBadge from '@/app/(dashboard)/tournaments/components/tournament-badge'
@@ -14,7 +14,12 @@ export const columns: ColumnDef<Tournament>[] = [
     cell: ({ row }) => {
       const { id, name } = row.original
       return (
-        <Link className='font-semibold hover:underline' href={{ pathname: `/tournaments/${id}` }}>{name}</Link>
+        <Link
+          className="font-semibold hover:underline"
+          href={{ pathname: `/tournaments/${id}` }}
+        >
+          {name}
+        </Link>
       )
     },
   },
@@ -50,13 +55,15 @@ export const columns: ColumnDef<Tournament>[] = [
 
       return (
         <div className="flex items-center justify-end gap-1.5">
-          <Link
-            href={{
-              pathname: `/tournaments/update/${tournament.id}`,
-            }}
-          >
-            <Pencil color="blue" />
-          </Link>
+          {tournament.status !== TournamentStatus.FINISHED && (
+            <Link
+              href={{
+                pathname: `/tournaments/update/${tournament.id}`,
+              }}
+            >
+              <Pencil color="blue" />
+            </Link>
+          )}
           <TournamentDeleteButton tournament={tournament} />
         </div>
       )
