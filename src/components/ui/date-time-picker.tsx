@@ -64,6 +64,8 @@ export function DateTimePicker({
       <Label>Time:</Label>
       <Input
         type="time"
+        pattern="[0-9]{2}:[0-9]{2}"
+        maxLength={5}
         onChange={handleTimeChange}
         value={selectedDateTime ? selectedDateTime.toFormat('HH:mm') : ''}
       />
