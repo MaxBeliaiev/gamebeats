@@ -45,10 +45,10 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="rounded-md border">
-        <Table>
-          <TableHeader>
+        <Table suppressHydrationWarning={true}>
+          <TableHeader suppressHydrationWarning={true}>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} suppressHydrationWarning={true}>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
@@ -64,7 +64,7 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody suppressHydrationWarning={true}>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
@@ -72,9 +72,10 @@ export function DataTable<TData, TValue>({
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
                   onClick={() => onRowClick && onRowClick(row)}
+                  suppressHydrationWarning={true}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} suppressHydrationWarning={true}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -84,10 +85,11 @@ export function DataTable<TData, TValue>({
                 </TableRow>
               ))
             ) : (
-              <TableRow>
+              <TableRow suppressHydrationWarning={true}>
                 <TableCell
                   colSpan={columns.length}
                   className="h-24 text-center"
+                  suppressHydrationWarning={true}
                 >
                   No results.
                 </TableCell>
