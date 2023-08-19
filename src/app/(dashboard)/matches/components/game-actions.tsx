@@ -1,4 +1,4 @@
-import { CheckSquare, Play, Plus, StopCircle } from 'lucide-react'
+import {CheckSquare, FileBarChart, Play, Plus, StopCircle, Tv} from 'lucide-react'
 import { Game, GameStatus, Match, MatchStatus } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
@@ -14,8 +14,21 @@ interface MatchActionsProps {
 }
 
 const GameActions = ({ match, game }: MatchActionsProps) => {
+  const handleUpdateLiveResult = () => {
+    console.log('updating LR')
+  }
   return (
     <div className="flex items-center justify-end gap-0.5">
+      {
+        game.status === GameStatus.ONGOING && (
+              <Button
+                  variant="ghost"
+                  onClick={handleUpdateLiveResult}
+              >
+                <FileBarChart color="green" />
+              </Button>
+          )
+      }
       <GameStatusButton match={match} game={game} />
     </div>
   )
