@@ -18,6 +18,9 @@ const MatchPage = async ({ params: { matchId } }: MatchPageProps) => {
     },
     include: {
       competitors: {
+        orderBy: {
+          order: 'asc',
+        },
         include: {
           competitor: {
             select: {

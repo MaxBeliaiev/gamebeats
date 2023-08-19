@@ -2,7 +2,7 @@ import { prisma } from '@/db'
 import TournamentPageClient from '@/app/(dashboard)/tournaments/(routes)/[tournamentId]/client'
 import { CreateMatchModalProvider } from '@/providers/create-match-modal-provider'
 import { UpdateMatchModalProvider } from '@/providers/update-match-modal-provider'
-import { CompetitorStatus, MatchStatus } from '@prisma/client'
+import { CompetitorStatus } from '@prisma/client'
 
 interface TournamentPageProps {
   params: {
@@ -21,14 +21,14 @@ const TournamentPage = async ({
       matches: {
         orderBy: [
           {
-            endedAt: 'asc'
-          },
-          {
             status: 'desc',
           },
           {
             startedAt: 'asc',
           },
+          {
+            streamChannel: 'asc',
+          }
         ],
         include: {
           competitors: {

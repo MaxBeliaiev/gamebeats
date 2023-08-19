@@ -5,7 +5,7 @@ const Dashboard = async () => {
   const tournaments = await prisma.tournament.findMany({
     orderBy: [
       {
-        endedAt: 'asc'
+        id: 'desc'
       },
       {
         status: 'desc',
