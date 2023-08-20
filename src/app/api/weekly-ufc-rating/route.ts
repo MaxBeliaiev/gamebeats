@@ -9,18 +9,18 @@ export async function GET() {
       updatedAt: new Date()
     })
 
-    await prisma.data.upsert({
-      where: {
-        uniqueId: 'ufc_weekly_rating'
-      },
-      update: {
-        json: rating,
-      },
-      create: {
-        uniqueId: 'ufc_weekly_rating',
-        json: rating,
-      },
-    },)
+    // await prisma.data.upsert({
+    //   where: {
+    //     uniqueId: 'ufc_weekly_rating'
+    //   },
+    //   update: {
+    //     json: rating,
+    //   },
+    //   create: {
+    //     uniqueId: 'ufc_weekly_rating',
+    //     json: rating,
+    //   },
+    // },)
 
     return NextResponse.json(rating)
   } catch (error) {
