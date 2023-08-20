@@ -1,10 +1,5 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/db'
-import { getAuthSession } from '@/lib/auth'
-import { Prisma } from '.prisma/client'
-import PrismaClientKnownRequestError = Prisma.PrismaClientKnownRequestError
-import { tournamentCreateReqSchema } from '@/lib/schemas/tournament'
-import { Discipline } from '@prisma/client'
 
 export async function GET() {
 
