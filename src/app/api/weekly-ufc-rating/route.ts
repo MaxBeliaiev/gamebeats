@@ -4,10 +4,10 @@ import { prisma } from '@/db'
 export async function GET() {
 
   try {
-    const rating = {
+    const rating = JSON.stringify({
       data: 'some UFC rating',
       updatedAt: new Date()
-    }
+    })
 
     await prisma.data.upsert({
       where: {
