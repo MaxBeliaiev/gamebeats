@@ -1,0 +1,6 @@
+{
+  "crons": [{
+    "path": "/api/weekly-ufc-rating",
+    "schedule": "*/15 * * * *"
+  }]
+}
