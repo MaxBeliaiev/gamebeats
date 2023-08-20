@@ -15,6 +15,7 @@ const Dashboard = async () => {
     },
   })
 
+  console.log('test')
   const sortedTournaments = tournaments.sort((a: Tournament, b: Tournament) => {
     if (a.status === TournamentStatus.ONGOING) {
       return -1
