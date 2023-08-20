@@ -2,12 +2,11 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/db'
 
 export async function GET() {
-
   try {
-    const rating = JSON.stringify({
+    const rating = {
       data: 'some UFC rating',
       updatedAt: new Date()
-    })
+    }
 
     // await prisma.data.upsert({
     //   where: {
@@ -22,7 +21,7 @@ export async function GET() {
     //   },
     // },)
 
-    return NextResponse.json(rating)
+    return NextResponse.json({ resp: rating })
   } catch (error) {
     console.log('[UFC_WEEKLY_RATING_ERROR]', error)
     return new NextResponse('Internal error', { status: 500 })
