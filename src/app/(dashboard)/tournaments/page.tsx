@@ -6,6 +6,12 @@ const Dashboard = async () => {
   const tournaments = await prisma.tournament.findMany({
     orderBy: [
       {
+        status: 'asc',
+      },
+      {
+        endedAt: 'desc'
+      },
+      {
         startedAt: 'asc',
       },
     ],
@@ -15,23 +21,19 @@ const Dashboard = async () => {
     },
   })
 
-  const sortedTournaments = tournaments.sort((a: Tournament, b: Tournament) => {
-    if (a.status === TournamentStatus.ONGOING) {
+  const { ONGOING, FINISHED } = TournamentStatus
+
+  tournaments.sort((a: Tournament, b: Tournament) => {
+    if (a.status === ONGOING || (b.status === FINISHED && a.status !== FINISHED)) {
       return -1
     }
-    if (b.status === TournamentStatus.ONGOING) {
+    if (b.status === ONGOING || (a.status === FINISHED &&  b.status !== FINISHED)) {
       return 1
-    }
-    if (a.status === TournamentStatus.FINISHED) {
-      return b.status !== TournamentStatus.FINISHED ? 1 : b.id - a.id
-    }
-    if (b.status === TournamentStatus.FINISHED) {
-      return -1
     }
 
     return 0
   })
 
-  return <TournamentsClient data={sortedTournaments} />
+  return <TournamentsClient data={tournaments} />
 }
 export default Dashboard
