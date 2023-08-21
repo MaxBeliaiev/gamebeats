@@ -21,7 +21,14 @@ export async function GET() {
       },
     },)
 
-    return NextResponse.json({ resp: updatedRating })
+    return new Response(JSON.stringify(updatedRating), {
+      status: 200,
+      headers: {
+        'Cache-Control': 'no-cache',
+      },
+    });
+
+    // return NextResponse.json({ resp: updatedRating })
   } catch (error) {
     console.log('[UFC_WEEKLY_RATING_ERROR]', error)
     return new NextResponse('Internal error', { status: 500 })
