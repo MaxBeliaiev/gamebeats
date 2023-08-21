@@ -87,7 +87,7 @@ export const finishUfcGame = async (props: {
 
     // Update score
     if (winnerId) {
-      await prisma.matchesOnCompetitors.updateMany({
+      await tx.matchesOnCompetitors.updateMany({
         where: {
           competitorId: winnerId,
           matchId,
@@ -107,90 +107,106 @@ export const finishUfcGame = async (props: {
         const incrementWinStat =
           ufcResultsDbColumns[resultData.endMethod as UfcEndMethods]
         const loserId = competitorIds.filter((id) => id !== winnerId)[0]
-        await prisma.ufcCompetitorStats.upsert({
+        const winnerStats = await tx.ufcCompetitorStats.findFirst({
           where: {
-            competitorId: winnerId,
-          },
-          update: {
-            [incrementWinStat]: {
-              increment: 1,
-            },
-            wins: {
-              increment: 1,
-            },
-            games: {
-              increment: 1,
-            },
-          },
-          create: {
-            competitorId: winnerId,
-            wins: 1,
-            games: 1,
-            [incrementWinStat]: 1,
-          },
+            competitorId: winnerId
+          }
         })
+
+        if (winnerStats) {
+          await tx.ufcCompetitorStats.update({
+            where: {
+              id: winnerStats.id
+            },
+            data: {
+              [incrementWinStat]: {
+                increment: 1,
+              },
+              wins: {
+                increment: 1,
+              },
+              games: {
+                increment: 1,
+              },
+            }
+          })
+        } else {
+          await tx.ufcCompetitorStats.create({
+            data: {
+              competitorId: winnerId,
+              wins: 1,
+              games: 1,
+              [incrementWinStat]: 1,
+            }
+          })
+        }
 
         // Update loser stats
-        await prisma.ufcCompetitorStats.upsert({
+        const loserStats = await tx.ufcCompetitorStats.findFirst({
           where: {
-            competitorId: loserId,
-          },
-          update: {
-            losses: {
-              increment: 1,
-            },
-            games: {
-              increment: 1,
-            },
-          },
-          create: {
-            competitorId: loserId,
-            losses: 1,
-            games: 1,
-          },
-        })
-      } else {
-        // Add draw to both players
-        await prisma.ufcCompetitorStats.upsert({
-          where: {
-            competitorId: competitorIds[0],
-          },
-          update: {
-            draws: {
-              increment: 1,
-            },
-            games: {
-              increment: 1,
-            },
-          },
-          create: {
-            competitorId: competitorIds[0],
-            draws: 1,
-            games: 1,
-          },
+            competitorId: loserId
+          }
         })
 
-        await prisma.ufcCompetitorStats.upsert({
-          where: {
-            competitorId: competitorIds[1],
-          },
-          update: {
-            draws: {
-              increment: 1,
+        if (loserStats) {
+          await tx.ufcCompetitorStats.update({
+            where: {
+              id: loserStats.id
             },
-            games: {
-              increment: 1,
-            },
-          },
-          create: {
-            competitorId: competitorIds[1],
-            draws: 1,
-            games: 1,
-          },
-        })
+            data: {
+              losses: {
+                increment: 1,
+              },
+              games: {
+                increment: 1,
+              },
+            }
+          })
+        } else {
+          await tx.ufcCompetitorStats.create({
+            data: {
+              competitorId: loserId,
+              losses: 1,
+              games: 1,
+            }
+          })
+        }
+      } else {
+        // Add draw to both players
+        for (const id of competitorIds) {
+          const stats = await tx.ufcCompetitorStats.findFirst({
+            where: {
+              competitorId: id
+            }
+          })
+
+          if (stats) {
+            await tx.ufcCompetitorStats.update({
+              where: {
+                id: stats.id,
+              },
+              data: {
+                draws: {
+                  increment: 1,
+                },
+                games: {
+                  increment: 1,
+                },
+              }
+            })
+          } else {
+            await tx.ufcCompetitorStats.create({
+              data: {
+                competitorId: competitorIds[0],
+                draws: 1,
+                games: 1,
+              }
+            })
+          }
+        }
       }
     }
-  })
+  }, { timeout: 20000 })
 }
 
 export const updateGameStatus = async (
