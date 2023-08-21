@@ -207,10 +207,10 @@ model UfcCompetitorStats {
   decisions    Int       @default(0)
   submissions  Int       @default(0)
   draws        Int       @default(0)
-  periodStartedAt DateTime @default(now())
+  // periodStartedAt DateTime @default(now())
   updatedAt    DateTime? @updatedAt @db.DateTime()
 
-  @@unique([competitorId, periodStartedAt], name: "competitorId_periodStartedAt")
+  // @@unique([competitorId, periodStartedAt], name: "competitorId_periodStartedAt")
 
   competitor Competitor? @relation("CompetitorToUfcStats", fields: [competitorId], references: [id], onDelete: Cascade)
 

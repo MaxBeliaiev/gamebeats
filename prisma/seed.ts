@@ -3,11 +3,11 @@ import {getUtcStartOfMonth} from "@/lib/helpers/date";
 import moment from "moment";
 const prisma = new PrismaClient()
 async function main() {
-  await prisma.ufcCompetitorStats.updateMany({
-    data: {
-      periodStartedAt: moment().utc().startOf('month').toDate(),
-    },
-  })
+  // await prisma.ufcCompetitorStats.updateMany({
+  //   data: {
+  //     periodStartedAt: moment().utc().startOf('month').toDate(),
+  //   },
+  // })
 }
 main()
   .then(async () => {
