@@ -34,3 +34,7 @@ export async function GET() {
     return new NextResponse('Internal error', { status: 500 })
   }
 }
+
+export const fetchCache = 'force-no-store';
+// OR
+export const revalidate = 0;
