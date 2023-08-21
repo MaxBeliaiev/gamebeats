@@ -197,7 +197,7 @@ export const finishUfcGame = async (props: {
           } else {
             await tx.ufcCompetitorStats.create({
               data: {
-                competitorId: competitorIds[0],
+                competitorId: id,
                 draws: 1,
                 games: 1,
               }
