@@ -1,17 +1,13 @@
 import { PrismaClient } from '@prisma/client'
+import {getUtcStartOfMonth} from "@/lib/helpers/date";
+import moment from "moment";
 const prisma = new PrismaClient()
 async function main() {
-  // const users = await prisma.user.findMany()
-  //
-  // await prisma.userNew.createMany({
-  //   data: users.map(user => ({
-  //     name: user.name,
-  //     surname: user.surname,
-  //     email: user.email,
-  //     password: user.password,
-  //     role: user.role
-  //   }))
-  // })
+  await prisma.ufcCompetitorStats.updateMany({
+    data: {
+      periodStartedAt: moment().utc().startOf('month').toDate(),
+    },
+  })
 }
 main()
   .then(async () => {
