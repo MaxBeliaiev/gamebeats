@@ -11,6 +11,8 @@ import { needsToFinish } from '@/lib/helpers/match'
 import { finishMatch } from '@/lib/actions/match'
 import * as z from 'zod'
 import { ufcResultsDbColumns } from '@/lib/constants/results'
+import moment from "moment/moment";
+import {getUtcStartOfMonth} from "@/lib/helpers/date";
 
 export const finishUfcGame = async (props: {
   game: Game
@@ -87,7 +89,7 @@ export const finishUfcGame = async (props: {
 
     // Update score
     if (winnerId) {
-      await prisma.matchesOnCompetitors.updateMany({
+      await tx.matchesOnCompetitors.updateMany({
         where: {
           competitorId: winnerId,
           matchId,
@@ -100,6 +102,7 @@ export const finishUfcGame = async (props: {
       })
     }
 
+    const startOfCurrentMonth = getUtcStartOfMonth()
     // Update competitors' stats
     if (disciplineId === Discipline.UFC) {
       if (winnerId) {
@@ -107,9 +110,12 @@ export const finishUfcGame = async (props: {
         const incrementWinStat =
           ufcResultsDbColumns[resultData.endMethod as UfcEndMethods]
         const loserId = competitorIds.filter((id) => id !== winnerId)[0]
-        await prisma.ufcCompetitorStats.upsert({
+        await tx.ufcCompetitorStats.upsert({
           where: {
-            competitorId: winnerId,
+            competitorId_periodStartedAt: {
+              competitorId: winnerId,
+              periodStartedAt: startOfCurrentMonth,
+            }
           },
           update: {
             [incrementWinStat]: {
@@ -123,6 +129,7 @@ export const finishUfcGame = async (props: {
             },
           },
           create: {
+            periodStartedAt: startOfCurrentMonth,
             competitorId: winnerId,
             wins: 1,
             games: 1,
@@ -131,9 +138,12 @@ export const finishUfcGame = async (props: {
         })
 
         // Update loser stats
-        await prisma.ufcCompetitorStats.upsert({
+        await tx.ufcCompetitorStats.upsert({
           where: {
-            competitorId: loserId,
+            competitorId_periodStartedAt: {
+              competitorId: loserId,
+              periodStartedAt: startOfCurrentMonth,
+            },
           },
           update: {
             losses: {
@@ -144,6 +154,7 @@ export const finishUfcGame = async (props: {
             },
           },
           create: {
+            periodStartedAt: startOfCurrentMonth,
             competitorId: loserId,
             losses: 1,
             games: 1,
@@ -151,9 +162,12 @@ export const finishUfcGame = async (props: {
         })
       } else {
         // Add draw to both players
-        await prisma.ufcCompetitorStats.upsert({
+        await tx.ufcCompetitorStats.upsert({
           where: {
-            competitorId: competitorIds[0],
+            competitorId_periodStartedAt: {
+              competitorId: competitorIds[0],
+              periodStartedAt: startOfCurrentMonth,
+            },
           },
           update: {
             draws: {
@@ -164,15 +178,19 @@ export const finishUfcGame = async (props: {
             },
           },
           create: {
+            periodStartedAt: startOfCurrentMonth,
             competitorId: competitorIds[0],
             draws: 1,
             games: 1,
           },
         })
 
-        await prisma.ufcCompetitorStats.upsert({
+        await tx.ufcCompetitorStats.upsert({
           where: {
-            competitorId: competitorIds[1],
+            competitorId_periodStartedAt: {
+              competitorId: competitorIds[1],
+              periodStartedAt: startOfCurrentMonth,
+            },
           },
           update: {
             draws: {
@@ -183,6 +201,7 @@ export const finishUfcGame = async (props: {
             },
           },
           create: {
+            periodStartedAt: startOfCurrentMonth,
             competitorId: competitorIds[1],
             draws: 1,
             games: 1,

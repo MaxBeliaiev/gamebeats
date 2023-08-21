@@ -1,5 +1,4 @@
 'use client'
-import axios from 'axios'
 import { toast } from 'react-hot-toast'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
