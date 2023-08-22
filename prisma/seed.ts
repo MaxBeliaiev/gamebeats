@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client'
 import {getUtcStartOfMonth} from "@/lib/helpers/date";
-import moment from "moment";
 const prisma = new PrismaClient()
 async function main() {
   // await prisma.ufcCompetitorStats.updateMany({

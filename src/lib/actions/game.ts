@@ -11,6 +11,8 @@ import { needsToFinish } from '@/lib/helpers/match'
 import { finishMatch } from '@/lib/actions/match'
 import * as z from 'zod'
 import { ufcResultsDbColumns } from '@/lib/constants/results'
+import moment from "moment/moment";
+import {getUtcStartOfMonth} from "@/lib/helpers/date";
 
 export const finishUfcGame = async (props: {
   game: Game
@@ -100,6 +102,7 @@ export const finishUfcGame = async (props: {
       })
     }
 
+    const startOfCurrentMonth = getUtcStartOfMonth()
     // Update competitors' stats
     if (disciplineId === Discipline.UFC) {
       if (winnerId) {
@@ -109,7 +112,8 @@ export const finishUfcGame = async (props: {
         const loserId = competitorIds.filter((id) => id !== winnerId)[0]
         const winnerStats = await tx.ufcCompetitorStats.findFirst({
           where: {
-            competitorId: winnerId
+            competitorId: winnerId,
+            periodStartedAt: startOfCurrentMonth,
           }
         })
 
@@ -133,6 +137,7 @@ export const finishUfcGame = async (props: {
         } else {
           await tx.ufcCompetitorStats.create({
             data: {
+              periodStartedAt: startOfCurrentMonth,
               competitorId: winnerId,
               wins: 1,
               games: 1,
@@ -144,7 +149,8 @@ export const finishUfcGame = async (props: {
         // Update loser stats
         const loserStats = await tx.ufcCompetitorStats.findFirst({
           where: {
-            competitorId: loserId
+            competitorId: loserId,
+            periodStartedAt: startOfCurrentMonth,
           }
         })
 
@@ -165,6 +171,7 @@ export const finishUfcGame = async (props: {
         } else {
           await tx.ufcCompetitorStats.create({
             data: {
+              periodStartedAt: startOfCurrentMonth,
               competitorId: loserId,
               losses: 1,
               games: 1,
@@ -176,7 +183,8 @@ export const finishUfcGame = async (props: {
         for (const id of competitorIds) {
           const stats = await tx.ufcCompetitorStats.findFirst({
             where: {
-              competitorId: id
+              competitorId: id,
+              periodStartedAt: startOfCurrentMonth,
             }
           })
 
@@ -197,6 +205,7 @@ export const finishUfcGame = async (props: {
           } else {
             await tx.ufcCompetitorStats.create({
               data: {
+                periodStartedAt: startOfCurrentMonth,
                 competitorId: id,
                 draws: 1,
                 games: 1,
