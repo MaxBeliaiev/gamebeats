@@ -84,4 +84,4 @@ export async function GET() {
 
 export const fetchCache = 'force-no-store';
 // OR
-export const revalidate = 1;
+export const revalidate = 0;
