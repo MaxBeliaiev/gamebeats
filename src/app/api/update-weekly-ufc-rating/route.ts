@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/db'
 import {getUtcStartOfMonth} from "@/lib/helpers/date";
 import {CompetitorStatus} from "@prisma/client";
+import { revalidatePath } from 'next/cache'
 
 export async function GET() {
   try {
@@ -64,6 +65,8 @@ export async function GET() {
         updatedAt: true,
       }
     })
+
+    revalidatePath('/api/weekly-ufc-rating')
 
     return new Response(JSON.stringify(dataset), {
       status: 200,
