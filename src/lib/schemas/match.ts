@@ -38,15 +38,14 @@ export const matchFormSchema = attachRefinements(
     ...matchCommon,
     startedAt: z
       .date({
-        required_error: 'Start date is required',
         invalid_type_error: 'Please choose correct date',
       })
-      .nullable()
+      .nullish()
       .transform((value, ctx): Date | undefined => {
         if (value == null) {
           ctx.addIssue({
             code: 'custom',
-            message: 'Date cannot be null',
+            message: 'Start date is required',
           })
         } else {
           return value
