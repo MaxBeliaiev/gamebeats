@@ -3,6 +3,7 @@ import { Game, GameStatus, Match, MatchStatus } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 import { useFinishGameModal } from '@/hooks/use-finish-game-modal'
+import { useUfcLiveResultModal } from '@/hooks/use-ufc-live-result-modal'
 import WithTooltip from '@/components/ui/with-tooltip'
 import { Button } from '@/components/ui/button'
 import { getAxiosErrorMessage } from '@/lib/utils'
@@ -14,8 +15,10 @@ interface MatchActionsProps {
 }
 
 const GameActions = ({ match, game }: MatchActionsProps) => {
+  const ufcLiveResultModal = useUfcLiveResultModal()
   const handleUpdateLiveResult = () => {
-    console.log('updating LR')
+    ufcLiveResultModal.setGame(game)
+    ufcLiveResultModal.open()
   }
   return (
     <div className="flex items-center justify-end gap-0.5">
@@ -25,7 +28,7 @@ const GameActions = ({ match, game }: MatchActionsProps) => {
                   variant="ghost"
                   onClick={handleUpdateLiveResult}
               >
-                <FileBarChart color="green" />
+                <FileBarChart color="blue" />
               </Button>
           )
       }
