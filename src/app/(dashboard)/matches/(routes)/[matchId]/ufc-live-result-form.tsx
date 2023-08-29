@@ -36,8 +36,48 @@ export function UfcLiveResultForm(
   )
   const router = useRouter()
 
+  console.log(results)
+
   const updateLiveStatistics = (data: any) => {
     console.log(data)
+  }
+
+  const updateAreaStat = async (round: number, subject: string, type: string, competitorId: number) => {
+    const competitorIdKey= String(competitorId)
+    console.log(results.rounds[String(round)][competitorIdKey])
+    try {
+      results.rounds[String(round)][competitorIdKey][type][subject] = results.rounds[String(round)][competitorIdKey][type][subject] + 1
+      // const newData = {
+      //   ...results,
+      //   rounds: {
+      //     ...results.rounds,
+      //     [round]: {
+      //       ...results.rounds[round],
+      //       [competitorId]: {
+      //         ...results.rounds[round][competitorIdKey],
+      //         [type]: {
+      //           ...results.rounds[round][competitorIdKey][type],
+      //           [subject]: ++results.rounds[round][competitorIdKey][type][subject]
+      //         }
+      //       },
+      //     }
+      //   }
+      // }
+
+      await updateLiveStatistics(results)
+
+      setResults({ ...results })
+      router.refresh()
+      toast.success(`Stat updated!`)
+    } catch (e: any) {
+      toast.error(getAxiosErrorMessage(e))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const updateStamina = (round: number, ) => {
+
   }
 
   const finishRound = async (currentRound: number) => {
@@ -73,17 +113,6 @@ export function UfcLiveResultForm(
       try {
         setLoading(true)
 
-        // await finishUfcGame({
-        //   game,
-        //   winnerId: Number(winnerId) || null,
-        //   resultData: winnerId
-        //     ? resultData
-        //     : {
-        //       round: 3,
-        //       endMethod: UfcEndMethods.DEC,
-        //       endTime: '5:00',
-        //     },
-        // })
         router.refresh()
         toast.success('Game updated!')
         onSuccess && onSuccess()
@@ -112,7 +141,7 @@ export function UfcLiveResultForm(
       {
         UFC_ROUNDS.map(r => (
           <TabsContent value={`r${r}`} key={`round_${r}`}>
-            <RoundForm round={r} competitors={competitors} key={`round_${r}_form`} />
+            <RoundForm round={r} competitors={competitors} updateLiveStat={updateAreaStat} key={`round_${r}_form`} />
           </TabsContent>
         ))
       }

@@ -1,4 +1,31 @@
-export type UfcLiveStatistics = { currentRound: number, rounds: any }
+export type UfcLiveStatistics = {
+  currentRound: number,
+  rounds: {
+    [key: string]: {
+      [key: string]: {
+        traumas: {
+          head: number,
+          body: number,
+          rightLeg: number,
+          leftLeg: number,
+        }, knockdowns: {
+          head: number,
+          body: number,
+          rightLeg: number,
+          leftLeg: number,
+        }
+      }
+    }
+  },
+
+}
+
+export const ufcDamageAreas = {
+  head: 'Head',
+  body: 'Body',
+  rightLeg: 'R. Leg',
+  leftLeg: 'L. Leg',
+}
 
 export const getDefaultUfcLiveResults = (competitors: any): UfcLiveStatistics => (
   {
