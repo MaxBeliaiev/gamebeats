@@ -74,7 +74,6 @@ export function MatchForm({
         await axios.post(`/api/matches`, { ...values, tournamentId })
       }
       router.refresh()
-      router.push(`/tournaments/${tournamentId}`)
       toast.success(toastMessage)
       onSuccess && onSuccess()
     } catch (e: any) {
