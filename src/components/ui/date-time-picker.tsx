@@ -27,10 +27,10 @@ export function DateTimePicker({
   setDate,
   disablePastDays = true,
 }: DateTimePickerProps) {
+  const selectedDateTime = DateTime.fromJSDate(date || new Date())
   const [open, setOpen] = useState(false)
-  const [selectedDateTime, setSelectedDateTime] =
-    React.useState<DateTime | null>(date ? DateTime.fromJSDate(date) : null)
   const contentRef = useRef<HTMLDivElement | null>(null)
+  const timeEnteredCount = useRef<number>(0)
 
   const handleSelect: SelectSingleEventHandler = (day, selected) => {
     const selectedDay = DateTime.fromJSDate(selected || new Date())
@@ -39,16 +39,17 @@ export function DateTimePicker({
       minute: selectedDay.minute,
     })
 
-    setSelectedDateTime(modifiedDay)
+    setDate(modifiedDay.toJSDate())
   }
 
   const handleTimeChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const { value } = e.target
+    console.log(value)
     const hours = Number.parseInt(value.split(':')[0] || '00', 10)
     const minutes = Number.parseInt(value.split(':')[1] || '00', 10)
     const modifiedDay = selectedDateTime!.set({ hour: hours, minute: minutes })
 
-    setSelectedDateTime(modifiedDay)
+    setDate(modifiedDay.toJSDate())
   }
 
   useInteractOutside({
@@ -64,8 +65,8 @@ export function DateTimePicker({
       <Label>Time:</Label>
       <Input
         type="time"
-        onChange={handleTimeChange}
-        value={selectedDateTime ? selectedDateTime.toFormat('HH:mm') : ''}
+        onBlur={handleTimeChange}
+        defaultValue={selectedDateTime ? selectedDateTime.toFormat('HH:mm') : ''}
       />
     </div>
   ) : (
@@ -94,7 +95,6 @@ export function DateTimePicker({
         <Button
           variant="outline"
           onClick={() => {
-            setSelectedDateTime(null)
             setDate(undefined)
           }}
           className="rounded-l-none border-l-0 px-3"
