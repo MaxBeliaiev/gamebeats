@@ -16,7 +16,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { competitorSchema } from '@/lib/schema'
 import { Fragment, useCallback, useState } from 'react'
 import StaminaForm from '@/app/(dashboard)/matches/(routes)/[matchId]/stamina-form'
-import { ufcDamageAreas } from '@/lib/ufc/live-results'
+import {
+  damageStat,
+  subjectStat,
+  ufcDamageAreas,
+  UfcLiveStatistics,
+} from '@/lib/ufc/live-results'
 
 interface RoundFormProps {
   round: number
@@ -27,22 +32,49 @@ interface RoundFormProps {
   initialData?: any
   updateLiveStat: (
     round: number,
-    subject: string,
-    type: string,
+    subject: subjectStat,
+    type: damageStat,
     competitorId: number
   ) => void
+  updateStamina: ({
+    round,
+    competitorId,
+    value,
+  }: {
+    round: number
+    competitorId: number
+    value: number
+  }) => void
+  currentLiveData?: UfcLiveStatistics
 }
 
-const RoundForm = ({ round, competitors, updateLiveStat }: RoundFormProps) => {
+const RoundForm = ({
+  round,
+  competitors,
+  updateLiveStat,
+  updateStamina,
+  currentLiveData,
+}: RoundFormProps) => {
+  console.log(`r${round} live data `, currentLiveData?.rounds[round])
   const handleStatChange = (
-    subject: string,
-    type: string,
+    subject: subjectStat,
+    type: damageStat,
     competitorId: number
   ) => {
     updateLiveStat(round, subject, type, competitorId)
   }
 
-  const areas = Object.entries(ufcDamageAreas)
+  const handleStaminaChange = ({
+    value,
+    competitorId,
+  }: {
+    value: number
+    competitorId: number
+  }) => {
+    updateStamina({ round, competitorId, value })
+  }
+
+  const areas = Object.entries(ufcDamageAreas) as Array<[subjectStat, string]>
   return (
     <div className="flex flex-row gap-1.5">
       {competitors.map((competitor, i) => (
@@ -87,7 +119,17 @@ const RoundForm = ({ round, competitors, updateLiveStat }: RoundFormProps) => {
               </div>
             </div>
             <h3 className="mb-1.5">Stamina</h3>
-            <StaminaForm competitor={competitor} />
+            <StaminaForm
+              initialData={
+                currentLiveData && {
+                  stamina:
+                    currentLiveData.rounds[round][String(competitor.value)]
+                      .stamina,
+                }
+              }
+              competitor={competitor}
+              onSubmit={handleStaminaChange}
+            />
           </div>
           <div>{i === 0 && <Separator orientation="vertical" />}</div>
         </Fragment>

@@ -1,10 +1,11 @@
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { damageStat, subjectStat } from '@/lib/ufc/live-results'
 
 interface TraumaBlockProps {
-  subject: string
-  type: string
-  onClick: (subject: string, type: string, competitorId: number) => void
+  subject: subjectStat
+  type: damageStat
+  onClick: (subject: subjectStat, type: damageStat, competitorId: number) => void
   label: string
   competitorId: number
 }
