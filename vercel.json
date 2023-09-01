@@ -1,7 +1,7 @@
 {
   "crons": [
     {
-      "path": "/api/update-weekly-ufc-rating",
+      "path": "/api/update-daily-ufc-ranking",
       "schedule": "0 5 * * *"
     }
   ]
