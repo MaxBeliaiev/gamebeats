@@ -1,11 +1,9 @@
 'use client'
 import { toast } from 'react-hot-toast'
-import * as z from 'zod'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Game, UfcEndMethods } from '@prisma/client'
+import { Game } from '@prisma/client'
 import { getAxiosErrorMessage } from '@/lib/utils'
-import { gameFinishFormSchema } from '@/lib/schemas/game'
 import * as React from 'react'
 import { UFC_ROUNDS } from '@/lib/constants/results'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
@@ -16,8 +14,6 @@ import {
   subjectStat,
   UfcLiveStatistics,
 } from '@/lib/ufc/live-results'
-import { ca } from 'date-fns/locale'
-import axios from 'axios'
 import { updateLiveStatistics } from '@/lib/actions/ufc'
 import useStore from '@/lib/store'
 
@@ -33,7 +29,6 @@ interface UfcLiveResultFormProps {
 export function UfcLiveResultForm({
   game: { liveStatistics, id: gameId },
   competitors = [],
-  onSuccess,
 }: UfcLiveResultFormProps) {
   const { setLoading } = useStore((state) => ({
     setLoading: state.ufc.liveResultsForm.setIsLoading,
@@ -81,8 +76,7 @@ export function UfcLiveResultForm({
     competitorId: number
     value: number
   }) => {
-    const competitorIdKey = String(competitorId)
-    liveData.rounds[String(round)][competitorIdKey].stamina = value
+    liveData.rounds[String(round)][String(competitorId)].stamina = value
 
     await updateLiveResultRequest(liveData)
   }
@@ -122,7 +116,7 @@ export function UfcLiveResultForm({
         {UFC_ROUNDS.map((r) => (
           <TabsTrigger
             disabled={liveData.currentRound > r}
-            onClick={() => r > 1 && finishRound(r)}
+            onClick={() => (r > 1 && r > liveData.currentRound) && finishRound(r)}
             value={`r${r}`}
             key={`round_${r}`}
           >
