@@ -32,6 +32,7 @@ export const columns: ColumnDef<Competitor>[] = [
             href={{
               pathname: `/competitors/update/${competitor.id}`,
             }}
+            prefetch={false}
           >
             <Pencil color="blue" />
           </Link>

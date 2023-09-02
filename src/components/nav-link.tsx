@@ -11,7 +11,7 @@ const NavLink = ({ href, children }: any) => {
     `${isActive && `text-black border-b-blue-600 border-b`}`
   )
   return (
-    <Link href={href} className={classes} passHref>
+    <Link href={href} className={classes} passHref prefetch={false}>
       {children}
     </Link>
   )

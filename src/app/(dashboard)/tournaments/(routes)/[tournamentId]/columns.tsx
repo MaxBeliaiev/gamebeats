@@ -23,6 +23,7 @@ export const getMatchColumns = (tournament: Tournament): ColumnDef<any>[] => [
           <Link
             className="font-semibold hover:underline"
             href={{ pathname: `/matches/${id}` }}
+            prefetch={false}
           >
             <span>{cOne.competitor.nickname}</span>
             <span> vs. </span>
@@ -87,6 +88,7 @@ export const getMatchColumns = (tournament: Tournament): ColumnDef<any>[] => [
           className="hover:underline"
           target="_blank"
           href={{ pathname: streamLinks[streamChannel] }}
+          prefetch={false}
         >
           {streamChannel}
         </Link>

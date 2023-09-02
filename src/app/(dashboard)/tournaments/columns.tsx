@@ -58,6 +58,7 @@ export const columns: ColumnDef<Tournament>[] = [
         <div className="flex items-center justify-end gap-1.5">
           {tournament.status !== TournamentStatus.FINISHED && (
             <Link
+              prefetch={false}
               href={{
                 pathname: `/tournaments/update/${tournament.id}`,
               }}

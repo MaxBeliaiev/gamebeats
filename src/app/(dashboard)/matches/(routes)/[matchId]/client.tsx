@@ -22,6 +22,7 @@ const MatchPageClient = ({ match }: MatchPageClientProps) => {
             <Link
               className={'font-semibold hover:underline'}
               href={{ pathname: `/tournaments/${tournamentId}` }}
+              prefetch={false}
             >
               {c1.competitor.nickname} vs. {c2.competitor.nickname}
             </Link>
