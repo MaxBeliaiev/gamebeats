@@ -64,8 +64,8 @@ export function DateTimePicker({
       <Label>Time:</Label>
       <Input
         type="time"
-        onChange={handleTimeChange}
-        value={selectedDateTime ? selectedDateTime.toFormat('HH:mm') : ''}
+        onBlur={handleTimeChange}
+        defaultValue={selectedDateTime ? selectedDateTime.toFormat('HH:mm') : ''}
       />
     </div>
   ) : (
