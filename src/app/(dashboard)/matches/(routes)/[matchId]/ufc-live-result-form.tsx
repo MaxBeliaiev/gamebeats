@@ -19,6 +19,7 @@ import {
 import { ca } from 'date-fns/locale'
 import axios from 'axios'
 import { updateLiveStatistics } from '@/lib/actions/ufc'
+import useStore from '@/lib/store'
 
 interface UfcLiveResultFormProps {
   game: Game
@@ -34,7 +35,9 @@ export function UfcLiveResultForm({
   competitors = [],
   onSuccess,
 }: UfcLiveResultFormProps) {
-  const [loading, setLoading] = useState(false)
+  const { setLoading } = useStore((state) => ({
+    setLoading: state.ufc.liveResultsForm.setIsLoading,
+  }))
   const [liveData, setLiveData] = useState<UfcLiveStatistics>(
     liveStatistics
       ? (liveStatistics as UfcLiveStatistics)
@@ -51,12 +54,13 @@ export function UfcLiveResultForm({
     const competitorIdKey = String(competitorId)
     liveData.rounds[String(round)][competitorIdKey][type][subject] =
       liveData.rounds[String(round)][competitorIdKey][type][subject] + 1
-    const newData = {...liveData}
+    const newData = { ...liveData }
     await updateLiveResultRequest(newData)
   }
 
   const updateLiveResultRequest = async (data: UfcLiveStatistics) => {
     try {
+      setLoading(true)
       const resp: UfcLiveStatistics = await updateLiveStatistics(data, gameId)
       setLiveData(resp)
       router.refresh()
@@ -92,14 +96,16 @@ export function UfcLiveResultForm({
 
     if (agree) {
       try {
-        const newData = {
-          ...liveData,
-          currentRound,
-        }
+        setLoading(true)
+        const resp: UfcLiveStatistics = await updateLiveStatistics(
+          {
+            ...liveData,
+            currentRound,
+          },
+          gameId
+        )
 
-        await updateLiveStatistics(newData, gameId)
-
-        setLiveData(newData)
+        setLiveData(resp)
         router.refresh()
         toast.success(`Round ${currentRound} started!`)
       } catch (e: any) {

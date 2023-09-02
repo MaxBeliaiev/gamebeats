@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ufcStaminaUpdateSchema } from '@/lib/schemas/ufc'
+import useStore from '@/lib/store'
 
 interface StaminaFormProps {
   competitor: any
@@ -22,6 +23,10 @@ const StaminaForm = ({
   initialData,
   onSubmit,
 }: StaminaFormProps) => {
+  const { loading } = useStore((state) => ({
+    loading: state.ufc.liveResultsForm.isLoading,
+  }))
+
   const form = useForm<any>({
     resolver: zodResolver(ufcStaminaUpdateSchema),
     defaultValues: initialData || {
@@ -46,13 +51,18 @@ const StaminaForm = ({
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input type="number" placeholder="Enter stamina" {...field} />
+                <Input
+                  type="number"
+                  placeholder="Enter stamina"
+                  {...field}
+                  disabled={loading}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button variant="success" type="submit">
+        <Button variant="success" type="submit" disabled={loading}>
           Save
         </Button>
       </form>
