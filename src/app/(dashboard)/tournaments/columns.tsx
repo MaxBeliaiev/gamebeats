@@ -17,6 +17,7 @@ export const columns: ColumnDef<Tournament>[] = [
         <Link
           className="font-semibold hover:underline"
           href={{ pathname: `/tournaments/${id}` }}
+          prefetch={false}
         >
           {name}
         </Link>
