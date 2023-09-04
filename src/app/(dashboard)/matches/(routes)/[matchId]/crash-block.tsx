@@ -29,6 +29,7 @@ const CrashBlock = ({
   return (
     <div className="flex flex-row mb-2.5 w-3/4 justify-between items-center">
         <Button
+          className='w-[110px]'
           disabled={loading}
           onClick={() => {
             onClick(subject, type, competitorId)

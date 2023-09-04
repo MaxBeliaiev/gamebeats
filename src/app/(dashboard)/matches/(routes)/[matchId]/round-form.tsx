@@ -102,6 +102,7 @@ const RoundForm = ({
                 <div className="flex flex-row mb-1 w-3/4 justify-between items-center">
                   <Button
                     disabled={loading}
+                    className='w-[110px]'
                     onClick={() => {
                       updateStat(round, 'knockdowns', Number(competitor.value))
                     }}
