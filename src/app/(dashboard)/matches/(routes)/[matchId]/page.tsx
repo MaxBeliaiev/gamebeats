@@ -1,7 +1,6 @@
 import { prisma } from '@/db'
 import MatchPageClient from '@/app/(dashboard)/matches/(routes)/[matchId]/client'
-import { CreateMatchModalProvider } from '@/providers/create-match-modal-provider'
-import { UpdateMatchModalProvider } from '@/providers/update-match-modal-provider'
+import { UfcLiveResultModalProvider } from '@/providers/ufc-live-result-modal-provider'
 import { FinishGameModalProvider } from '@/providers/finish-game-modal-provider'
 
 interface MatchPageProps {
@@ -34,12 +33,13 @@ const MatchPage = async ({ params: { matchId } }: MatchPageProps) => {
     },
   })
 
+  const competitorsData = match?.competitors.map((c) => c.competitor) || []
+
   return (
     <>
       <MatchPageClient match={match} />
-      <FinishGameModalProvider
-        competitors={match?.competitors.map((c) => c.competitor) || []}
-      />
+      <FinishGameModalProvider competitors={competitorsData} />
+      <UfcLiveResultModalProvider competitors={competitorsData} />
     </>
   )
 }

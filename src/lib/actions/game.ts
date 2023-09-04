@@ -215,7 +215,7 @@ export const finishUfcGame = async (props: {
         }
       }
     }
-  }, { timeout: 20000 })
+  }, { timeout: 7000 })
 }
 
 export const updateGameStatus = async (
