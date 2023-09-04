@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/db'
 import { getAuthSession } from '@/lib/auth'
 import { matchCreateReqSchema } from '@/lib/schemas/match'
-import { MatchStatus } from '@prisma/client'
 
 export async function POST(req: Request) {
   try {
@@ -41,17 +40,19 @@ export async function POST(req: Request) {
       },
     }
 
-    const match = await prisma.match.create({
-      data,
-    })
+    return await prisma.$transaction(async (tx) => {
+      const match = await tx.match.create({
+        data,
+      })
 
-    await prisma.game.create({
-      data: {
-        matchId: match.id,
-      },
-    })
+      await tx.game.create({
+        data: {
+          matchId: match.id,
+        },
+      })
 
-    return NextResponse.json(match)
+      return NextResponse.json(match)
+    }, { timeout: 5000 })
   } catch (error) {
     console.log('[MATCHES_POST]', error)
     return new NextResponse('Internal error', { status: 500 })

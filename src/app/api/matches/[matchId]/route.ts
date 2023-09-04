@@ -106,7 +106,7 @@ export async function PATCH(
       }
 
       return NextResponse.json(match)
-    }, { timeout: 20000 })
+    }, { timeout: 5000 })
   } catch (error) {
     console.log('[MATCH_PATCH]', error)
     return new NextResponse('Internal error', { status: 500 })
