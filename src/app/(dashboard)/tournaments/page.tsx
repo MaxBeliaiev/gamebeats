@@ -16,9 +16,6 @@ const Dashboard = async () => {
       },
     ],
     take: 10,
-    include: {
-      matches: true,
-    },
   })
 
   const { ONGOING, FINISHED } = TournamentStatus

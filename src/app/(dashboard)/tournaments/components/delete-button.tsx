@@ -1,24 +1,20 @@
 'use client'
-import { Trash } from 'lucide-react'
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
-import { Match, MatchStatus, Tournament } from '@prisma/client'
+import { Match, Tournament, TournamentStatus } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import DeleteButton from '@/components/ui/delete-button'
-import { Button } from '@/components/ui/button'
 import WithTooltip from '@/components/ui/with-tooltip'
 import { getAxiosErrorMessage } from '@/lib/utils'
 const TournamentDeleteButton = ({
-  tournament: { name, id, matches },
+  tournament: { name, id, status },
 }: {
   tournament: Tournament & {
     matches?: Match[]
   }
 }) => {
   const router = useRouter()
-  const disabled = matches?.some(
-    (match) => match.status !== MatchStatus.UPCOMING
-  )
+  const disabled = status !== TournamentStatus.UPCOMING
 
   const handleClick = async () => {
     const agree = confirm(`Are you sure you want to delete tournament ${name}?`)
@@ -35,7 +31,7 @@ const TournamentDeleteButton = ({
 
   return (
     <WithTooltip
-      text="Cannot delete tournament with ongoing/finished matches in it"
+      text="Cannot delete ongoing/finished tournament"
       hidden={!disabled}
     >
       <DeleteButton onClick={handleClick} disabled={disabled} />
