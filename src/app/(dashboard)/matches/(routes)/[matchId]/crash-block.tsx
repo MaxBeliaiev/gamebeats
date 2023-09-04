@@ -1,9 +1,8 @@
-import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { damageStat, subjectStat } from '@/lib/ufc/live-results'
 import useStore from '@/lib/store'
 
-interface TraumaBlockProps {
+interface CrashBlockProps {
   subject: subjectStat
   type: damageStat
   onClick: (
@@ -23,7 +22,7 @@ const CrashBlock = ({
   label,
   competitorId,
   currentValue,
-}: TraumaBlockProps) => {
+}: CrashBlockProps) => {
   const { loading } = useStore((state) => ({
     loading: state.ufc.liveResultsForm.isLoading,
   }))

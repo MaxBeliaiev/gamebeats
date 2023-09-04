@@ -33,15 +33,13 @@ const MatchPage = async ({ params: { matchId } }: MatchPageProps) => {
     },
   })
 
+  const competitorsData = match?.competitors.map((c) => c.competitor) || []
+
   return (
     <>
       <MatchPageClient match={match} />
-      <FinishGameModalProvider
-        competitors={match?.competitors.map((c) => c.competitor) || []}
-      />
-      <UfcLiveResultModalProvider
-          competitors={match?.competitors.map((c) => c.competitor) || []}
-      />
+      <FinishGameModalProvider competitors={competitorsData} />
+      <UfcLiveResultModalProvider competitors={competitorsData} />
     </>
   )
 }
