@@ -13,35 +13,33 @@ interface TraumaBlockProps {
   ) => void
   label: string
   competitorId: number
+  currentValue: number
 }
 
-const TraumaBlock = ({
+const CrashBlock = ({
   subject,
   type,
   onClick,
   label,
   competitorId,
+  currentValue,
 }: TraumaBlockProps) => {
   const { loading } = useStore((state) => ({
     loading: state.ufc.liveResultsForm.isLoading,
   }))
   return (
-    <div className="flex flex-row mb-1">
-      <div className="flex flex-row gap-1 items-center">
+    <div className="flex flex-row mb-2.5 w-3/4 justify-between items-center">
         <Button
           disabled={loading}
-          variant="ghost"
-          className="px-1 py-0"
           onClick={() => {
             onClick(subject, type, competitorId)
           }}
         >
-          <Plus color="red" />
+          {label} crash
         </Button>
-        <div>{label}</div>
-      </div>
+        <span>{currentValue}</span>
     </div>
   )
 }
 
-export default TraumaBlock
+export default CrashBlock

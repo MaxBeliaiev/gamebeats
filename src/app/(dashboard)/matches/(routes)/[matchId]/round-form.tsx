@@ -1,27 +1,19 @@
-import { Plus, SeparatorVertical } from 'lucide-react'
-import TraumaBlock from '@/app/(dashboard)/matches/(routes)/[matchId]/trauma-block'
+import CrashBlock from '@/app/(dashboard)/matches/(routes)/[matchId]/crash-block'
 import { Separator } from '@/components/ui/separator'
-import { Input } from '@/components/ui/input'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { competitorSchema } from '@/lib/schema'
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment } from 'react'
 import StaminaForm from '@/app/(dashboard)/matches/(routes)/[matchId]/stamina-form'
 import {
   damageStat,
+  stat,
   subjectStat,
   ufcDamageAreas,
   UfcLiveStatistics,
 } from '@/lib/ufc/live-results'
+import useStore from '@/lib/store'
 
 interface RoundFormProps {
   round: number
@@ -36,6 +28,7 @@ interface RoundFormProps {
     type: damageStat,
     competitorId: number
   ) => void
+  updateStat: (round: number, type: stat, competitorId: number) => void
   updateStamina: ({
     round,
     competitorId,
@@ -54,8 +47,8 @@ const RoundForm = ({
   updateLiveStat,
   updateStamina,
   currentLiveData,
+  updateStat,
 }: RoundFormProps) => {
-  console.log(`r${round} live data `, currentLiveData?.rounds[round])
   const handleStatChange = (
     subject: subjectStat,
     type: damageStat,
@@ -74,48 +67,53 @@ const RoundForm = ({
     updateStamina({ round, competitorId, value })
   }
 
+  const { loading } = useStore((state) => ({
+    loading: state.ufc.liveResultsForm.isLoading,
+  }))
   const areas = Object.entries(ufcDamageAreas) as Array<[subjectStat, string]>
   return (
     <div className="flex flex-row gap-1.5">
       {competitors.map((competitor, i) => (
         <Fragment key={`${competitor.value}_block`}>
-          <div className="w-1/2 px-2" key={competitor.value}>
-            <h3 className="text-center mb-3 font-semibold">
+          <div className="px-2" key={competitor.value}>
+            <h3 className="mb-3 font-semibold">
               {competitor.label}
             </h3>
             <div className="flex flex-row justify-between mb-1">
-              <div className="flex flex-col">
-                <h4 className="mb-1">Traumas</h4>
+              <div className="flex flex-col w-full">
                 {areas.map((area) => {
                   const [subject, label] = area
                   return (
-                    <TraumaBlock
-                      key={`${subject}_trauma`}
+                    <CrashBlock
+                      key={`${subject}_crash`}
                       subject={subject}
                       label={label}
-                      type="traumas"
+                      type="crashes"
                       competitorId={Number(competitor.value)}
                       onClick={handleStatChange}
+                      currentValue={
+                        currentLiveData?.competitors[competitor.value].rounds[
+                          round
+                        ].crashes[subject] || 0
+                      }
                     />
                   )
                 })}
-              </div>
-
-              <div className="flex flex-col">
-                <h4 className="mb-1">Knockdowns</h4>
-                {areas.map((area) => {
-                  const [subject, label] = area
-                  return (
-                    <TraumaBlock
-                      key={`${subject}_knockdown`}
-                      subject={subject}
-                      label={label}
-                      type="knockdowns"
-                      competitorId={Number(competitor.value)}
-                      onClick={handleStatChange}
-                    />
-                  )
-                })}
+                <div className="flex flex-row mb-1 w-3/4 justify-between items-center">
+                  <Button
+                    disabled={loading}
+                    onClick={() => {
+                      updateStat(round, 'knockdowns', Number(competitor.value))
+                    }}
+                  >
+                    Knockdown
+                  </Button>
+                  <span>
+                    {currentLiveData?.competitors[competitor.value].rounds[
+                      round
+                    ].knockdowns || 0}
+                  </span>
+                </div>
               </div>
             </div>
             <h3 className="mb-1.5">Stamina</h3>
@@ -123,7 +121,7 @@ const RoundForm = ({
               initialData={
                 currentLiveData && {
                   stamina:
-                    currentLiveData.rounds[round][String(competitor.value)]
+                    currentLiveData.competitors[String(competitor.value)]
                       .stamina,
                 }
               }

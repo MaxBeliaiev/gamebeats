@@ -10,7 +10,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import RoundForm from '@/app/(dashboard)/matches/(routes)/[matchId]/round-form'
 import {
   damageStat,
-  getDefaultUfcLiveResults,
+  getDefaultUfcLiveResults, stat,
   subjectStat,
   UfcLiveStatistics,
 } from '@/lib/ufc/live-results'
@@ -47,10 +47,18 @@ export function UfcLiveResultForm({
     competitorId: number
   ) => {
     const competitorIdKey = String(competitorId)
-    liveData.rounds[String(round)][competitorIdKey][type][subject] =
-      liveData.rounds[String(round)][competitorIdKey][type][subject] + 1
-    const newData = { ...liveData }
-    await updateLiveResultRequest(newData)
+    liveData.competitors[competitorIdKey].rounds[round][type][subject]++
+    await updateLiveResultRequest(liveData)
+  }
+
+  const updateStat = async (
+    round: number,
+    type: stat,
+    competitorId: number
+  ) => {
+    const competitorIdKey = String(competitorId)
+    liveData.competitors[competitorIdKey].rounds[round][type]++
+    await updateLiveResultRequest(liveData)
   }
 
   const updateLiveResultRequest = async (data: UfcLiveStatistics) => {
@@ -76,7 +84,7 @@ export function UfcLiveResultForm({
     competitorId: number
     value: number
   }) => {
-    liveData.rounds[String(round)][String(competitorId)].stamina = value
+    liveData.competitors[String(competitorId)].stamina = value
 
     await updateLiveResultRequest(liveData)
   }
@@ -130,6 +138,7 @@ export function UfcLiveResultForm({
             round={r}
             competitors={competitors}
             updateLiveStat={updateAreaStat}
+            updateStat={updateStat}
             updateStamina={updateStamina}
             key={`round_${r}_form`}
             currentLiveData={liveData}

@@ -1,24 +1,21 @@
-export type damageStat = 'traumas' | 'knockdowns'
-export type subjectStat = 'head' | 'body' | 'rightLeg' | 'leftLeg'
+export type damageStat = 'crashes'
+export type stat = 'knockdowns'
+export type subjectStat = 'head' | 'body' | 'legs'
 
 export type UfcLiveStatistics = {
   currentRound: number
-  rounds: {
+  competitors: {
     [key: string]: {
-      [key: string]: {
-        traumas: {
-          head: number
-          body: number
-          rightLeg: number
-          leftLeg: number
+      stamina: number
+      rounds: {
+        [key: string]: {
+          crashes: {
+            head: number
+            body: number
+            legs: number
+          }
+          knockdowns: number
         }
-        knockdowns: {
-          head: number
-          body: number
-          rightLeg: number
-          leftLeg: number
-        }
-        stamina: number
       }
     }
   }
@@ -27,110 +24,33 @@ export type UfcLiveStatistics = {
 export const ufcDamageAreas: { [stat in subjectStat]: string } = {
   head: 'Head',
   body: 'Body',
-  rightLeg: 'R. Leg',
-  leftLeg: 'L. Leg',
+  legs: 'Legs',
 }
+
+const getRoundObject = () => ({
+  crashes: {
+    head: 0,
+    body: 0,
+    legs: 0,
+  },
+  knockdowns: 0,
+})
+
+const getCompetitorObject = () => ({
+  stamina: 100,
+  rounds: {
+    1: getRoundObject(),
+    2: getRoundObject(),
+    3: getRoundObject(),
+  },
+})
 
 export const getDefaultUfcLiveResults = (
   competitors: any
 ): UfcLiveStatistics => ({
   currentRound: 1,
-  rounds: {
-    '1': {
-      [competitors[0].value]: {
-        traumas: {
-          head: 0,
-          body: 0,
-          rightLeg: 0,
-          leftLeg: 0,
-        },
-        knockdowns: {
-          head: 0,
-          body: 0,
-          rightLeg: 0,
-          leftLeg: 0,
-        },
-        stamina: 100,
-      },
-      [competitors[1].value]: {
-        traumas: {
-          head: 0,
-          body: 0,
-          rightLeg: 0,
-          leftLeg: 0,
-        },
-        knockdowns: {
-          head: 0,
-          body: 0,
-          rightLeg: 0,
-          leftLeg: 0,
-        },
-        stamina: 100,
-      },
-    },
-    '2': {
-      [competitors[0].value]: {
-        traumas: {
-          head: 0,
-          body: 0,
-          rightLeg: 0,
-          leftLeg: 0,
-        },
-        knockdowns: {
-          head: 0,
-          body: 0,
-          rightLeg: 0,
-          leftLeg: 0,
-        },
-        stamina: 100,
-      },
-      [competitors[1].value]: {
-        traumas: {
-          head: 0,
-          body: 0,
-          rightLeg: 0,
-          leftLeg: 0,
-        },
-        knockdowns: {
-          head: 0,
-          body: 0,
-          rightLeg: 0,
-          leftLeg: 0,
-        },
-        stamina: 100,
-      },
-    },
-    '3': {
-      [competitors[0].value]: {
-        traumas: {
-          head: 0,
-          body: 0,
-          rightLeg: 0,
-          leftLeg: 0,
-        },
-        stamina: 100,
-        knockdowns: {
-          head: 0,
-          body: 0,
-          rightLeg: 0,
-          leftLeg: 0,
-        },
-      },
-      [competitors[1].value]: {
-        traumas: {
-          head: 0,
-          body: 0,
-          rightLeg: 0,
-          leftLeg: 0,
-        },
-        knockdowns: {
-          head: 0,
-          body: 0,
-          rightLeg: 0,
-          leftLeg: 0,
-        },
-        stamina: 100,
-      },
-    },
-  },
+  competitors: {
+    [competitors[0].value]: getCompetitorObject(),
+    [competitors[1].value]: getCompetitorObject(),
+  }
 })
