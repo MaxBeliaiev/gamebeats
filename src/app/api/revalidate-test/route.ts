@@ -9,7 +9,8 @@ export async function GET(req: Request) {
     // const take = Number(searchParams.get('size')) || 10
     // const page = Number(searchParams.get('page')) || 0
 
-    const data = await prisma.match.findFirst({
+    const data = await prisma.match.findMany({
+      take: 10,
       orderBy: {
         id: 'desc',
       },
