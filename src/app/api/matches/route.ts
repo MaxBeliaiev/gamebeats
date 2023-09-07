@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/db'
 import { getAuthSession } from '@/lib/auth'
 import { matchCreateReqSchema } from '@/lib/schemas/match'
+import { MatchStatus } from '@prisma/client'
 
 export async function GET(req: Request) {
   try {
@@ -10,6 +11,7 @@ export async function GET(req: Request) {
 
     const take = Number(searchParams.get('size')) || 10
     const page = Number(searchParams.get('page')) || 0
+    const finished = searchParams.get('finished')
 
     const data = await prisma.match.findMany({
       take,
@@ -17,10 +19,19 @@ export async function GET(req: Request) {
       orderBy: {
         id: 'desc',
       },
+      where: {
+        status: finished
+          ? MatchStatus.FINISHED
+          : {
+              not: MatchStatus.FINISHED,
+            },
+      },
       select: {
         id: true,
         startedAt: true,
+        endedAt: true,
         status: true,
+        streamChannel: true,
         competitors: {
           orderBy: {
             order: 'asc',
@@ -33,6 +44,11 @@ export async function GET(req: Request) {
                 nickname: true,
               },
             },
+          },
+        },
+        tournament: {
+          select: {
+            name: true,
           },
         },
       },
