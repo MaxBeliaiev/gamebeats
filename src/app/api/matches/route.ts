@@ -20,11 +20,9 @@ export async function GET(req: Request) {
         id: 'desc',
       },
       where: {
-        status: finished
-          ? MatchStatus.FINISHED
-          : {
-              not: MatchStatus.FINISHED,
-            },
+        status: {
+          in: [MatchStatus.ONGOING, MatchStatus.UPCOMING]
+        }
       },
       select: {
         id: true,
