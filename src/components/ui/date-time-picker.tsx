@@ -18,7 +18,7 @@ import { addDays } from 'date-fns'
 
 interface DateTimePickerProps {
   date?: Date
-  setDate: (date?: Date) => void
+  setDate: (date?: Date | null) => void
   disablePastDays?: boolean
 }
 
@@ -98,7 +98,7 @@ export function DateTimePicker({
         <Button
           variant="outline"
           onClick={() => {
-            setDate(undefined)
+            setDate(null)
           }}
           className="rounded-l-none border-l-0 px-3"
           type="button"
