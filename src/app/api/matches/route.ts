@@ -11,7 +11,7 @@ export async function GET(req: Request) {
 
     const take = Number(searchParams.get('size')) || 10
     const page = Number(searchParams.get('page')) || 0
-    const finished = searchParams.get('finished')
+    const statuses = searchParams.get('status') || ''
 
     const data = await prisma.match.findMany({
       take,
@@ -20,9 +20,11 @@ export async function GET(req: Request) {
         id: 'desc',
       },
       where: {
-        status: {
-          in: [MatchStatus.ONGOING, MatchStatus.UPCOMING]
-        }
+        ...(statuses && {
+          status: {
+            in: statuses?.split(',') as Array<MatchStatus>,
+          },
+        }),
       },
       select: {
         id: true,

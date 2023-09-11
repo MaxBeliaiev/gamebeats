@@ -28,7 +28,7 @@ export function DateTimePicker({
   disablePastDays = true,
 }: DateTimePickerProps) {
   const timeRef = useRef<HTMLInputElement | null>(null)
-  const selectedDateTime = DateTime.fromJSDate(date || new Date())
+  const selectedDateTime = date ? DateTime.fromJSDate(date || new Date()) : null
   const [open, setOpen] = useState(false)
   const contentRef = useRef<HTMLDivElement | null>(null)
 
