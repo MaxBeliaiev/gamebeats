@@ -131,6 +131,7 @@ export function MatchForm({
               <DateTimePicker
                 date={field.value}
                 setDate={(date) => {
+                  // @ts-ignore
                   form.setValue('startedAt', date)
                 }}
               />
