@@ -17,12 +17,12 @@ export async function GET(req: Request) {
       take,
       skip: page ? (page - 1) * take : 0,
       orderBy: {
-        id: 'desc',
+        startedAt: 'asc',
       },
       where: {
         ...(statuses && {
           status: {
-            in: statuses?.split(',') as Array<MatchStatus>,
+            in: statuses?.split(',').map(s => s.toUpperCase()) as Array<MatchStatus>,
           },
         }),
       },
