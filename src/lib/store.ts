@@ -6,6 +6,12 @@ type AppState = {
       isLoading: boolean,
       setIsLoading: (value: boolean) => void
     }
+    matches: {
+      pagination: {
+        page: number
+      }
+      setPage: (value: number) => void
+    }
   }
 }
 
@@ -24,6 +30,24 @@ const useStore = create<AppState>()(set => ({
           },
         })),
     },
+    matches: {
+      pagination: {
+        page: 1
+      },
+      setPage: (value: number) =>
+        set((state: any) => ({
+          ufc: {
+            ...state.ufc,
+            matches: {
+              ...state.ufc.matches,
+              pagination: {
+                ...state.ufc.matches.pagination,
+                page: value,
+              }
+            }
+          },
+        })),
+    }
   },
 }))
 
