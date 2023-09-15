@@ -12,13 +12,14 @@ export async function GET(req: Request) {
     const take = Number(searchParams.get('size')) || 10
     const page = Number(searchParams.get('page')) || 0
     const statuses = searchParams.get('status') || ''
+    const sortBy = searchParams.get('sortBy') || ''
+    const sort = searchParams.get('sort') || ''
+    const orderBy: {[x: string]: string} = (sort && sortBy) ? { [sortBy]: sort } : { startedAt: 'asc' }
 
     const data = await prisma.match.findMany({
       take,
       skip: page ? (page - 1) * take : 0,
-      orderBy: {
-        startedAt: 'asc',
-      },
+      orderBy,
       where: {
         ...(statuses && {
           status: {
