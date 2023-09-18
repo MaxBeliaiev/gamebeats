@@ -80,6 +80,7 @@ model Competitor {
   surname    String
   status     CompetitorStatus @default(ACTIVE)
   image      String?
+  imageSmall      String?
   country    String?
   birthDate  DateTime?
   archivedAt DateTime?
