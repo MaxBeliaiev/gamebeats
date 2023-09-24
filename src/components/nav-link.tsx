@@ -7,7 +7,7 @@ const NavLink = ({ href, children }: any) => {
   const pathName = usePathname()
   const isActive = pathName === href.pathname
   const classes = twMerge(
-    'text-gray-500 hover:underline px-2 py-2',
+    'text-gray-500 hover:underline px-2 py-2 dark:text-white',
     `${isActive && `text-black border-b-blue-600 border-b`}`
   )
   return (

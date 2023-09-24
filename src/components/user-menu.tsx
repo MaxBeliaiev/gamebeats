@@ -19,7 +19,6 @@ interface UserNavProps {
 
 const UserMenu = ({ user }: UserNavProps) => {
   return (
-    <div className="ml-auto flex items-center">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-10 w-10 rounded-full">
@@ -47,7 +46,6 @@ const UserMenu = ({ user }: UserNavProps) => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    </div>
   )
 }
 
