@@ -14,6 +14,7 @@ export async function GET(req: Request) {
     const statuses = searchParams.get('status') || ''
     const sortBy = searchParams.get('sortBy') || ''
     const sort = searchParams.get('sort') || ''
+    const results = searchParams.get('results') || ''
     const orderBy: {[x: string]: string} = (sort && sortBy) ? { [sortBy]: sort } : { startedAt: 'asc' }
 
     const data = await prisma.match.findMany({
@@ -52,6 +53,13 @@ export async function GET(req: Request) {
             name: true,
           },
         },
+        ...(results && {
+          games: {
+            select: {
+              ufcResultDetails: true
+            }
+          }
+        })
       },
     })
 
