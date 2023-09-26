@@ -24,6 +24,11 @@ interface DataTableProps<TData, TValue> {
   onRowClick?: (row: Row<TData>) => void
   rowClassName?: string
   page?: number
+  pageCount?: number
+  pageSize?: number
+  onPreviousPageClick?: () => void
+  onNextPageClick?: () => void
+  manualPagination?: boolean
 }
 
 export function DataTable<TData, TValue>({
@@ -35,18 +40,24 @@ export function DataTable<TData, TValue>({
   onNextPageClick,
   pageCount,
   page,
+  pageSize = 30,
+  manualPagination = false,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
     initialState: {
       pagination: {
-        pageIndex: page - 1,
-        pageSize: 15,
+        pageSize,
+        ...(page && {
+          pageIndex: page - 1,
+        }),
       },
     },
-    pageCount,
-    manualPagination: true,
+    ...(pageCount && {
+      pageCount
+    }),
+    manualPagination,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   })

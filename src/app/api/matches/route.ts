@@ -6,7 +6,7 @@ import { MatchStatus } from '@prisma/client'
 
 export async function GET(req: Request) {
   try {
-    // let fullFields = Boolean(getAuthSession())
+    let isAdmin = Boolean(getAuthSession())
     const { searchParams } = new URL(req.url)
 
     const take = Number(searchParams.get('size')) || 10
@@ -14,14 +14,32 @@ export async function GET(req: Request) {
     const statuses = searchParams.get('status') || ''
     const sortBy = searchParams.get('sortBy') || ''
     const sort = searchParams.get('sort') || ''
+    const tournamentId = searchParams.get('tournamentId') || ''
     const results = searchParams.get('results') || ''
-    const orderBy: {[x: string]: string} = (sort && sortBy) ? { [sortBy]: sort } : { startedAt: 'asc' }
+    const orderBy: any = (sort && sortBy) ? [{ [sortBy]: sort }] : [{ startedAt: 'asc' }]
+    const adminOrderBy = [
+      {
+        endedAt: 'asc',
+      },
+      {
+        status: 'desc',
+      },
+      {
+        startedAt: 'asc',
+      },
+      {
+        streamChannel: 'asc',
+      }
+    ]
 
     const data = await prisma.match.findMany({
       take,
       skip: page ? (page - 1) * take : 0,
-      orderBy,
+      orderBy: isAdmin ? adminOrderBy: orderBy,
       where: {
+        ...(tournamentId && {
+          tournamentId: Number(tournamentId),
+        }),
         ...(statuses && {
           status: {
             in: statuses?.split(',').map(s => s.toUpperCase()) as Array<MatchStatus>,
@@ -34,6 +52,7 @@ export async function GET(req: Request) {
         endedAt: true,
         status: true,
         streamChannel: true,
+        format: true,
         competitors: {
           orderBy: {
             order: 'asc',
@@ -41,8 +60,10 @@ export async function GET(req: Request) {
           select: {
             order: true,
             score: true,
+            competitorId: true,
             competitor: {
               select: {
+                id: true,
                 nickname: true,
               },
             },
