@@ -35,6 +35,10 @@ export async function GET() {
 
     const filteredCompetitors = competitors.filter(competitor => Boolean(competitor.ufcStats.length))
 
+    if (filteredCompetitors.length === 0) {
+      return
+    }
+
     const result = filteredCompetitors.map(competitor => {
       const currentStats = competitor.ufcStats[0]
       const { wins, games } = currentStats
