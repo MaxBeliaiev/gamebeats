@@ -34,6 +34,9 @@ export async function GET() {
     })
 
     const filteredCompetitors = competitors.filter(competitor => Boolean(competitor.ufcStats.length))
+    if (filteredCompetitors.length === 0) {
+      return NextResponse.json({ resp: 'No new rating' })
+    }
 
     const result = filteredCompetitors.map(competitor => {
       const currentStats = competitor.ufcStats[0]
