@@ -9,8 +9,6 @@ import { Plus } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import PageLayout from '@/components/page-layout'
 import { Tournament } from '@prisma/client'
-import { useEffect } from 'react'
-import axios from 'axios'
 
 interface TournamentsClientProps {
   data: Tournament[]

@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/db'
-import {getUtcStartOfMonth} from "@/lib/helpers/date";
 import {CompetitorStatus} from "@prisma/client";
 import { revalidatePath } from 'next/cache'
+import { getStartPeriod } from '@/lib/helpers/ufcStats'
 
 export async function GET() {
   try {
@@ -18,7 +18,7 @@ export async function GET() {
         nickname: true,
         ufcStats: {
           where: {
-            periodStartedAt: getUtcStartOfMonth()
+            periodStartedAt: getStartPeriod()
           },
           select: {
             wins: true,
