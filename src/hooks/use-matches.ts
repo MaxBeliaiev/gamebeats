@@ -3,11 +3,9 @@ import axios from 'axios'
 
 const fetchMatches = async (params: any) => {
   const searchParams = new URLSearchParams(params);
-  const { data: { data } } = await axios(`/api/matches?${searchParams.toString()}`)
+  const data = await axios(`/api/matches?${searchParams.toString()}`)
 
-  console.log('FETCHING with ', params.page)
-
-  return data
+  return data.data
 }
 
 interface UseMatchesParams {
@@ -22,6 +20,7 @@ const useMatches = (params: UseMatchesParams) => {
     queryKey: ['matches', queryParams],
     queryFn: () => fetchMatches(queryParams),
     initialData,
+    refetchOnMount: true,
     keepPreviousData: true,
   })
 }

@@ -32,20 +32,26 @@ export async function GET(req: Request) {
       }
     ]
 
+    const query = {
+      ...(tournamentId && {
+        tournamentId: Number(tournamentId),
+      }),
+      ...(statuses && {
+        status: {
+          in: statuses?.split(',').map(s => s.toUpperCase()) as Array<MatchStatus>,
+        },
+      }),
+    }
+
+    const count = await prisma.match.count({
+      where: query,
+    })
+
     const data = await prisma.match.findMany({
       take,
       skip: page ? (page - 1) * take : 0,
       orderBy: isAdmin ? adminOrderBy: orderBy,
-      where: {
-        ...(tournamentId && {
-          tournamentId: Number(tournamentId),
-        }),
-        ...(statuses && {
-          status: {
-            in: statuses?.split(',').map(s => s.toUpperCase()) as Array<MatchStatus>,
-          },
-        }),
-      },
+      where: query,
       select: {
         id: true,
         startedAt: true,
@@ -84,7 +90,7 @@ export async function GET(req: Request) {
       },
     })
 
-    return NextResponse.json({ data, cached: new Date() })
+    return NextResponse.json({ data, cached: new Date(), pagination: { total: count } })
   } catch (error) {
     console.log('[MATCHES_GET]', error)
     return new NextResponse('Internal error', { status: 500 })

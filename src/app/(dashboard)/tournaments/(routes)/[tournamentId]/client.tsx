@@ -5,8 +5,6 @@ import { Separator } from '@/components/ui/separator'
 import TournamentStatusButtons from '@/app/(dashboard)/tournaments/components/tournament-status-buttons'
 import { DataTable } from '@/components/ui/data-table'
 import { getMatchColumns } from '@/app/(dashboard)/tournaments/(routes)/[tournamentId]/columns'
-import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
 import useStore from '@/lib/store'
 import { useMatches } from '@/hooks/use-matches'
 import { DEFAULT_MATCHES_PAGE_SIZE } from '@/lib/constants/matches'
@@ -20,20 +18,14 @@ const TournamentPageClient = ({ tournament }: TournamentPageClientProps) => {
     currentPage: state.ufc.matches.pagination.page,
     setPage: state.ufc.matches.setPage,
   }))
-  const { data = [], isFetchedAfterMount} = useMatches({
+  const { data: { data: matches = [], pagination }, isFetchedAfterMount} = useMatches({
     queryParams: {
       tournamentId: tournament.id,
       page: currentPage,
       size: DEFAULT_MATCHES_PAGE_SIZE,
     },
-    initialData: tournament.matches
+    initialData: { data: [], pagination: { total: 0 } }
   })
-
-  // useEffect(() => {
-  //   if (isFetchedAfterMount) {
-  //     window.scrollTo(0, 0)
-  //   }
-  // }, [isFetchedAfterMount])
 
   return (
     <PageLayout>
@@ -44,9 +36,9 @@ const TournamentPageClient = ({ tournament }: TournamentPageClientProps) => {
       <Separator />
       <DataTable
         columns={getMatchColumns(tournament)}
-        data={data}
+        data={matches}
         pageSize={DEFAULT_MATCHES_PAGE_SIZE}
-        pageCount={tournament.matches.length / DEFAULT_MATCHES_PAGE_SIZE}
+        pageCount={pagination.total / DEFAULT_MATCHES_PAGE_SIZE}
         page={currentPage}
         manualPagination
         onPreviousPageClick={() => {
