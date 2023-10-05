@@ -13,6 +13,7 @@ import { useUpdateMatchModal } from '@/hooks/use-update-match-modal'
 import WithTooltip from '@/components/ui/with-tooltip'
 import { Button } from '@/components/ui/button'
 import { getAxiosErrorMessage } from '@/lib/utils'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface MatchActionsProps {
   match: any
@@ -57,6 +58,7 @@ const MatchStatusButton = ({
   const cannotStart =
     startedAt > new Date() || tournament.status === TournamentStatus.UPCOMING
   const router = useRouter()
+  const queryClient = useQueryClient()
   const handleUpdateMatchStatus = async (status: string) => {
     const agree = confirm(
       `Are you sure you want to change match status to ${status}?`
@@ -66,6 +68,7 @@ const MatchStatusButton = ({
         await axios.patch(`/api/matches/${id}`, {
           status,
         })
+        await queryClient.invalidateQueries({ queryKey: ['matches'] })
         router.refresh()
         toast.success(`Match has been successfully updated!`)
       } catch (e: any) {
@@ -97,11 +100,14 @@ const MatchStatusButton = ({
 const MatchDeleteButton = ({ match: { id, status } }: { match: any }) => {
   const notUpcoming = status !== MatchStatus.UPCOMING
   const router = useRouter()
+  const queryClient = useQueryClient()
   const handleClick = async () => {
     const agree = confirm(`Are you sure you want to delete this match?`)
     if (agree) {
       try {
         await axios.delete(`/api/matches/${id}`)
+        await queryClient.invalidateQueries({ queryKey: ['matches'] })
+
         router.refresh()
         toast.success(`Match has been successfully deleted!`)
       } catch (e: any) {
