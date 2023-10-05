@@ -31,7 +31,7 @@ const MatchActions = ({ match, tournament }: MatchActionsProps) => {
     <div className="flex items-center justify-end gap-0.5">
       <MatchStatusButton match={match} tournament={tournament} />
       <WithTooltip
-        text="Cannot edit Ongoing match"
+        text="Cannot edit Ongoing or Finished match"
         hidden={!cannotEdit}
       >
         <Button

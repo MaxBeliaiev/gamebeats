@@ -5,7 +5,8 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
-  getPaginationRowModel, Row,
+  getPaginationRowModel,
+  Row,
 } from '@tanstack/react-table'
 
 import {
@@ -22,22 +23,41 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
   onRowClick?: (row: Row<TData>) => void
   rowClassName?: string
+  page?: number
+  pageCount?: number
+  pageSize?: number
+  onPreviousPageClick?: () => void
+  onNextPageClick?: () => void
+  manualPagination?: boolean
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   onRowClick,
-                                           rowClassName
+  rowClassName,
+  onPreviousPageClick,
+  onNextPageClick,
+  pageCount,
+  page,
+  pageSize = 30,
+  manualPagination = false,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
     initialState: {
       pagination: {
-        pageSize: 30
-      }
+        pageSize,
+        ...(page && {
+          pageIndex: page - 1,
+        }),
+      },
     },
+    ...(pageCount && {
+      pageCount
+    }),
+    manualPagination,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   })
@@ -100,7 +120,10 @@ export function DataTable<TData, TValue>({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => table.previousPage()}
+          onClick={() => {
+            table.previousPage()
+            onPreviousPageClick && onPreviousPageClick()
+          }}
           disabled={!table.getCanPreviousPage()}
         >
           Previous
@@ -108,7 +131,10 @@ export function DataTable<TData, TValue>({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => table.nextPage()}
+          onClick={() => {
+            table.nextPage()
+            onNextPageClick && onNextPageClick()
+          }}
           disabled={!table.getCanNextPage()}
         >
           Next

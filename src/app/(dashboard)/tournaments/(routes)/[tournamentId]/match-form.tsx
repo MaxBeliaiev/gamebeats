@@ -29,10 +29,14 @@ import {
 } from '@/components/ui/select'
 import * as React from 'react'
 import { STREAM_CHANNELS } from '@/lib/constants/matches'
+import { useQueryClient } from '@tanstack/react-query'
+import { parseISO } from 'date-fns'
 
 interface MatchFormProps {
   initialData?: Match & {
     competitors: Array<MatchesOnCompetitors>
+  } & {
+    startedAt: Date | string
   }
   tournamentId?: number
   competitors: Array<{
@@ -50,6 +54,7 @@ export function MatchForm({
   tournamentId,
   onSuccess,
 }: MatchFormProps) {
+  const queryClient = useQueryClient()
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const toastMessage = initialData ? 'Match updated!' : 'Match created!'
@@ -58,6 +63,7 @@ export function MatchForm({
     defaultValues: initialData
       ? {
           ...initialData,
+          startedAt: typeof initialData.startedAt === 'string' ? parseISO(initialData.startedAt) : initialData.startedAt,
           competitorOne: String(initialData.competitors[0]?.competitorId),
           competitorTwo: String(initialData.competitors[1]?.competitorId),
         }
@@ -73,6 +79,7 @@ export function MatchForm({
       } else {
         await axios.post(`/api/matches`, { ...values, tournamentId })
       }
+      await queryClient.invalidateQueries({ queryKey: ['matches'] })
       router.refresh()
       toast.success(toastMessage)
       onSuccess && onSuccess()
