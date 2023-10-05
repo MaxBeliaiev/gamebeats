@@ -34,6 +34,7 @@ export const finishUfcGame = async (props: {
     })
     .parse(props)
 
+
   return prisma.$transaction(async (tx) => {
     const updatedGame = await tx.game.update({
       where: {
