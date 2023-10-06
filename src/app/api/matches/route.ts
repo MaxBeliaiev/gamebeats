@@ -6,7 +6,6 @@ import { MatchStatus } from '@prisma/client'
 
 export async function GET(req: Request) {
   try {
-    let isAdmin = Boolean(getAuthSession())
     const { searchParams } = new URL(req.url)
 
     const take = Number(searchParams.get('size')) || 10
@@ -16,6 +15,8 @@ export async function GET(req: Request) {
     const sort = searchParams.get('sort') || ''
     const tournamentId = searchParams.get('tournamentId') || ''
     const results = searchParams.get('results') || ''
+    const external = searchParams.get('external') || ''
+    const isAdmin = !external && Boolean(getAuthSession())
     const orderBy: any = (sort && sortBy) ? [{ [sortBy]: sort }] : [{ startedAt: 'asc' }]
     const adminOrderBy = [
       {
@@ -42,10 +43,6 @@ export async function GET(req: Request) {
         },
       }),
     }
-
-    const count = await prisma.match.count({
-      where: query,
-    })
 
     const data = await prisma.match.findMany({
       take,
@@ -90,7 +87,20 @@ export async function GET(req: Request) {
       },
     })
 
-    return NextResponse.json({ data, cached: new Date(), isAdmin, pagination: { total: count } })
+    const response= {
+      data,
+      cached: new Date(),
+      isAdmin,
+      ...( isAdmin && {
+        pagination: {
+          total: await prisma.match.count({
+            where: query,
+          })
+        }
+      })
+    }
+
+    return NextResponse.json(response)
   } catch (error) {
     console.log('[MATCHES_GET]', error)
     return new NextResponse('Internal error', { status: 500 })
