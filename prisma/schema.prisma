@@ -187,7 +187,7 @@ enum UfcEndMethods {
 
 model UfcResultDetails {
   id        Int           @id @default(autoincrement())
-  gameId    Int
+  gameId    Int           @unique
   endMethod UfcEndMethods @default(DEC)
   round     Int
   endTime   String
