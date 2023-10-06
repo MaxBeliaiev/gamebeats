@@ -90,7 +90,7 @@ export async function GET(req: Request) {
       },
     })
 
-    return NextResponse.json({ data, cached: new Date(), pagination: { total: count } })
+    return NextResponse.json({ data, cached: new Date(), isAdmin, pagination: { total: count } })
   } catch (error) {
     console.log('[MATCHES_GET]', error)
     return new NextResponse('Internal error', { status: 500 })

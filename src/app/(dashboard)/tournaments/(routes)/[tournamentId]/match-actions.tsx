@@ -1,4 +1,4 @@
-import { CheckSquare, Pencil, Play, StopCircle } from 'lucide-react'
+import { Pencil, Play } from 'lucide-react'
 import {
   Match,
   MatchStatus,
