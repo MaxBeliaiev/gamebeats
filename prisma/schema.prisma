@@ -120,9 +120,10 @@ model Tournament {
 }
 
 enum MatchStatus {
-  UPCOMING
   ONGOING
+  UPCOMING
   FINISHED
+  CANCELED
 }
 
 enum MatchFormat {
@@ -155,6 +156,7 @@ enum GameStatus {
   ONGOING
   UPCOMING
   FINISHED
+  CANCELED
 }
 
 model Game {

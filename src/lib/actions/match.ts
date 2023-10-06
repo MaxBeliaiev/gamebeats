@@ -1,7 +1,8 @@
 'use server'
-import { Match, MatchStatus } from '@prisma/client'
+import { GameStatus, Match, MatchStatus } from '@prisma/client'
 import { prisma } from '@/db'
 import { PrismaClientCommon } from '@/lib/types'
+import { NextResponse } from 'next/server'
 
 export const finishMatch = async (
   match: Match,
@@ -22,4 +23,44 @@ export const finishMatch = async (
   } catch (e: any) {
     throw e
   }
+}
+
+export const cancelMatch = async (
+  id: number,
+  client: PrismaClientCommon = prisma
+) => {
+ return prisma.$transaction(async (tx) => {
+    try {
+      await tx.match.update({
+        data: {
+          status: MatchStatus.CANCELED,
+        },
+        where: {
+          id,
+        },
+      })
+
+      const game = await tx.game.findFirst({
+        where: {
+          matchId: id,
+        }
+      })
+
+      if (game) {
+        await tx.game.update({
+          where: {
+            id: game.id
+          },
+          data: {
+            status: GameStatus.CANCELED,
+          }
+        })
+      }
+
+      return NextResponse.json(id)
+
+    } catch (e: any) {
+      throw e
+    }
+  })
 }

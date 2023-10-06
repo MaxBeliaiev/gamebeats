@@ -10,6 +10,7 @@ import { useMatches } from '@/hooks/use-matches'
 import { DEFAULT_MATCHES_PAGE_SIZE } from '@/lib/constants/matches'
 import { useEffect } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { Match, MatchStatus, Tournament } from '@prisma/client'
 
 interface TournamentPageClientProps {
   tournament: any

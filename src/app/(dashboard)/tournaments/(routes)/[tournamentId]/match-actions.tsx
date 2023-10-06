@@ -1,4 +1,4 @@
-import { Pencil, Play } from 'lucide-react'
+import { Pencil, Play, XOctagon } from 'lucide-react'
 import {
   Match,
   MatchStatus,
@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button'
 import { getAxiosErrorMessage } from '@/lib/utils'
 import { useQueryClient } from '@tanstack/react-query'
 import { parseISO } from 'date-fns'
+import { cancelMatch } from '@/lib/actions/match'
 
 interface MatchActionsProps {
   match: any
@@ -45,6 +46,11 @@ const MatchActions = ({ match, tournament }: MatchActionsProps) => {
         </Button>
       </WithTooltip>
       <MatchDeleteButton match={match} />
+      {
+        match.status === MatchStatus.ONGOING && (
+          <MatchCancelButton match={match} />
+        )
+      }
     </div>
   )
 }
@@ -124,6 +130,41 @@ const MatchDeleteButton = ({ match: { id, status } }: { match: any }) => {
       hidden={!notUpcoming}
     >
       <DeleteButton onClick={handleClick} disabled={notUpcoming} />
+    </WithTooltip>
+  )
+}
+
+const MatchCancelButton = ({ match: { id, status } }: { match: any }) => {
+  const notOngoing = status !== MatchStatus.ONGOING
+  const router = useRouter()
+  const queryClient = useQueryClient()
+  const handleClick = async () => {
+    const agree = confirm(`Are you sure you want to cancel this match?`)
+    if (agree) {
+      try {
+        await cancelMatch(id)
+        await queryClient.invalidateQueries({ queryKey: ['matches'] })
+        router.refresh()
+        toast.success(`Match has been successfully canceled!`)
+      } catch (e: any) {
+        toast.error(getAxiosErrorMessage(e))
+      }
+    }
+  }
+
+  return (
+    <WithTooltip
+      text="Cancel"
+      hidden={notOngoing}
+    >
+    <WithTooltip
+      text="Only Ongoing matches can be canceled"
+      hidden={!notOngoing}
+    >
+      <Button variant='ghost' onClick={handleClick} disabled={notOngoing}>
+        <XOctagon color="black" />
+      </Button>
+    </WithTooltip>
     </WithTooltip>
   )
 }
