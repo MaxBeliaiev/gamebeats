@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { formatDateTime } from '@/lib/date-utils'
 import MatchBadge from '@/app/(dashboard)/tournaments/components/match-badge'
 import ActionsHeader from '@/app/(dashboard)/tournaments/(routes)/[tournamentId]/actions-header'
-import MatchActions from '@/app/(dashboard)/tournaments/(routes)/[tournamentId]/actions'
+import MatchActions from '@/app/(dashboard)/tournaments/(routes)/[tournamentId]/match-actions'
 import { Tournament } from '@prisma/client'
 import { streamLinks } from '@/lib/constants/matches'
 

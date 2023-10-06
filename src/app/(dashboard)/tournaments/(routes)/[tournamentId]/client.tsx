@@ -8,6 +8,8 @@ import { getMatchColumns } from '@/app/(dashboard)/tournaments/(routes)/[tournam
 import useStore from '@/lib/store'
 import { useMatches } from '@/hooks/use-matches'
 import { DEFAULT_MATCHES_PAGE_SIZE } from '@/lib/constants/matches'
+import { useEffect } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 interface TournamentPageClientProps {
   tournament: any
@@ -26,6 +28,18 @@ const TournamentPageClient = ({ tournament }: TournamentPageClientProps) => {
     },
     initialData: { data: [], pagination: { total: 0 } }
   })
+
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const queryPage = searchParams.get('page')
+
+  useEffect(() => {
+    if (queryPage !== null) {
+      setPage(Number(queryPage))
+      router.replace(pathname)
+    }
+  }, [queryPage, pathname, setPage, router])
 
   return (
     <PageLayout>

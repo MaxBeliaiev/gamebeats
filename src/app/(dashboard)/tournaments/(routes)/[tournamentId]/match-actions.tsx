@@ -14,6 +14,7 @@ import WithTooltip from '@/components/ui/with-tooltip'
 import { Button } from '@/components/ui/button'
 import { getAxiosErrorMessage } from '@/lib/utils'
 import { useQueryClient } from '@tanstack/react-query'
+import { parseISO } from 'date-fns'
 
 interface MatchActionsProps {
   match: any
@@ -52,11 +53,12 @@ const MatchStatusButton = ({
   match: { id, status, startedAt },
   tournament,
 }: {
-  match: Match
+  match: Match & {
+    startedAt: string
+  }
   tournament: Tournament
 }) => {
-  const cannotStart =
-    startedAt > new Date() || tournament.status === TournamentStatus.UPCOMING
+  const cannotStart = parseISO(startedAt) > new Date() || tournament.status === TournamentStatus.UPCOMING
   const router = useRouter()
   const queryClient = useQueryClient()
   const handleUpdateMatchStatus = async (status: string) => {

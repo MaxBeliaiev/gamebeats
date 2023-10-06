@@ -64,7 +64,7 @@ const GameStatusButton = ({ game, match }: { match: Match; game: Game }) => {
   if (status === GameStatus.UPCOMING) {
     return (
       <WithTooltip
-        text="Cannot start match if match is Upcoming"
+        text="Cannot start game if match is Upcoming"
         hidden={!cannotStart}
       >
         <Button
