@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/update-daily-ufc-ranking",
-      "schedule": "15 18 * * *"
+      "schedule": "* 20-22 * * *"
     }
   ]
 }
