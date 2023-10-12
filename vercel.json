@@ -6,23 +6,23 @@
     },
     {
       "path": "/api/update-daily-ufc-ranking",
-      "schedule": "15 14 * * *"
+      "schedule": "15 12 * * *"
     },
     {
       "path": "/api/update-daily-ufc-ranking",
-      "schedule": "25 15 * * *"
+      "schedule": "25 13 * * *"
     },
     {
       "path": "/api/update-daily-ufc-ranking",
-      "schedule": "55 16 * * *"
+      "schedule": "55 14 * * *"
     },
     {
       "path": "/api/update-daily-ufc-ranking",
-      "schedule": "05 18 * * *"
+      "schedule": "05 16 * * *"
     },
     {
       "path": "/api/update-daily-ufc-ranking",
-      "schedule": "15 19 * * *"
+      "schedule": "15 17 * * *"
     }
   ]
 }
