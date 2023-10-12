@@ -2,7 +2,27 @@
   "crons": [
     {
       "path": "/api/update-daily-ufc-ranking",
-      "schedule": "0 11-19 * * *"
+      "schedule": "5 11 * * *"
+    },
+    {
+      "path": "/api/update-daily-ufc-ranking",
+      "schedule": "15 14 * * *"
+    },
+    {
+      "path": "/api/update-daily-ufc-ranking",
+      "schedule": "25 15 * * *"
+    },
+    {
+      "path": "/api/update-daily-ufc-ranking",
+      "schedule": "55 16 * * *"
+    },
+    {
+      "path": "/api/update-daily-ufc-ranking",
+      "schedule": "05 18 * * *"
+    },
+    {
+      "path": "/api/update-daily-ufc-ranking",
+      "schedule": "15 19 * * *"
     }
   ]
 }
