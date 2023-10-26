@@ -142,7 +142,7 @@ const MatchCancelButton = ({ match: { id, status } }: { match: any }) => {
     const agree = confirm(`Are you sure you want to cancel this match?`)
     if (agree) {
       try {
-        await cancelMatch(id)
+        await cancelMatch(Number(id))
         await queryClient.invalidateQueries({ queryKey: ['matches'] })
         router.refresh()
         toast.success(`Match has been successfully canceled!`)
