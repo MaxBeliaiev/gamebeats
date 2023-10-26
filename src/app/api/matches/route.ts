@@ -20,10 +20,10 @@ export async function GET(req: Request) {
     const orderBy: any = (sort && sortBy) ? [{ [sortBy]: sort }] : [{ startedAt: 'asc' }]
     const adminOrderBy = [
       {
-        endedAt: 'asc',
+        status: 'asc',
       },
       {
-        status: 'desc',
+        endedAt: 'asc',
       },
       {
         startedAt: 'asc',
