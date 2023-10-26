@@ -39,7 +39,7 @@ const TournamentStatusButtons = ({ tournament: { id, name, disciplineId, started
 
   const cannotFinish = !Boolean(matches.length) || matches.some(
     (match: Match) =>
-      match.status !== MatchStatus.FINISHED
+      match.status !== MatchStatus.FINISHED && match.status !== MatchStatus.CANCELED
   )
 
   const hasNotOnlyUpcomingMatches = matches.some(

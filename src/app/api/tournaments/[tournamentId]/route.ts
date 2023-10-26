@@ -70,7 +70,7 @@ export async function PUT(
         )
       } else if (
         status === TournamentStatus.FINISHED &&
-        matches.some((match) => match.status !== MatchStatus.FINISHED)
+        matches.some((match) => match.status !== MatchStatus.FINISHED && match.status !== MatchStatus.CANCELED)
       ) {
         return new NextResponse(
           'Cannot finish tournament with unfinished matches in it',
