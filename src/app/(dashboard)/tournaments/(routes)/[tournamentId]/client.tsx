@@ -50,14 +50,17 @@ const TournamentPageClient = ({ tournament }: TournamentPageClientProps) => {
       </div>
       <Separator />
       <DataTable
+        wrapperClassName='overflow-visible'
         columns={getMatchColumns(tournament)}
         data={matches}
         pageSize={DEFAULT_MATCHES_PAGE_SIZE}
         pageCount={pagination.total / DEFAULT_MATCHES_PAGE_SIZE}
         page={currentPage}
         manualPagination
+        headersConfig={{
+          actions: { className: 'sticky top-3'}
+        }}
         onPageChange={(page: number) => {
-          console.log('PAGE ', page)
           window.scrollTo(0, 0)
           setPage(page)
         }}

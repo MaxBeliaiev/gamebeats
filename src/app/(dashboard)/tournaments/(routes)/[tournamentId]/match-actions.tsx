@@ -16,6 +16,7 @@ import { getAxiosErrorMessage } from '@/lib/utils'
 import { useQueryClient } from '@tanstack/react-query'
 import { parseISO } from 'date-fns'
 import { cancelMatch } from '@/lib/actions/match'
+import moment from 'moment/moment'
 
 interface MatchActionsProps {
   match: any
@@ -64,7 +65,8 @@ const MatchStatusButton = ({
   }
   tournament: Tournament
 }) => {
-  const cannotStart = parseISO(startedAt) > new Date() || tournament.status === TournamentStatus.UPCOMING
+  const cannotStart = moment(parseISO(startedAt)).subtract(2, 'minutes').toDate() > new Date()
+    || tournament.status === TournamentStatus.UPCOMING
   const router = useRouter()
   const queryClient = useQueryClient()
   const handleUpdateMatchStatus = async (status: string) => {
