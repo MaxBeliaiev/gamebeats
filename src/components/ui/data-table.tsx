@@ -17,6 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { DataTablePagination } from '@/components/ui/data-table-pagination'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -28,6 +29,7 @@ interface DataTableProps<TData, TValue> {
   pageSize?: number
   onPreviousPageClick?: () => void
   onNextPageClick?: () => void
+  onPageChange?: (page: number) => void
   manualPagination?: boolean
 }
 
@@ -38,6 +40,7 @@ export function DataTable<TData, TValue>({
   rowClassName,
   onPreviousPageClick,
   onNextPageClick,
+  onPageChange,
   pageCount,
   page,
   pageSize = 30,
@@ -123,28 +126,12 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            table.previousPage()
-            onPreviousPageClick && onPreviousPageClick()
-          }}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            table.nextPage()
-            onNextPageClick && onNextPageClick()
-          }}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
+        <DataTablePagination
+          table={table}
+          onNextPageClick={onNextPageClick}
+          onPreviousPageClick={onPreviousPageClick}
+          onPageChange={onPageChange}
+        />
       </div>
     </div>
   )

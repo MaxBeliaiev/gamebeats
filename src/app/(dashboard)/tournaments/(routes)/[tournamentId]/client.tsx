@@ -56,6 +56,11 @@ const TournamentPageClient = ({ tournament }: TournamentPageClientProps) => {
         pageCount={pagination.total / DEFAULT_MATCHES_PAGE_SIZE}
         page={currentPage}
         manualPagination
+        onPageChange={(page: number) => {
+          console.log('PAGE ', page)
+          window.scrollTo(0, 0)
+          setPage(page)
+        }}
         onPreviousPageClick={() => {
           window.scrollTo(0, 0)
           setPage(currentPage - 1)
