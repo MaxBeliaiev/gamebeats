@@ -7,7 +7,7 @@ const ActionsHeader = () => {
   const createMatchModal = useCreateMatchModal()
 
   return (
-    <div className="flex items-center justify-end">
+    <div className="flex items-center justify-end sticky top-0">
       <Button className="self-end" onClick={createMatchModal.open}>
         <Plus className="mr-1" size={20} />
         Add match

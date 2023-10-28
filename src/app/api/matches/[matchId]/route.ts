@@ -78,7 +78,6 @@ export async function PATCH(
     const body = await req.json()
     const { status } = matchPatchReqSchema.parse(body)
 
-    const currentTime = new Date()
     return await prisma.$transaction(async (tx) => {
       const match = await tx.match.update({
         where: {
