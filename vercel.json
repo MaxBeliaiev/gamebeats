@@ -23,6 +23,14 @@
     {
       "path": "/api/update-daily-ufc-ranking",
       "schedule": "15 17 * * *"
+    },
+    {
+      "path": "/api/update-daily-ufc-ranking",
+      "schedule": "25 18 * * *"
+    },
+    {
+      "path": "/api/update-daily-ufc-ranking",
+      "schedule": "35 19 * * *"
     }
   ]
 }
