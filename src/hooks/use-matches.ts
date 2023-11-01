@@ -10,15 +10,28 @@ const fetchMatches = async (params: any) => {
 
 interface UseMatchesParams {
   queryParams: { tournamentId?: number, page?: number, size?: number }
+  filters: any
   initialData: any
 }
 
 const useMatches = (params: UseMatchesParams) => {
-  const { queryParams, initialData } = params
+  const { queryParams, initialData, filters } = params
+  const formattedParams: any = {
+    ...queryParams
+  }
+
+  if (filters) {
+    if (filters.from) {
+      formattedParams.startedFrom = filters.from.toISOString()
+    }
+    if (filters.to) {
+      formattedParams.startedTo = filters.to.toISOString()
+    }
+  }
 
   return useQuery({
-    queryKey: ['matches', queryParams],
-    queryFn: () => fetchMatches(queryParams),
+    queryKey: ['matches', formattedParams],
+    queryFn: () => fetchMatches(formattedParams),
     initialData,
     refetchOnMount: true,
     keepPreviousData: true,
