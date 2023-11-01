@@ -16,6 +16,8 @@ export async function GET(req: Request) {
     const tournamentId = searchParams.get('tournamentId') || ''
     const results = searchParams.get('results') || ''
     const external = searchParams.get('external') || ''
+    const startedFrom = searchParams.get('startedFrom') || ''
+    const startedTo = searchParams.get('startedTo') || ''
     const isAdmin = !external && Boolean(getAuthSession())
     const orderBy: any = (sort && sortBy) ? [{ [sortBy]: sort }] : [{ startedAt: 'asc' }]
     const adminOrderBy = [
@@ -33,6 +35,10 @@ export async function GET(req: Request) {
       }
     ]
 
+    const startedAtQuery = startedFrom ?
+        startedTo ? { startedAt: { gte: startedFrom, lte: startedTo } } : { startedAt: startedFrom }
+        : {}
+
     const query = {
       ...(tournamentId && {
         tournamentId: Number(tournamentId),
@@ -42,6 +48,7 @@ export async function GET(req: Request) {
           in: statuses?.split(',').map(s => s.toUpperCase()) as Array<MatchStatus>,
         },
       }),
+      ...startedAtQuery,
     }
 
     const data = await prisma.match.findMany({

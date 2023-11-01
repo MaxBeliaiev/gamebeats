@@ -8,25 +8,28 @@ import { getMatchColumns } from '@/app/(dashboard)/tournaments/(routes)/[tournam
 import useStore from '@/lib/store'
 import { useMatches } from '@/hooks/use-matches'
 import { DEFAULT_MATCHES_PAGE_SIZE } from '@/lib/constants/matches'
-import { useEffect } from 'react'
+import {useEffect, useState} from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Match, MatchStatus, Tournament } from '@prisma/client'
+import Filters from "@/app/(dashboard)/tournaments/(routes)/[tournamentId]/filters";
 
 interface TournamentPageClientProps {
   tournament: any
 }
 
 const TournamentPageClient = ({ tournament }: TournamentPageClientProps) => {
-  const { currentPage, setPage } = useStore((state) => ({
+  const { currentPage, setPage} = useStore((state) => ({
     currentPage: state.ufc.matches.pagination.page,
     setPage: state.ufc.matches.setPage,
   }))
+  const [filters, setFilters] = useState(null)
   const { data: { data: matches = [], pagination }, isFetchedAfterMount} = useMatches({
     queryParams: {
       tournamentId: tournament.id,
       page: currentPage,
       size: DEFAULT_MATCHES_PAGE_SIZE,
     },
+    filters,
     initialData: { data: [], pagination: { total: 0 } }
   })
 
@@ -34,6 +37,9 @@ const TournamentPageClient = ({ tournament }: TournamentPageClientProps) => {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const queryPage = searchParams.get('page')
+  const handleApplyFilters = (values: any) => {
+    setFilters(values)
+  }
 
   useEffect(() => {
     if (queryPage !== null) {
@@ -46,6 +52,7 @@ const TournamentPageClient = ({ tournament }: TournamentPageClientProps) => {
     <PageLayout>
       <div className="flex justify-between items-center">
         <Heading text={tournament.name} />
+        <Filters onApply={handleApplyFilters} />
         <TournamentStatusButtons tournament={tournament} />
       </div>
       <Separator />

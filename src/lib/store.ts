@@ -15,6 +15,7 @@ type AppState = {
   }
 }
 
+
 const useStore = create<AppState>()(set => ({
   ufc: {
     liveResultsForm: {
