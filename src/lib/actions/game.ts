@@ -59,6 +59,7 @@ export const finishUfcGame = async (props: {
             games: true,
             tournament: {
               select: {
+                id: true,
                 disciplineId: true,
               },
             },
@@ -78,7 +79,7 @@ export const finishUfcGame = async (props: {
 
     const { match } = updatedGame
     const {
-      tournament: { disciplineId },
+      tournament: { disciplineId, id: tournamentId },
       id: matchId,
       competitors,
     } = match
@@ -102,8 +103,8 @@ export const finishUfcGame = async (props: {
       })
     }
 
-    const startOfCurrentPeriod = getStartPeriod()
     // Update competitors' stats
+    const startOfCurrentPeriod = getStartPeriod()
     if (disciplineId === Discipline.UFC) {
       if (winnerId) {
         // Update winner stats
@@ -114,6 +115,7 @@ export const finishUfcGame = async (props: {
           where: {
             competitorId: winnerId,
             periodStartedAt: startOfCurrentPeriod,
+            tournamentId,
           }
         })
 
@@ -139,6 +141,7 @@ export const finishUfcGame = async (props: {
             data: {
               periodStartedAt: startOfCurrentPeriod,
               competitorId: winnerId,
+              tournamentId,
               wins: 1,
               games: 1,
               [incrementWinStat]: 1,
@@ -151,6 +154,7 @@ export const finishUfcGame = async (props: {
           where: {
             competitorId: loserId,
             periodStartedAt: startOfCurrentPeriod,
+            tournamentId,
           }
         })
 
@@ -173,6 +177,7 @@ export const finishUfcGame = async (props: {
             data: {
               periodStartedAt: startOfCurrentPeriod,
               competitorId: loserId,
+              tournamentId,
               losses: 1,
               games: 1,
             }
@@ -185,6 +190,7 @@ export const finishUfcGame = async (props: {
             where: {
               competitorId: id,
               periodStartedAt: startOfCurrentPeriod,
+              tournamentId,
             }
           })
 
@@ -207,6 +213,7 @@ export const finishUfcGame = async (props: {
               data: {
                 periodStartedAt: startOfCurrentPeriod,
                 competitorId: id,
+                tournamentId,
                 draws: 1,
                 games: 1,
               }
