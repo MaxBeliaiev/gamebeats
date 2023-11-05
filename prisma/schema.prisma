@@ -80,7 +80,7 @@ model Competitor {
   surname    String
   status     CompetitorStatus @default(ACTIVE)
   image      String?
-  imageSmall      String?
+  imageSmall String?
   country    String?
   birthDate  DateTime?
   archivedAt DateTime?
@@ -114,7 +114,8 @@ model Tournament {
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt @db.DateTime()
 
-  matches Match[] @relation("TournamentToMatch")
+  matches            Match[]              @relation("TournamentToMatch")
+  ufcCompetitorStats UfcCompetitorStats[] @relation("TournamentToUfcStats")
 
   @@index([disciplineId])
 }
@@ -201,23 +202,25 @@ model UfcResultDetails {
 }
 
 model UfcCompetitorStats {
-  id           Int       @id @default(autoincrement())
-  competitorId Int
-  games        Int       @default(0)
-  knockouts    Int       @default(0)
-  wins         Int       @default(0)
-  losses       Int       @default(0)
-  decisions    Int       @default(0)
-  submissions  Int       @default(0)
-  draws        Int       @default(0)
-  periodStartedAt DateTime @default(now())
-  updatedAt    DateTime? @updatedAt @db.DateTime()
+  id              Int       @id @default(autoincrement())
+  competitorId    Int
+  tournamentId    Int?
+  games           Int       @default(0)
+  knockouts       Int       @default(0)
+  wins            Int       @default(0)
+  losses          Int       @default(0)
+  decisions       Int       @default(0)
+  submissions     Int       @default(0)
+  draws           Int       @default(0)
+  periodStartedAt DateTime  @default(now())
+  updatedAt       DateTime? @updatedAt @db.DateTime()
 
-  @@unique([competitorId, periodStartedAt], name: "competitorId_periodStartedAt")
-
+  tournament Tournament? @relation("TournamentToUfcStats", fields: [tournamentId], references: [id], onDelete: Cascade)
   competitor Competitor? @relation("CompetitorToUfcStats", fields: [competitorId], references: [id], onDelete: Cascade)
 
+  @@unique([competitorId, periodStartedAt], name: "competitorId_periodStartedAt")
   @@index([competitorId])
+  @@index([tournamentId])
 }
 
 model MatchesOnCompetitors {
@@ -237,7 +240,7 @@ model MatchesOnCompetitors {
 
 model Data {
   id        Int      @id @default(autoincrement())
-  uniqueId  String  @unique
+  uniqueId  String   @unique
   json      Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @db.DateTime()

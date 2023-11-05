@@ -1,3 +1,3 @@
-import { getUtcStartOfWeek } from '@/lib/helpers/date'
+import { getUtcStartOfDay } from '@/lib/helpers/date'
 
-export const getStartPeriod = () => getUtcStartOfWeek()
+export const getStartPeriod = () => getUtcStartOfDay()
