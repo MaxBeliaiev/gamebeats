@@ -97,7 +97,7 @@ export const getMatchColumns = (tournament: Tournament): ColumnDef<any>[] => [
   },
   {
     id: 'actions',
-    header: () => <ActionsHeader />,
+    // header: () => <ActionsHeader />,
     cell: ({ row }) => (
       <MatchActions tournament={tournament} match={row.original} />
     ),

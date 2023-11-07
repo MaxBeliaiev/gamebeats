@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import toast from 'react-hot-toast'
-import Link from 'next/link'
+// import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import axios from 'axios'
+import { Button } from '@/components/ui/button'
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false)
@@ -29,12 +29,12 @@ export default function LoginForm() {
           router.push('/')
         }
       }}
-      className="flex flex-col space-y-4 bg-gray-50 px-4 py-8 sm:px-16"
+      className="flex flex-col space-y-4 px-4 py-8 sm:px-16"
     >
       <div>
         <label
           htmlFor="email"
-          className="block text-xs text-gray-600 uppercase"
+          className="block text-xs uppercase"
         >
           Email Address
         </label>
@@ -46,14 +46,14 @@ export default function LoginForm() {
           autoComplete="email"
           required
           className="mt-1 block w-full appearance-none rounded-md border
-          border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black
+          px-3 py-2 shadow-sm focus:border-black
           focus:outline-none focus:ring-black sm:text-sm"
         />
       </div>
       <div>
         <label
           htmlFor="password"
-          className="block text-xs text-gray-600 uppercase"
+          className="block text-xs uppercase"
         >
           Password
         </label>
@@ -62,26 +62,20 @@ export default function LoginForm() {
           name="password"
           type="password"
           required
-          className="mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
+          className="mt-1 block w-full appearance-none rounded-md border px-3 py-2
+           shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
         />
       </div>
-      <button
-        disabled={loading}
-        className={`${
-          loading
-            ? 'cursor-not-allowed border-gray-200 bg-gray-100'
-            : 'border-black bg-black text-white hover:bg-white hover:text-black'
-        } flex h-10 w-full items-center justify-center rounded-md border text-sm transition-all focus:outline-none`}
-      >
-        {loading ? <div>Logging in</div> : <p>Sign In</p>}
-      </button>
-      <p className="text-center text-sm text-gray-600">
-        Don&apos;t have an account?{' '}
-        <Link href="/register" className="font-semibold text-gray-800">
-          Sign up
-        </Link>{' '}
-        for free.
-      </p>
+      <Button disabled={loading}>
+        {loading ? 'Logging in' : 'Sign In'}
+      </Button>
+      {/*<p className="text-center text-sm">*/}
+      {/*  Don&apos;t have an account?{' '}*/}
+      {/*  <Link href="/register" className="font-semibold">*/}
+      {/*    Sign up*/}
+      {/*  </Link>{' '}*/}
+      {/*  for free.*/}
+      {/*</p>*/}
     </form>
   )
 }

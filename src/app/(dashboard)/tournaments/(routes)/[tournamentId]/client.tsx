@@ -12,6 +12,10 @@ import {useEffect, useState} from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Match, MatchStatus, Tournament } from '@prisma/client'
 import Filters from "@/app/(dashboard)/tournaments/(routes)/[tournamentId]/filters";
+import ActionsHeader from '@/app/(dashboard)/tournaments/(routes)/[tournamentId]/actions-header'
+import { Button } from '@/components/ui/button'
+import { Plus } from 'lucide-react'
+import { useCreateMatchModal } from '@/hooks/use-create-match-modal'
 
 interface TournamentPageClientProps {
   tournament: any
@@ -41,6 +45,8 @@ const TournamentPageClient = ({ tournament }: TournamentPageClientProps) => {
     setFilters(values)
   }
 
+  const createMatchModal = useCreateMatchModal()
+
   useEffect(() => {
     if (queryPage !== null) {
       setPage(Number(queryPage))
@@ -50,6 +56,11 @@ const TournamentPageClient = ({ tournament }: TournamentPageClientProps) => {
 
   return (
     <PageLayout>
+      <Button className="fixed bottom-[50px] right-[300px]" onClick={createMatchModal.open}>
+        <Plus className="mr-1" size={20} />
+        Add match
+      </Button>
+      {/*<ActionsHeader />*/}
       <div className="flex justify-between items-center">
         <Heading text={tournament.name} />
         <Filters onApply={handleApplyFilters} />
