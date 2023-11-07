@@ -2,14 +2,14 @@ import { PrismaClient } from '@prisma/client'
 import moment from 'moment/moment'
 const prisma = new PrismaClient()
 async function main() {
-  // const data = await prisma.ufcCompetitorStats.updateMany({
-  //   where: {
-  //     periodStartedAt: moment().utc().startOf('month').toDate(),
-  //   },
-  //   data: {
-  //     periodStartedAt: moment().utc().startOf('isoWeek').toDate()
-  //   }
-  // })
+  await prisma.match.updateMany({
+    where: {
+      tournamentId: 84,
+    },
+    data: {
+      tournamentId: 78
+    }
+  })
 }
 main()
   .then(async () => {
