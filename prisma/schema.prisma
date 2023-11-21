@@ -186,6 +186,7 @@ enum UfcEndMethods {
   KO
   SUB
   DEC
+  SPLIT_DEC
 }
 
 model UfcResultDetails {
@@ -210,6 +211,7 @@ model UfcCompetitorStats {
   wins            Int       @default(0)
   losses          Int       @default(0)
   decisions       Int       @default(0)
+  splitDecisions  Int       @default(0)
   submissions     Int       @default(0)
   draws           Int       @default(0)
   periodStartedAt DateTime  @default(now())
