@@ -6,4 +6,5 @@ export const ufcResultsDbColumns = {
   [UfcEndMethods.DEC]: 'decisions',
   [UfcEndMethods.KO]: 'knockouts',
   [UfcEndMethods.SUB]: 'submissions',
+  [UfcEndMethods.SPLIT_DEC]: 'splitDecisions',
 }
