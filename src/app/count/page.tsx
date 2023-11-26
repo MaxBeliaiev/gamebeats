@@ -10,7 +10,7 @@ export default async function Count() {
     orderBy: {
       id: 'desc'
     },
-    take: 2,
+    take: 3,
     select: {
       id: true,
       startedAt: true,
@@ -122,9 +122,10 @@ export default async function Count() {
   })
 
   return (
-    <div className='flex flex-row gap-8 px-16'>
-      {
-        Object.entries(data).map(([tournamentId, tournamentData]: any) => (
+    <>
+      <div className='flex flex-row gap-8 px-16'>
+        {
+          Object.entries(data).map(([tournamentId, tournamentData]: any) => (
             <div key={tournamentId} className='mb-5'>
               <div className='font-bold'>{tournamentData.name}</div>
               <div className='font-bold mb-6'>Start: {formatDateTime(tournamentData.start, 'dd/MM/yyyy')}</div>
@@ -162,8 +163,12 @@ export default async function Count() {
                 )
               }
             </div>
-        ))
-      }
-    </div>
+          ))
+        }
+      </div>
+      <div>Cached: {new Date().toString()}</div>
+    </>
   )
 }
+
+export const revalidate = 0
