@@ -18,7 +18,7 @@ export const UfcLiveResultModal = ({
   }))
 
   return (
-    <Modal title="Enter UFC live result" isOpen={modal.isOpen} onClose={modal.close}>
+    <Modal title="Enter UFC live result" isOpen={modal.isOpen} onClose={modal.close} className='min-w-[750px]'>
       <UfcLiveResultForm
         competitors={competitorsData}
         onSuccess={modal.close}

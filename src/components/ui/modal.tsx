@@ -12,6 +12,7 @@ import {
 interface ModalProps {
   title: string
   description?: string
+  className?: string
   isOpen: boolean
   onClose: () => void
   children?: ReactNode
@@ -23,6 +24,7 @@ const Modal = ({
   isOpen,
   onClose,
   children,
+  className,
 }: ModalProps) => {
   const onChange = (open: boolean) => {
     if (!open) {
@@ -32,7 +34,7 @@ const Modal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onChange}>
-      <DialogContent>
+      <DialogContent className={className}>
         <DialogHeader>
           <DialogTitle className='mb-3'>{title}</DialogTitle>
           {
