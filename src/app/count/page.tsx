@@ -10,7 +10,7 @@ export default async function Count() {
     orderBy: {
       id: 'desc'
     },
-    take: 3,
+    take: 4,
     select: {
       id: true,
       startedAt: true,
