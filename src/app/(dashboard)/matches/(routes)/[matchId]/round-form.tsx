@@ -125,6 +125,18 @@ const RoundForm = ({
                   })}
                   <div className='flex flex-row mb-2.5 w-3/4 justify-between items-center'>
                     <Button
+                      className='w-[110px]'
+                      disabled={loading}
+                      onClick={() => {
+                        handleSubmissionStatChange('crashes', competitorId)
+                      }}
+                    >
+                      Sub. crash
+                    </Button>
+                    <span>{submissions.crashes || 0}</span>
+                  </div>
+                  <div className='flex flex-row mb-2.5 w-3/4 justify-between items-center'>
+                    <Button
                       disabled={loading}
                       className='w-[110px]'
                       onClick={() => {
@@ -137,22 +149,10 @@ const RoundForm = ({
                     {knockdowns || 0}
                   </span>
                   </div>
-                  <div className='flex flex-row mb-2.5 w-3/4 justify-between items-center'>
-                    <Button
-                      className='w-[110px]'
-                      disabled={loading}
-                      onClick={() => {
-                        handleSubmissionStatChange('crashes', competitorId)
-                      }}
-                    >
-                      Sub. crash
-                    </Button>
-                    <span>{submissions.crashes || 0}</span>
-                  </div>
-                  <h3 className='mb-3'>
-                    Cuts
-                  </h3>
-                  <div className='flex flex-row mb-2.5 w-3/4 justify-between items-center'>
+                  <div className='flex flex-row mb-2.5 w-3/4 justify-between items-baseline'>
+                    <h3 className='mb-0 mr-2'>
+                      Cuts:
+                    </h3>
                     <RadioGroup
                       value={cuts}
                       defaultValue={cuts || 'none'}
@@ -161,7 +161,7 @@ const RoundForm = ({
                     >
                       <div className='flex items-center space-x-2'>
                         <RadioGroupItem value='none' id='cuts_none' />
-                        <Label htmlFor='cuts_none'>None</Label>
+                        <Label htmlFor='cuts_none'>0%</Label>
                       </div>
                       {
                         damageLevelsData.map(({ level, label, color}) => {
@@ -177,10 +177,10 @@ const RoundForm = ({
                       }
                     </RadioGroup>
                   </div>
-                  <h3 className='mb-3'>
-                    Lungs
-                  </h3>
-                  <div className='flex flex-row mb-2.5 w-3/4 justify-between items-center'>
+                  <div className='flex flex-row mb-2.5 w-3/4 justify-between items-baseline'>
+                    <h3 className='mb-0 mr-2'>
+                      Lungs:
+                    </h3>
                     <RadioGroup
                       value={lungs}
                       defaultValue={lungs || 'none'}
@@ -189,7 +189,7 @@ const RoundForm = ({
                     >
                       <div className='flex items-center space-x-2'>
                         <RadioGroupItem value='none' id='lungs_none' />
-                        <Label htmlFor='lungs_none'>None</Label>
+                        <Label htmlFor='lungs_none'>0%</Label>
                       </div>
                       {
                         damageLevelsData.map(({ level, label, color}) => {

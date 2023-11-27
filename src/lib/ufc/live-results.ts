@@ -14,18 +14,18 @@ export type damageLevel = DAMAGE_LEVELS
 export const damageLevelsData = [
   {
     level: DAMAGE_LEVELS.LOW,
-    color: 'amber-300',
-    label: 'Low'
+    color: 'green-600',
+    label: 'L'
   },
   {
     level: DAMAGE_LEVELS.MEDIUM,
     color: 'orange-400',
-    label: 'Medium'
+    label: 'M'
   },
   {
     level: DAMAGE_LEVELS.HIGH,
     color: 'red-600',
-    label: 'High'
+    label: 'H'
   }
 ]
 
