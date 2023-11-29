@@ -9,6 +9,7 @@ import { UFC_ROUNDS } from '@/lib/constants/results'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import RoundForm from '@/app/(dashboard)/matches/(routes)/[matchId]/round-form'
 import {
+  damageLevel,
   damageStat,
   getDefaultUfcLiveResults, stat,
   subjectStat,
@@ -35,7 +36,7 @@ export function UfcLiveResultForm({
   }))
   const [liveData, setLiveData] = useState<UfcLiveStatistics>(
     liveStatistics
-      ? (liveStatistics as UfcLiveStatistics)
+      ? liveStatistics as UfcLiveStatistics
       : getDefaultUfcLiveResults(competitors)
   )
   const router = useRouter()
@@ -48,6 +49,36 @@ export function UfcLiveResultForm({
   ) => {
     const competitorIdKey = String(competitorId)
     liveData.competitors[competitorIdKey].rounds[round][type][subject]++
+    await updateLiveResultRequest(liveData)
+  }
+
+  const updateCutsStat = async (
+    round: number,
+    value: damageLevel,
+    competitorId: number
+  ) => {
+    const competitorIdKey = String(competitorId)
+    liveData.competitors[competitorIdKey].rounds[round].cuts = value
+    await updateLiveResultRequest(liveData)
+  }
+
+  const updateLungsStat = async (
+    round: number,
+    value: damageLevel,
+    competitorId: number
+  ) => {
+    const competitorIdKey = String(competitorId)
+    liveData.competitors[competitorIdKey].rounds[round].lungs = value
+    await updateLiveResultRequest(liveData)
+  }
+
+  const updateSubmissionStat = async (
+    round: number,
+    subject: damageStat,
+    competitorId: number
+  ) => {
+    const competitorIdKey = String(competitorId)
+    liveData.competitors[competitorIdKey].rounds[round].submissions[subject]++
     await updateLiveResultRequest(liveData)
   }
 
@@ -76,11 +107,9 @@ export function UfcLiveResultForm({
   }
 
   const updateStamina = async ({
-    round,
     competitorId,
     value,
   }: {
-    round: number
     competitorId: number
     value: number
   }) => {
@@ -138,8 +167,11 @@ export function UfcLiveResultForm({
             round={r}
             competitors={competitors}
             updateLiveStat={updateAreaStat}
+            updateSubmissionStat={updateSubmissionStat}
             updateStat={updateStat}
             updateStamina={updateStamina}
+            updateCutsStat={updateCutsStat}
+            updateLungsStat={updateLungsStat}
             key={`round_${r}_form`}
             currentLiveData={liveData}
           />
