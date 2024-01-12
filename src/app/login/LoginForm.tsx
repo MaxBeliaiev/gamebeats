@@ -3,15 +3,12 @@
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import toast from 'react-hot-toast'
-// import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-
-  console.log(process.env)
 
   return (
     <form
