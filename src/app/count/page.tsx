@@ -35,6 +35,46 @@ export default async function Count() {
     }
   })
 
+  // const between = await prisma.match.findMany({
+  //   where: {
+  //     AND: [
+  //       {
+  //         competitors: {
+  //         some: {
+  //           match: {
+  //             tournamentId: 88,
+  //           },
+  //           competitor: {
+  //             id: 9,
+  //           }
+  //         }
+  //       }},
+  //       {
+  //         competitors: {
+  //           some: {
+  //             match: {
+  //               tournamentId: 88,
+  //             },
+  //             competitor: {
+  //               id: 8,
+  //             }
+  //           }
+  //         }}
+  //     ],
+  //   },
+  //   include: {
+  //     competitors: true,
+  //   }
+  // })
+  //
+  // const betweenData = {}
+  // between.forEach(b => {
+  //   const winner = b.competitors.find(c => c.score === 1)
+  //   const winnerId = String(winner!.competitorId)
+  //   // @ts-ignore
+  //   betweenData[winnerId] = !isNaN(betweenData[winnerId]) ? betweenData[winnerId] + 1 : 1
+  // })
+
   const tournamentIds: Array<number> = tournaments.map(t => t.id)
   const competitorIds: Array<number> = []
   const data: {[key: string]: { name: string, start: Date, data: {

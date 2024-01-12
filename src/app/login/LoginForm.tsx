@@ -11,6 +11,8 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
+  console.log(process.env)
+
   return (
     <form
       onSubmit={async (e) => {
