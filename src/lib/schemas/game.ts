@@ -7,7 +7,8 @@ export const gameFinishFormSchema = z.object({
   }),
   endTime: z.string({
     required_error: 'Win time is required in format 0:00'
-  }).length(4, { message: "Wrong format" }),
+  }).regex(new RegExp('^([0-5]):[0-5][0-9]$'), { message: 'Wrong time format' }),
+    // .length(4, { message: "Wrong format" }),
   endMethod: z.string({
     required_error: 'Win method is required'
   })
