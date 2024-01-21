@@ -11,7 +11,7 @@ import {
   stat,
   subjectStat,
   ufcDamageAreas,
-  UfcLiveStatistics,
+  UfcLiveStatistics, lungsDamageLevel,
 } from '@/lib/ufc/live-results'
 import useStore from '@/lib/store'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
@@ -37,7 +37,7 @@ interface RoundFormProps {
   ) => void
   updateLungsStat: (
     round: number,
-    value: damageLevel,
+    value: lungsDamageLevel,
     competitorId: number,
   ) => void
   updateSubmissionStat: (
@@ -185,7 +185,7 @@ const RoundForm = ({
                     <RadioGroup
                       value={lungs}
                       defaultValue={lungs || 'none'}
-                      onValueChange={(value: damageLevel) => updateLungsStat(round, value, competitorId)}
+                      onValueChange={(value: lungsDamageLevel) => updateLungsStat(round, value, competitorId)}
                       className='flex flex-row'
                     >
                       <div className='flex items-center space-x-2'>

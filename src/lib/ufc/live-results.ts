@@ -16,6 +16,7 @@ enum LUNGS_DAMAGE_LEVELS {
 }
 
 export type damageLevel = DAMAGE_LEVELS
+export type lungsDamageLevel = LUNGS_DAMAGE_LEVELS
 
 export const damageLevelsData = [
   {

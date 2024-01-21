@@ -11,7 +11,7 @@ import RoundForm from '@/app/(dashboard)/matches/(routes)/[matchId]/round-form'
 import {
   damageLevel,
   damageStat,
-  getDefaultUfcLiveResults, stat,
+  getDefaultUfcLiveResults, lungsDamageLevel, stat,
   subjectStat,
   UfcLiveStatistics,
 } from '@/lib/ufc/live-results'
@@ -64,7 +64,7 @@ export function UfcLiveResultForm({
 
   const updateLungsStat = async (
     round: number,
-    value: damageLevel,
+    value: lungsDamageLevel,
     competitorId: number
   ) => {
     const competitorIdKey = String(competitorId)
