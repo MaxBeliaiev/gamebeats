@@ -6,6 +6,7 @@ import StaminaForm from '@/app/(dashboard)/matches/(routes)/[matchId]/stamina-fo
 import {
   damageLevel,
   damageLevelsData,
+  lungsDamageLevelsData,
   damageStat,
   stat,
   subjectStat,
@@ -170,7 +171,7 @@ const RoundForm = ({
                           return (
                           <div className='flex items-center space-x-2' key={`cuts_${level}`}>
                             <RadioGroupItem value={level} id={id} />
-                            <Label htmlFor={id} className={`text-${color}`}>{label}</Label>
+                            <Label htmlFor={id} style={{color: `rgb(${color})`}}>{label}</Label>
                           </div>
                         )}
                         )
@@ -192,13 +193,13 @@ const RoundForm = ({
                         <Label htmlFor='lungs_none'>0%</Label>
                       </div>
                       {
-                        damageLevelsData.map(({ level, label, color}) => {
+                        lungsDamageLevelsData.map(({ level, label, color}) => {
                           const id = `lungs_${level}`
 
                           return (
                             <div className='flex items-center space-x-2' key={`lungs_${level}`}>
                               <RadioGroupItem value={level} id={id} />
-                              <Label htmlFor={id} className={`text-${color}`}>{label}</Label>
+                              <Label htmlFor={id} style={{color: `rgb(${color})`}}>{label}</Label>
                             </div>
                           )}
                         )

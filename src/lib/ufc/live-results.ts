@@ -9,25 +9,34 @@ enum DAMAGE_LEVELS {
   HIGH = 'high'
 }
 
+enum LUNGS_DAMAGE_LEVELS {
+  NONE = 'none',
+  LOW = 'low',
+  HIGH = 'high'
+}
+
 export type damageLevel = DAMAGE_LEVELS
 
 export const damageLevelsData = [
   {
     level: DAMAGE_LEVELS.LOW,
-    color: 'green-600',
+    color: '22 163 74 / 1',
     label: 'L'
   },
   {
     level: DAMAGE_LEVELS.MEDIUM,
-    color: 'orange-400',
+    color: '251 146 60 / 1',
     label: 'M'
   },
   {
     level: DAMAGE_LEVELS.HIGH,
-    color: 'red-600',
+    color: '220 38 38 / 1',
     label: 'H'
   }
 ]
+
+export const lungsDamageLevelsData =
+  damageLevelsData.filter(level => level.level !== DAMAGE_LEVELS.MEDIUM)
 
 export type UfcLiveStatistics = {
   currentRound: number
@@ -45,7 +54,7 @@ export type UfcLiveStatistics = {
           submissions: {
             crashes: number
           }
-          lungs: DAMAGE_LEVELS
+          lungs: LUNGS_DAMAGE_LEVELS
           cuts: DAMAGE_LEVELS
         }
       }
@@ -69,7 +78,7 @@ const getRoundObject = () => ({
     submissions: {
       crashes: 0
     },
-    lungs: DAMAGE_LEVELS.NONE,
+    lungs: LUNGS_DAMAGE_LEVELS.NONE,
     cuts: DAMAGE_LEVELS.NONE,
   })
 
