@@ -59,7 +59,7 @@ export function FinishGameForm({
       winnerId: initialData.winnerId ? String(initialData.winnerId) : '',
       round: 3,
       endTime: '5:00',
-      endMethod: UfcEndMethods.DEC,
+      endMethod: '',
     },
   })
   const onSubmit = async (values: FinishGameFormValues) => {
@@ -96,6 +96,19 @@ export function FinishGameForm({
         setLoading(false)
       }
     }
+  }
+
+  const getMethodsList = () => {
+    return [
+      {
+        label: 'Select end method',
+        value: ''
+      },
+      ...Object.values(UfcEndMethods).map((method) => ({
+        label: method,
+        value: method,
+      }))
+    ]
   }
 
   return (
@@ -154,9 +167,9 @@ export function FinishGameForm({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {Object.values(UfcEndMethods).map((method) => (
-                        <SelectItem key={method} value={method}>
-                          {method}
+                      {getMethodsList().map(({ value, label}) => (
+                        <SelectItem key={value} value={value}>
+                          {label}
                         </SelectItem>
                       ))}
                     </SelectContent>
