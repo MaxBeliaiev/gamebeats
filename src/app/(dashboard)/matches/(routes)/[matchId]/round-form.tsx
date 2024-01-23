@@ -11,7 +11,8 @@ import {
   stat,
   subjectStat,
   ufcDamageAreas,
-  UfcLiveStatistics, lungsDamageLevel,
+  UfcLiveStatistics,
+  lungsDamageLevel,
 } from '@/lib/ufc/live-results'
 import useStore from '@/lib/store'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'

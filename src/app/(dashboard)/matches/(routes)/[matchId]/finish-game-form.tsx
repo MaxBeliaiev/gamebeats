@@ -63,7 +63,6 @@ export function FinishGameForm({
     },
   })
   const onSubmit = async (values: FinishGameFormValues) => {
-    console.log(values)
     const agree = confirm(
       `Are you sure you want to finish this game? This action CANNOT be reverted!`
     )
