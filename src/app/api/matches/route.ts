@@ -25,9 +25,6 @@ export async function GET(req: Request) {
         status: 'asc',
       },
       {
-        endedAt: 'asc',
-      },
-      {
         startedAt: 'asc',
       },
       {

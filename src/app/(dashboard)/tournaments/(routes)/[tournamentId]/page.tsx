@@ -21,9 +21,6 @@ const TournamentPage = async ({
       matches: {
         orderBy: [
           {
-            endedAt: 'asc',
-          },
-          {
             status: 'desc',
           },
           {
