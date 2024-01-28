@@ -31,6 +31,7 @@ import * as React from 'react'
 import { STREAM_CHANNELS } from '@/lib/constants/matches'
 import { useQueryClient } from '@tanstack/react-query'
 import { parseISO } from 'date-fns'
+import { Input } from '@/components/ui/input'
 
 interface MatchFormProps {
   initialData?: Match & {
@@ -49,11 +50,11 @@ interface MatchFormProps {
 type MatchFormValues = z.infer<typeof matchFormSchema>
 
 export function MatchForm({
-  initialData,
-  competitors,
-  tournamentId,
-  onSuccess,
-}: MatchFormProps) {
+                            initialData,
+                            competitors,
+                            tournamentId,
+                            onSuccess,
+                          }: MatchFormProps) {
   const queryClient = useQueryClient()
   const [loading, setLoading] = useState(false)
   const router = useRouter()
@@ -62,16 +63,18 @@ export function MatchForm({
     resolver: zodResolver(matchFormSchema),
     defaultValues: initialData
       ? {
-          ...initialData,
-          startedAt: typeof initialData.startedAt === 'string' ? parseISO(initialData.startedAt) : initialData.startedAt,
-          competitorOne: String(initialData.competitors[0]?.competitorId),
-          competitorTwo: String(initialData.competitors[1]?.competitorId),
-        }
+        ...initialData,
+        startedAt: typeof initialData.startedAt === 'string' ? parseISO(initialData.startedAt) : initialData.startedAt,
+        competitorOne: String(initialData.competitors[0]?.competitorId),
+        competitorTwo: String(initialData.competitors[1]?.competitorId),
+      }
       : {
-          streamChannel: '1',
-        },
+        streamChannel: '1',
+        numberOfGames: 1,
+      },
   })
   const onSubmit = async (values: MatchFormValues) => {
+    console.log(values)
     try {
       setLoading(true)
       if (initialData) {
@@ -92,20 +95,20 @@ export function MatchForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
         <FormField
           control={form.control}
-          name="competitorOne"
+          name='competitorOne'
           render={({ field }) => (
-            <FormItem className="flex flex-col">
+            <FormItem className='flex flex-col'>
               <Combobox
-                title="Select competitor 1"
+                title='Select competitor 1'
                 value={field.value}
                 data={competitors}
                 onSelect={(value) => {
                   form.setValue('competitorOne', value)
                 }}
-                searchText="Search competitor..."
+                searchText='Search competitor...'
               />
               <FormMessage />
             </FormItem>
@@ -113,17 +116,17 @@ export function MatchForm({
         />
         <FormField
           control={form.control}
-          name="competitorTwo"
+          name='competitorTwo'
           render={({ field }) => (
-            <FormItem className="flex flex-col">
+            <FormItem className='flex flex-col'>
               <Combobox
-                title="Select competitor 2"
+                title='Select competitor 2'
                 value={field.value}
                 data={competitors}
                 onSelect={(value) => {
                   form.setValue('competitorTwo', value)
                 }}
-                searchText="Search competitor..."
+                searchText='Search competitor...'
               />
               <FormMessage />
             </FormItem>
@@ -131,9 +134,9 @@ export function MatchForm({
         />
         <FormField
           control={form.control}
-          name="startedAt"
+          name='startedAt'
           render={({ field }) => (
-            <FormItem className="flex flex-col">
+            <FormItem className='flex flex-col'>
               <FormLabel>Start time</FormLabel>
               <DateTimePicker
                 date={field.value}
@@ -148,9 +151,9 @@ export function MatchForm({
         />
         <FormField
           control={form.control}
-          name="streamChannel"
+          name='streamChannel'
           render={({ field }) => (
-            <FormItem className="w-1/2">
+            <FormItem className='w-1/2'>
               <FormLabel>Stream channel</FormLabel>
               <Select
                 defaultValue={field.value}
@@ -158,7 +161,7 @@ export function MatchForm({
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select stream channel" />
+                    <SelectValue placeholder='Select stream channel' />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -173,8 +176,30 @@ export function MatchForm({
             </FormItem>
           )}
         />
-        <Button variant="success" disabled={loading} type="submit">
-          Submit
+        <FormField
+          control={form.control}
+          name='numberOfGames'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Number of games</FormLabel>
+              <FormControl>
+                <Input
+                  type='number'
+                  className='w-1/2'
+                  placeholder='Enter number of games'
+                  {...field}
+                  disabled={loading}
+                  onChange={e => {
+                    form.setValue('numberOfGames', Number(e.target.value))
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button variant='success' disabled={loading} type='submit'>
+          Save
         </Button>
       </form>
     </Form>

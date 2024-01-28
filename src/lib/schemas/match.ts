@@ -33,9 +33,12 @@ const matchCommon = {
   }),
 }
 
+const numberOfGamesRule = z.number().min(1).max(5)
+
 export const matchFormSchema = attachRefinements(
   z.object({
     ...matchCommon,
+    numberOfGames: numberOfGamesRule,
     startedAt: z
       .date({
         invalid_type_error: 'Please choose correct date',
@@ -62,6 +65,7 @@ export const matchCreateReqSchema = attachRefinements(
   z.object({
     ...matchCommon,
     ...matchReqCommon,
+    numberOfGames: numberOfGamesRule,
     tournamentId: z.number({
       required_error: 'Tournament ID is required',
     }),

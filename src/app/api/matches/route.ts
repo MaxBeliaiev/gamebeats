@@ -4,6 +4,7 @@ import { getAuthSession } from '@/lib/auth'
 import { matchCreateReqSchema } from '@/lib/schemas/match'
 import { MatchStatus } from '@prisma/client'
 import { corsHeaders } from '@/lib/constants/requests'
+import { addMinutes } from 'date-fns'
 
 export async function GET(req: Request) {
   try {
@@ -128,6 +129,7 @@ export async function POST(req: Request) {
       tournamentId,
       startedAt,
       streamChannel,
+      numberOfGames,
     } = matchCreateReqSchema.parse(body)
 
     if (!session) {
@@ -138,6 +140,7 @@ export async function POST(req: Request) {
       tournamentId,
       startedAt,
       streamChannel,
+      numberOfGames,
       competitors: {
         create: [
           {
@@ -194,10 +197,15 @@ export async function POST(req: Request) {
           data,
         })
 
-        await tx.game.create({
-          data: {
-            matchId: match.id,
-          },
+        const gamesToCreate = []
+        let gameStartTime = match.startedAt
+        for (let i = 0; i < match.numberOfGames; i++) {
+          gamesToCreate.push({ matchId: match.id, startedAt: gameStartTime })
+          gameStartTime =  addMinutes(gameStartTime, 12)
+        }
+
+        await tx.game.createMany({
+          data: gamesToCreate,
         })
 
 
