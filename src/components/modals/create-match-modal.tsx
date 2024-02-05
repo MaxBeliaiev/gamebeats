@@ -26,7 +26,6 @@ export const CreateMatchModal = ({
       <MatchForm
         competitors={competitorsData}
         tournamentId={tournamentId}
-        onSuccess={modal.close}
       />
     </Modal>
   )

@@ -155,6 +155,34 @@ export async function POST(req: Request) {
 
     return await prisma.$transaction(
       async (tx) => {
+        const matchExists = await tx.match.findFirst({
+          where: {
+            startedAt,
+            AND: [
+              {
+                competitors: {
+                  some: {
+                    competitor: {
+                      id: Number(competitorOne),
+                    }
+                  }
+                }},
+              {
+                competitors: {
+                  some: {
+                    competitor: {
+                      id: Number(competitorTwo),
+                    }
+                  }
+                }}
+            ],
+          }
+        })
+
+        if (matchExists) {
+          return new NextResponse('Same match already exists', { status: 400 })
+        }
+
         const match = await tx.match.create({
           data,
         })
