@@ -23,6 +23,34 @@ export async function PUT(
     const { competitorOne, competitorTwo, startedAt, streamChannel } =
       matchUpdateReqSchema.parse(body)
 
+    const matchExists = await prisma.match.findFirst({
+      where: {
+        startedAt,
+        AND: [
+          {
+            competitors: {
+              some: {
+                competitor: {
+                  id: Number(competitorOne),
+                }
+              }
+            }},
+          {
+            competitors: {
+              some: {
+                competitor: {
+                  id: Number(competitorTwo),
+                }
+              }
+            }}
+        ],
+      }
+    })
+
+    if (matchExists) {
+      return new NextResponse('Same match already exists', { status: 400 })
+    }
+
     const match = await prisma.match.update({
       where: {
         id: Number(params.matchId),
