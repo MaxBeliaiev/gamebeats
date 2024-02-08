@@ -26,6 +26,9 @@ export async function PUT(
     const matchExists = await prisma.match.findFirst({
       where: {
         startedAt,
+        id: {
+          not: Number(params.matchId)
+        },
         AND: [
           {
             competitors: {
