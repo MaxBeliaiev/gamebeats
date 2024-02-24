@@ -151,7 +151,7 @@ model Match {
 
   @@index([winnerId])
   @@index([tournamentId])
-  @@index([status])
+  @@index([status, startedAt], name: "status_startedAt")
 }
 
 enum GameStatus {
