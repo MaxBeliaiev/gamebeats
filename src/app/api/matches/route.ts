@@ -41,9 +41,10 @@ export async function GET(req: Request) {
         tournamentId: Number(tournamentId),
       }),
       ...(statuses && {
-        status: {
-          in: statuses?.split(',').map(s => s.toUpperCase()) as Array<MatchStatus>,
-        },
+        status: statuses.toUpperCase() as MatchStatus,
+        //   {
+        //   in: statuses?.split(',').map(s => s.toUpperCase()) as Array<MatchStatus>,
+        // },
       }),
       ...startedAtQuery,
     }
