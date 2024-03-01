@@ -4,6 +4,7 @@ import {
   Game,
   GameStatus,
   MatchStatus,
+  Prisma,
   UfcEndMethods,
 } from '@prisma/client'
 import { prisma } from '@/db'
@@ -12,6 +13,9 @@ import { finishMatch } from '@/lib/actions/match'
 import * as z from 'zod'
 import { ufcResultsDbColumns } from '@/lib/constants/results'
 import { getStartPeriod } from '@/lib/helpers/ufcStats'
+import JsonNull = Prisma.JsonNull
+import { matchUpdateReqSchema } from '@/lib/schemas/match'
+import { gameFormSchema } from '@/lib/schemas/game'
 
 export const finishUfcGame = async (props: {
   game: Game
@@ -241,6 +245,47 @@ export const updateGameStatus = async (
         ...(status === MatchStatus.ONGOING && {
           startedAt: startedAt || new Date(),
         }),
+      },
+    })
+  } catch (e: any) {
+    throw e
+  }
+}
+
+export const refreshGame = async (
+  gameId: number,
+  client = prisma
+) => {
+  try {
+    await client.game.update({
+      where: {
+        id: gameId,
+      },
+      data: {
+        status: GameStatus.ONGOING,
+        liveStatistics: JsonNull,
+      },
+    })
+  } catch (e: any) {
+    throw e
+  }
+}
+
+export const updateUfcGame = async (
+  gameId: number,
+  data: any,
+  client = prisma
+) => {
+  try {
+    const { startedAt } =
+      gameFormSchema.parse(data)
+
+    await client.game.update({
+      where: {
+        id: gameId,
+      },
+      data: {
+        startedAt,
       },
     })
   } catch (e: any) {

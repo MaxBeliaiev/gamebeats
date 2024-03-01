@@ -5,6 +5,7 @@ import { Separator } from '@/components/ui/separator'
 import { DataTable } from '@/components/ui/data-table'
 import { getGameColumns } from '@/app/(dashboard)/matches/(routes)/[matchId]/columns'
 import Link from 'next/link'
+import MatchStatusButtons from '@/app/(dashboard)/matches/(routes)/[matchId]/match-status-buttons'
 
 interface MatchPageClientProps {
   match: any
@@ -28,6 +29,7 @@ const MatchPageClient = ({ match }: MatchPageClientProps) => {
             </Link>
           }
         />
+        <MatchStatusButtons match={match} />
       </div>
       <Separator />
       <DataTable columns={getGameColumns(match)} data={games} />

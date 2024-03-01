@@ -1,4 +1,4 @@
-import {CheckSquare, FileBarChart, Play} from 'lucide-react'
+import { CheckSquare, FileBarChart, RefreshCcw, Play, Pencil } from 'lucide-react'
 import { Game, GameStatus, Match, MatchStatus } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
@@ -7,7 +7,8 @@ import { useUfcLiveResultModal } from '@/hooks/use-ufc-live-result-modal'
 import WithTooltip from '@/components/ui/with-tooltip'
 import { Button } from '@/components/ui/button'
 import { getAxiosErrorMessage } from '@/lib/utils'
-import { updateGameStatus } from '@/lib/actions/game'
+import { refreshGame, updateGameStatus } from '@/lib/actions/game'
+import { useUpdateGameModal } from '@/hooks/use-update-game-modal'
 
 interface MatchActionsProps {
   match: any
@@ -15,24 +16,51 @@ interface MatchActionsProps {
 }
 
 const GameActions = ({ match, game }: MatchActionsProps) => {
+  const router = useRouter()
   const ufcLiveResultModal = useUfcLiveResultModal()
+
   const handleUpdateLiveResult = () => {
     ufcLiveResultModal.setGame(game)
     ufcLiveResultModal.open()
   }
+
+  const handleRefreshGame = async () => {
+    const agree = confirm(
+      `Are you sure you want to refresh this game?`
+    )
+    if (agree) {
+      try {
+        await refreshGame(game.id)
+        router.refresh()
+        toast.success(`Game has been refreshed!`)
+      } catch (e: any) {
+        toast.error(getAxiosErrorMessage(e))
+      }
+    }
+  }
+
   return (
     <div className="flex items-center justify-end gap-0.5">
       {
         game.status === GameStatus.ONGOING && (
-              <Button
-                  variant="ghost"
-                  onClick={handleUpdateLiveResult}
-              >
-                <FileBarChart color="blue" />
-              </Button>
+          <>
+            <Button
+              variant="ghost"
+              onClick={handleUpdateLiveResult}
+            >
+              <FileBarChart color="blue" />
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={handleRefreshGame}
+            >
+              <RefreshCcw color="orange" />
+            </Button>
+          </>
           )
       }
       <GameStatusButton match={match} game={game} />
+      <GameEditButton match={match} game={game} />
     </div>
   )
 }
@@ -83,6 +111,35 @@ const GameStatusButton = ({ game, match }: { match: Match; game: Game }) => {
       <Button variant="ghost" onClick={handleEnterResultClick}>
         <CheckSquare color="green" />
       </Button>
+    )
+  }
+
+  return null
+}
+
+const GameEditButton = ({ game, match }: { match: Match; game: Game }) => {
+  const { id, status } = game
+  const updateGameModal = useUpdateGameModal()
+  const handleUpdateClick = () => {
+    updateGameModal.setGame(game)
+    updateGameModal.open()
+  }
+  const cannotUpdate = status !== MatchStatus.UPCOMING
+
+  if (status === GameStatus.UPCOMING) {
+    return (
+      <WithTooltip
+        text="Cannot start game if match is Upcoming"
+        hidden={!cannotUpdate}
+      >
+        <Button
+          variant="ghost"
+          onClick={handleUpdateClick}
+          disabled={cannotUpdate}
+        >
+          <Pencil color='blue' />
+        </Button>
+      </WithTooltip>
     )
   }
 
