@@ -176,7 +176,7 @@ export default async function Count() {
                       <>
                         <div className='mb-2' key={competitorData.competitorId}>
                           {i + 1}. {competitorData.nickname}:
-                          <div>{(competitorData.winRate * 100).toFixed()}% ({competitorData.games} games. {competitorData.wins} wins, {competitorData.games - competitorData.wins} losses)</div>
+                          <div>{(competitorData.winRate * 100).toFixed()}% ({competitorData.games} games, {competitorData.wins} W, {competitorData.games - competitorData.wins} L)</div>
                         </div>
                       </>
                     )
