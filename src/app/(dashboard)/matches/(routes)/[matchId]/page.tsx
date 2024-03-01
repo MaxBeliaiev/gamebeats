@@ -2,6 +2,7 @@ import { prisma } from '@/db'
 import MatchPageClient from '@/app/(dashboard)/matches/(routes)/[matchId]/client'
 import { UfcLiveResultModalProvider } from '@/providers/ufc-live-result-modal-provider'
 import { FinishGameModalProvider } from '@/providers/finish-game-modal-provider'
+import { UpdateGameModalProvider } from '@/providers/update-game-modal-provider'
 
 interface MatchPageProps {
   params: {
@@ -40,6 +41,7 @@ const MatchPage = async ({ params: { matchId } }: MatchPageProps) => {
       <MatchPageClient match={match} />
       <FinishGameModalProvider competitors={competitorsData} />
       <UfcLiveResultModalProvider competitors={competitorsData} />
+      <UpdateGameModalProvider />
     </>
   )
 }

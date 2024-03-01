@@ -98,7 +98,7 @@ export function UfcLiveResultForm({
       const resp: UfcLiveStatistics = await updateLiveStatistics(data, gameId)
       setLiveData(resp)
       router.refresh()
-      toast.success(`Stat updated!`)
+      toast.success(`Stat updated!`, { duration: 1000 })
     } catch (e: any) {
       toast.error(getAxiosErrorMessage(e))
     } finally {

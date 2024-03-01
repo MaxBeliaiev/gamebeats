@@ -13,3 +13,22 @@ export const gameFinishFormSchema = z.object({
   message: 'Win method is required.',
   path: ['endMethod'],
 })
+
+export const gameFormSchema =
+  z.object({
+    startedAt: z
+      .date({
+        invalid_type_error: 'Please choose correct date',
+      })
+      .nullish()
+      .transform((value, ctx): Date | undefined => {
+        if (value == null) {
+          ctx.addIssue({
+            code: 'custom',
+            message: 'Start date is required',
+          })
+        } else {
+          return value
+        }
+      }),
+  })
