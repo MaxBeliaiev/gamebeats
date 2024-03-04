@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/db'
+import { corsHeaders } from '@/lib/constants/requests'
 
 export async function GET() {
   try {
@@ -9,7 +10,7 @@ export async function GET() {
       }
     })
 
-    return NextResponse.json({ data: ufcRating, cached: new Date() })
+    return NextResponse.json({ data: ufcRating, cached: new Date() }, { headers: corsHeaders })
   } catch (error) {
     console.log('[UFC_WEEKLY_RATING_ERROR]', error)
     return new NextResponse('Internal error', { status: 500 })

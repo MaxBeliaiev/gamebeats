@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/db'
 import { getAuthSession } from '@/lib/auth'
 import { CompetitorStatus } from '@prisma/client'
+import { corsHeaders } from '@/lib/constants/requests'
 
 export async function GET() {
   try {
@@ -12,7 +13,7 @@ export async function GET() {
       }
     })
 
-    return NextResponse.json({ data, cached: new Date() })
+    return NextResponse.json({ data, cached: new Date() }, { headers: corsHeaders })
   } catch (error) {
     console.log('[COMPETITORS_GET]', error)
     return new NextResponse('Internal error', { status: 500 })

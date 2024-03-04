@@ -1,14 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/db'
 import { getAuthSession } from '@/lib/auth'
 import { matchCreateReqSchema } from '@/lib/schemas/match'
 import { MatchStatus } from '@prisma/client'
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
-};
+import { corsHeaders } from '@/lib/constants/requests'
 
 export async function GET(req: Request) {
   try {
