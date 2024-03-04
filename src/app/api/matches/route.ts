@@ -105,7 +105,13 @@ export async function GET(req: Request) {
       })
     }
 
-    return NextResponse.json(response)
+    const corsHeaders = {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    };
+
+    return NextResponse.json(response, { headers: corsHeaders })
   } catch (error) {
     console.log('[MATCHES_GET]', error)
     return new NextResponse('Internal error', { status: 500 })
@@ -193,6 +199,7 @@ export async function POST(req: Request) {
             matchId: match.id,
           },
         })
+
 
         return NextResponse.json(match)
       },

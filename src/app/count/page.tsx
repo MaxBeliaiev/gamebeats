@@ -1,40 +1,17 @@
 import { prisma } from '@/db'
-import { MatchStatus, TournamentStatus } from '@prisma/client'
-import { formatDateTime } from '@/lib/date-utils'
+import { getUtcStartOfMonth } from '@/lib/helpers/date'
+
+type Data = {
+  games: number,
+  wins: number,
+  winRate: number,
+  competitorId: number,
+  losses: number,
+  draws: number,
+  nickname: string
+}
 
 export default async function Count() {
-  const tournaments = await prisma.tournament.findMany({
-    where: {
-      status: TournamentStatus.FINISHED,
-    },
-    orderBy: {
-      id: 'desc'
-    },
-    take: 4,
-    select: {
-      id: true,
-      startedAt: true,
-      name: true,
-      matches: {
-        where: {
-          status: MatchStatus.FINISHED
-        },
-        select: {
-          competitors: {
-            select: {
-              competitor: {
-                select: {
-                  nickname: true,
-                  id: true,
-                }
-              }
-            }
-          },
-        }
-      }
-    }
-  })
-
   // const between = await prisma.match.findMany({
   //   where: {
   //     AND: [
@@ -75,139 +52,85 @@ export default async function Count() {
   //   betweenData[winnerId] = !isNaN(betweenData[winnerId]) ? betweenData[winnerId] + 1 : 1
   // })
 
-  const tournamentIds: Array<number> = tournaments.map(t => t.id)
-  const competitorIds: Array<number> = []
-  const data: {[key: string]: { name: string, start: Date, data: {
-    ranked:  Array<any>,
-        rest:  Array<any>,
-      }}} = {}
-  const tournamentsCompetitors: any = {}
-
-  tournaments.forEach(t => {
-    data[t.id] = {
-      name: t.name,
-      start: t.startedAt,
-      data: {
-        ranked: [],
-        rest: []
-      }
-    }
-
-    t.matches.forEach(m => {
-      m.competitors.forEach(({ competitor }) => {
-        if (!competitorIds.includes(competitor.id)) {
-          competitorIds.push(competitor.id)
-        }
-
-        tournamentsCompetitors[t.id] = { ...tournamentsCompetitors[t.id], [competitor.id] : {
-            nickname: competitor.nickname
-          } }
-      })
-    })
-  })
-
   const stats = await prisma.ufcCompetitorStats.findMany({
     where: {
-      tournamentId: {
-        in: tournamentIds
+      periodStartedAt: {
+        gte: getUtcStartOfMonth(1),
+        lt: getUtcStartOfMonth(),
       },
-      competitorId: {
-        in: competitorIds
+    },
+    include: {
+      competitor: {
+        select: {
+          nickname: true,
+        },
+      },
+    },
+  })
+
+  let competitorsData: {
+    [key: string]: Data
+  } = {}
+  stats.forEach(({ competitorId, competitor, games, wins, losses, draws, }) => {
+    if (competitorId in competitorsData) {
+      competitorsData[competitorId].games += games
+      competitorsData[competitorId].wins += wins
+      competitorsData[competitorId].losses += losses
+      competitorsData[competitorId].draws += draws
+      competitorsData[competitorId].winRate =
+        Number((competitorsData[competitorId].wins / competitorsData[competitorId].games).toFixed(2))
+    } else {
+      competitorsData[competitorId] = {
+        games: games,
+        wins: wins,
+        winRate: wins / games,
+        losses: losses,
+        competitorId: competitorId,
+        nickname: competitor!.nickname,
+        draws: draws,
       }
     }
   })
 
-  tournaments.forEach(tournament => {
-    const tournamentStats = stats.filter(stat => stat.tournamentId === tournament.id)
-    const allStats: Array<{
-      games: number,
-      wins: number,
-      winRate: number,
-      competitorId: number,
-      nickname: string
-    }> = []
-
-    const rest: Array<{
-      games: number,
-      wins: number,
-      winRate: number,
-      competitorId: number,
-      nickname: string
-    }> = []
-
-    Object.entries(tournamentsCompetitors[tournament.id]).forEach(([competitorId, competitor]: any) => {
-      const competitorStatsData =
-        tournamentStats.filter(stat => Number(competitorId) === stat.competitorId)
-      const games = competitorStatsData.reduce((a, b) => { return a + b.games }, 0)
-      const wins= competitorStatsData.reduce((a, b) => { return a + b.wins }, 0)
-
-      const dataItem = {
-        games,
-        wins,
-        winRate: Number((wins / games).toFixed(2)),
-        competitorId: competitorId,
-        nickname: competitor.nickname
-      }
-
-
-      if (games >= 70) {
-        allStats.push(dataItem)
-      } else {
-        rest.push(dataItem)
-      }
-    })
-
-    data[tournament.id].data.ranked = allStats.sort((a,b) => b.winRate - a.winRate)
-    data[tournament.id].data.rest = rest
-  })
+  const data: Array<Data> = Object.values(competitorsData).sort((a: any, b: any) => b.winRate - a.winRate)
+  const ranked: Array<Data> = data.filter(item => item.games >= 70)
+  const rest: Array<Data> = data.filter(item => item.games < 70)
 
   return (
-    <>
-      <div className='flex flex-row gap-8 px-16'>
+      <div className='flex flex-col gap-5 px-16 pt-3'>
         {
-          Object.entries(data).map(([tournamentId, tournamentData]: any) => (
-            <div key={tournamentId} className='mb-5'>
-              <div className='font-bold'>{tournamentData.name}</div>
-              <div className='font-bold mb-6'>Start: {formatDateTime(tournamentData.start, 'dd/MM/yyyy')}</div>
-              <div className='mb-3'>
-                {
-                  tournamentData.data.ranked.map((competitorData: any, i: number) => {
-                    return (
-                      <>
-                        <div className='mb-2' key={competitorData.competitorId}>
-                          {i + 1}. {competitorData.nickname}:
-                          <div>{(competitorData.winRate * 100).toFixed()}% ({competitorData.games} games, {competitorData.wins} W, {competitorData.games - competitorData.wins} L)</div>
-                        </div>
-                      </>
-                    )
-                  })
-                }
-              </div>
+          ranked.map((competitorData: any, i: number) => {
+            return (
+              <>
+                <div className='flex flex-col gap-1' key={competitorData.competitorId}>
+                  <div className='font-bold'>{competitorData.nickname}:</div>
+                  <div>Winrate: {(competitorData.winRate * 100).toFixed()}%</div>
+                  <div>{competitorData.games} games, ({competitorData.wins}-{competitorData.losses}-{competitorData.draws})</div>
+                </div>
+              </>
+            )
+          })
+        }
+        {
+          Boolean(rest.length) && (
+            <div className='text-orange-400'>
+              <div>Rest:</div>
               {
-                Boolean(tournamentData.data.rest.length) && (
-                  <div className='text-orange-400'>
-                    <div>Rest:</div>
-                    {
-                      tournamentData.data.rest.map((competitorData: any, i: number) => {
-                        return (
-                          <>
-                            <div className='mb-2' key={competitorData.competitorId}>
-                              {competitorData.nickname}:
-                              <div>{(competitorData.winRate * 100).toFixed()}% ({competitorData.games} games)</div>
-                            </div>
-                          </>
-                        )
-                      })
-                    }
-                  </div>
-                )
+                rest.map((competitorData: any, i: number) => {
+                  return (
+                    <>
+                      <div className='mb-2' key={competitorData.competitorId}>
+                        {competitorData.nickname}:
+                        <div>{(competitorData.winRate * 100).toFixed()}% ({competitorData.games} games)</div>
+                      </div>
+                    </>
+                  )
+                })
               }
             </div>
-          ))
+          )
         }
       </div>
-      <div>Cached: {new Date().toString()}</div>
-    </>
   )
 }
 
