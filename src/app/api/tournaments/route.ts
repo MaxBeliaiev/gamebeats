@@ -4,7 +4,37 @@ import { getAuthSession } from '@/lib/auth'
 import { Prisma } from '.prisma/client'
 import PrismaClientKnownRequestError = Prisma.PrismaClientKnownRequestError
 import { tournamentCreateReqSchema } from '@/lib/schemas/tournament'
-import { Discipline } from '@prisma/client'
+import { Discipline, TournamentStatus } from '@prisma/client'
+import { corsHeaders } from '@/lib/constants/requests'
+
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url)
+    const take = Number(searchParams.get('size')) || 10
+    const page = Number(searchParams.get('page')) || 0
+    const data = await prisma.tournament.findMany({
+      take,
+      skip: page ? (page - 1) * take : 0,
+      where: {
+        status: {
+          in: [TournamentStatus.UPCOMING, TournamentStatus.ONGOING]
+        }
+      },
+      orderBy: {
+        id: 'desc'
+      }
+    })
+
+    const response = {
+      data,
+    }
+
+    return NextResponse.json(response, { headers: corsHeaders })
+  } catch (error) {
+    console.log('[MATCHES_GET]', error)
+    return new NextResponse('Internal error', { status: 500 })
+  }
+}
 
 export async function POST(req: Request) {
   try {

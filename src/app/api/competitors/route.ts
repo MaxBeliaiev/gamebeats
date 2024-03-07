@@ -13,7 +13,7 @@ export async function GET() {
       }
     })
 
-    return NextResponse.json({ data, cached: new Date() }, { headers: corsHeaders })
+    return NextResponse.json({ data }, { headers: corsHeaders })
   } catch (error) {
     console.log('[COMPETITORS_GET]', error)
     return new NextResponse('Internal error', { status: 500 })
