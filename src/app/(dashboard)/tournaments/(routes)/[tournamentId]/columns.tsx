@@ -3,7 +3,6 @@ import { ColumnDef } from '@tanstack/react-table'
 import Link from 'next/link'
 import { formatDateTime } from '@/lib/date-utils'
 import MatchBadge from '@/app/(dashboard)/tournaments/components/match-badge'
-import ActionsHeader from '@/app/(dashboard)/tournaments/(routes)/[tournamentId]/actions-header'
 import MatchActions from '@/app/(dashboard)/tournaments/(routes)/[tournamentId]/match-actions'
 import { Tournament } from '@prisma/client'
 import { streamLinks } from '@/lib/constants/matches'
@@ -39,6 +38,7 @@ export const getMatchColumns = (tournament: Tournament): ColumnDef<any>[] => [
     cell: ({ row }) => {
       const {
         competitors: [cOne, cTwo],
+        numberOfGames,
       } = row.original
 
       return (
@@ -46,7 +46,7 @@ export const getMatchColumns = (tournament: Tournament): ColumnDef<any>[] => [
           <span>{cOne.score}</span>
           <span> - </span>
           <span>{cTwo.score}</span>
-          <span>({row.original.format})</span>
+          <span>{`(${numberOfGames} game${numberOfGames > 1 ? 's' : ''})`}</span>
         </div>
       )
     },
@@ -97,7 +97,6 @@ export const getMatchColumns = (tournament: Tournament): ColumnDef<any>[] => [
   },
   {
     id: 'actions',
-    // header: () => <ActionsHeader />,
     cell: ({ row }) => (
       <MatchActions tournament={tournament} match={row.original} />
     ),

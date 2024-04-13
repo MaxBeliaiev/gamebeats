@@ -58,7 +58,6 @@ const TournamentPageClient = ({ tournament }: TournamentPageClientProps) => {
         <Plus className="mr-1" size={20} />
         Add match
       </Button>
-      {/*<ActionsHeader />*/}
       <div className="flex justify-between items-center">
         <Heading text={tournament.name} />
         <Filters onApply={handleApplyFilters} />

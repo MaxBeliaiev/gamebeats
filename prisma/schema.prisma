@@ -129,6 +129,7 @@ enum MatchStatus {
 
 enum MatchFormat {
   BO1
+  SET
 }
 
 model Match {
@@ -137,7 +138,8 @@ model Match {
   tournamentId  Int
   winnerId      Int?
   competitors   MatchesOnCompetitors[]
-  format        MatchFormat            @default(BO1)
+  format        MatchFormat            @default(SET)
+  numberOfGames Int                    @default(1)
   streamChannel String                 @default("1")
   startedAt     DateTime
   endedAt       DateTime?

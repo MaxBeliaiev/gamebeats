@@ -1,13 +1,13 @@
-import { PrismaClient } from '@prisma/client'
+import { MatchFormat, MatchStatus, PrismaClient } from '@prisma/client'
 import moment from 'moment/moment'
 const prisma = new PrismaClient()
 async function main() {
   await prisma.match.updateMany({
     where: {
-      tournamentId: 84,
+      format: MatchFormat.BO1
     },
     data: {
-      tournamentId: 78
+      format: MatchFormat.SET
     }
   })
 }
