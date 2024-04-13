@@ -62,6 +62,7 @@ export async function GET(req: Request) {
         status: true,
         streamChannel: true,
         format: true,
+        numberOfGames: true,
         competitors: {
           orderBy: {
             order: 'asc',
