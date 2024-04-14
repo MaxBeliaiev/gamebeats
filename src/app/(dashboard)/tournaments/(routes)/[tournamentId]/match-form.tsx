@@ -15,7 +15,7 @@ import {
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Match, MatchesOnCompetitors, UfcEndMethods } from '@prisma/client'
+import { Match, MatchesOnCompetitors } from '@prisma/client'
 import { matchFormSchema } from '@/lib/schemas/match'
 import Combobox from '@/components/ui/combobox'
 import { DateTimePicker } from '@/components/ui/date-time-picker'
@@ -70,7 +70,7 @@ export function MatchForm({
       }
       : {
         streamChannel: '1',
-        numberOfGames: 1,
+        numberOfGames: 5,
       },
   })
   const onSubmit = async (values: MatchFormValues) => {

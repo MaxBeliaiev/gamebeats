@@ -242,8 +242,8 @@ export const updateGameStatus = async (
       },
       data: {
         status,
-        ...(status === MatchStatus.ONGOING && {
-          startedAt: startedAt || new Date(),
+        ...((status === MatchStatus.ONGOING && startedAt) && {
+          startedAt: startedAt,
         }),
       },
     })
@@ -286,6 +286,25 @@ export const updateUfcGame = async (
       },
       data: {
         startedAt,
+      },
+    })
+  } catch (e: any) {
+    throw e
+  }
+}
+
+export const cancelGame = async (
+  gameId: number,
+  client = prisma
+) => {
+  try {
+    await client.game.update({
+      where: {
+        id: gameId,
+      },
+      data: {
+        status: GameStatus.CANCELED,
+        liveStatistics: JsonNull,
       },
     })
   } catch (e: any) {
