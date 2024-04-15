@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { Game, Match } from '@prisma/client'
+import { Game } from '@prisma/client'
 
 interface useFinishGameModal {
   isOpen: boolean

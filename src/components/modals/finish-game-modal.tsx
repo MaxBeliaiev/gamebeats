@@ -2,7 +2,6 @@
 
 import Modal from '@/components/ui/modal'
 import { FinishGameForm } from '@/app/(dashboard)/matches/(routes)/[matchId]/finish-game-form'
-import { Competitor } from '@prisma/client'
 import { useFinishGameModal } from '@/hooks/use-finish-game-modal'
 
 interface FinishGameModalProps {
