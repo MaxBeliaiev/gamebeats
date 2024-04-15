@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { UpdateMatchModal } from '@/components/modals/update-match-modal'
-import { Competitor } from '@prisma/client'
 import { CompetitorsSelectPayload } from '@/lib/constants/competitors'
 
 interface UpdateMatchModalProviderProps {

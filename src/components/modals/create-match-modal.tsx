@@ -3,7 +3,6 @@
 import Modal from '@/components/ui/modal'
 import { useCreateMatchModal } from '@/hooks/use-create-match-modal'
 import { MatchForm } from '@/app/(dashboard)/tournaments/(routes)/[tournamentId]/match-form'
-import { Competitor } from '@prisma/client'
 import { CompetitorsSelectPayload } from '@/lib/constants/competitors'
 
 interface CreateMatchModalProps {

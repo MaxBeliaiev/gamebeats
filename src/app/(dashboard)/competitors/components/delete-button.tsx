@@ -1,5 +1,4 @@
 'use client'
-import { Trash } from 'lucide-react'
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
 import { Competitor } from '@prisma/client'

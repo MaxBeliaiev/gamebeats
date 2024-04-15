@@ -25,7 +25,7 @@ const TournamentPageClient = ({ tournament }: TournamentPageClientProps) => {
     setPage: state.ufc.matches.setPage,
   }))
   const [filters, setFilters] = useState(null)
-  const { data: { data: matches = [], pagination }, isFetchedAfterMount} = useMatches({
+  const { data: { data: matches = [], pagination }} = useMatches({
     queryParams: {
       tournamentId: tournament.id,
       page: currentPage,

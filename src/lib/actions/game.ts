@@ -14,7 +14,6 @@ import * as z from 'zod'
 import { ufcResultsDbColumns } from '@/lib/constants/results'
 import { getStartPeriod } from '@/lib/helpers/ufcStats'
 import JsonNull = Prisma.JsonNull
-import { matchUpdateReqSchema } from '@/lib/schemas/match'
 import { gameFormSchema } from '@/lib/schemas/game'
 
 export const finishUfcGame = async (props: {

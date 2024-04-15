@@ -161,8 +161,8 @@ const GameStatusButton = ({ game, match }: { match: Match & { games: Game[] }; g
   return null
 }
 
-const GameEditButton = ({ game, match }: { match: Match; game: Game }) => {
-  const { id, status } = game
+const GameEditButton = ({ game }: { match: Match; game: Game }) => {
+  const { status } = game
   const updateGameModal = useUpdateGameModal()
   const handleUpdateClick = () => {
     updateGameModal.setGame(game)

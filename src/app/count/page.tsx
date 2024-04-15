@@ -99,7 +99,7 @@ export default async function Count() {
   return (
       <div className='flex flex-col gap-5 px-16 pt-3'>
         {
-          ranked.map((competitorData: any, i: number) => {
+          ranked.map((competitorData: any) => {
             return (
               <>
                 <div className='flex flex-col gap-1' key={competitorData.competitorId}>
@@ -116,7 +116,7 @@ export default async function Count() {
             <div className='text-orange-400'>
               <div>Rest:</div>
               {
-                rest.map((competitorData: any, i: number) => {
+                rest.map((competitorData: any) => {
                   return (
                     <>
                       <div className='mb-2' key={competitorData.competitorId}>
