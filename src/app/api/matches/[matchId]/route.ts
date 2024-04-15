@@ -132,7 +132,7 @@ export async function PATCH(
 
       if (status === MatchStatus.ONGOING) {
         const [game] = match.games
-        game && (await updateGameStatus(game.id, GameStatus.ONGOING, match.startedAt))
+        game && (await updateGameStatus(game.id, GameStatus.ONGOING, match.startedAt, tx))
       }
 
       return NextResponse.json(match)

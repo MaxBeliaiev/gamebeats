@@ -15,6 +15,7 @@ import { ufcResultsDbColumns } from '@/lib/constants/results'
 import { getStartPeriod } from '@/lib/helpers/ufcStats'
 import JsonNull = Prisma.JsonNull
 import { gameFormSchema } from '@/lib/schemas/game'
+import { PrismaClientCommon } from '@/lib/types'
 
 export const finishUfcGame = async (props: {
   game: Game
@@ -232,7 +233,7 @@ export const updateGameStatus = async (
   gameId: number,
   status: MatchStatus,
   startedAt: Date | null = null,
-  client = prisma
+  client: PrismaClientCommon = prisma
 ) => {
   try {
     await client.game.update({
@@ -253,7 +254,7 @@ export const updateGameStatus = async (
 
 export const refreshGame = async (
   gameId: number,
-  client = prisma
+  client: PrismaClientCommon = prisma
 ) => {
   try {
     await client.game.update({
@@ -273,7 +274,7 @@ export const refreshGame = async (
 export const updateUfcGame = async (
   gameId: number,
   data: any,
-  client = prisma
+  client: PrismaClientCommon = prisma
 ) => {
   try {
     const { startedAt } =
@@ -294,7 +295,7 @@ export const updateUfcGame = async (
 
 export const cancelGame = async (
   gameId: number,
-  client = prisma
+  client: PrismaClientCommon = prisma
 ) => {
   try {
     await client.game.update({
