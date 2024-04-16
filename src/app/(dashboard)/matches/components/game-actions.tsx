@@ -62,7 +62,11 @@ const GameActions = ({ match, game }: MatchActionsProps) => {
       }
       <GameStatusButton match={match} game={game} />
       <GameEditButton match={match} game={game} />
-      <GameCancelButton match={match} game={game} />
+      {
+        game.status !== GameStatus.CANCELED && game.status !== GameStatus.FINISHED && (
+          <GameCancelButton match={match} game={game} />
+        )
+      }
     </div>
   )
 }
