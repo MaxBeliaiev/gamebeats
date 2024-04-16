@@ -186,6 +186,8 @@ export function MatchForm({
                 <Input
                   type='number'
                   className='w-1/2'
+                  min={1}
+                  max={5}
                   placeholder='Enter number of games'
                   {...field}
                   disabled={loading}
