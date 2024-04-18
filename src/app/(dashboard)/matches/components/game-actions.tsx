@@ -10,7 +10,7 @@ import { getAxiosErrorMessage } from '@/lib/utils'
 import { updateGameStatus } from '@/lib/actions/game'
 
 interface MatchActionsProps {
-  match: any
+  match: Match
   game: Game
 }
 
