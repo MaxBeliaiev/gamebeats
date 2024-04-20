@@ -183,13 +183,31 @@ model Game {
   @@index([winnerId])
 }
 
-// GameDetails?
+enum UfcWeightClasses {
+  FLY
+  BANTAM
+  FEATHER
+  LIGHT
+  WELTER
+  MIDDLE
+  LIGHT_HEAVY
+  HEAVY
+}
 
 enum UfcEndMethods {
   KO
   SUB
   DEC
   SPLIT_DEC
+}
+
+model UfcCharacter {
+  id          Int              @id @default(autoincrement())
+  weightClass UfcWeightClasses @default(FLY)
+  name        String
+  surname     String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime?        @updatedAt @db.DateTime()
 }
 
 model UfcResultDetails {
