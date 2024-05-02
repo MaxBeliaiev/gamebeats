@@ -4,6 +4,7 @@ import { getAuthSession } from '@/lib/auth'
 import { matchPatchReqSchema, matchUpdateReqSchema } from '@/lib/schemas/match'
 import { GameStatus, MatchStatus } from '@prisma/client'
 import { updateGameStatus } from '@/lib/actions/game'
+import { addMinutes } from 'date-fns'
 
 export async function PUT(
   req: Request,
@@ -23,69 +24,93 @@ export async function PUT(
     const { competitorOne, competitorTwo, startedAt, streamChannel } =
       matchUpdateReqSchema.parse(body)
 
-    const matchExists = await prisma.match.findFirst({
-      where: {
-        startedAt,
-        id: {
-          not: Number(params.matchId)
-        },
-        AND: [
-          {
-            competitors: {
-              some: {
-                competitor: {
-                  id: Number(competitorOne),
-                }
-              }
-            }},
-          {
-            competitors: {
-              some: {
-                competitor: {
-                  id: Number(competitorTwo),
-                }
-              }
-            }}
-        ],
-      }
-    })
 
-    if (matchExists) {
-      return new NextResponse('Same match already exists', { status: 400 })
-    }
-
-    const match = await prisma.match.update({
-      where: {
-        id: Number(params.matchId),
-      },
-      data: {
-        startedAt,
-        streamChannel,
-        competitors: {
-          deleteMany: {},
-          create: [
+    return await prisma.$transaction(async (tx) => {
+      const matchExists = await tx.match.findFirst({
+        where: {
+          startedAt,
+          id: {
+            not: Number(params.matchId)
+          },
+          AND: [
             {
-              competitor: {
-                connect: {
-                  id: Number(competitorOne),
-                },
-              },
-              order: 1,
-            },
+              competitors: {
+                some: {
+                  competitor: {
+                    id: Number(competitorOne),
+                  }
+                }
+              }},
             {
-              competitor: {
-                connect: {
-                  id: Number(competitorTwo),
-                },
-              },
-              order: 2,
-            },
+              competitors: {
+                some: {
+                  competitor: {
+                    id: Number(competitorTwo),
+                  }
+                }
+              }}
           ],
-        },
-      },
-    })
+        }
+      })
 
-    return NextResponse.json(match)
+      if (matchExists) {
+        return new NextResponse('Same match already exists', { status: 400 })
+      }
+
+      const match = await tx.match.update({
+        where: {
+          id: Number(params.matchId),
+        },
+        data: {
+          startedAt,
+          streamChannel,
+          competitors: {
+            deleteMany: {},
+            create: [
+              {
+                competitor: {
+                  connect: {
+                    id: Number(competitorOne),
+                  },
+                },
+                order: 1,
+              },
+              {
+                competitor: {
+                  connect: {
+                    id: Number(competitorTwo),
+                  },
+                },
+                order: 2,
+              },
+            ],
+          },
+        },
+        include: {
+          games: true,
+        }
+      })
+
+      let gameStart = match.startedAt
+      const promises: Promise<any>[] = []
+
+      match.games.forEach(game => {
+        promises.push(tx.game.update({
+          where: {
+            id: game.id,
+          },
+          data: {
+            startedAt: gameStart,
+          }
+        }))
+
+        gameStart = addMinutes(gameStart, 12)
+      })
+
+      await Promise.all(promises)
+
+      return NextResponse.json(match)
+    })
   } catch (error) {
     console.log('[MATCH_PUT]', error)
     return new NextResponse('Internal error', { status: 500 })

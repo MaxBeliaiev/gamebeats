@@ -216,7 +216,7 @@ export async function POST(req: Request) {
         let gameStartTime = match.startedAt
         for (let i = 0; i < match.numberOfGames; i++) {
           gamesToCreate.push({ matchId: match.id, startedAt: gameStartTime })
-          gameStartTime =  addMinutes(gameStartTime, 12)
+          gameStartTime = addMinutes(gameStartTime, 12)
         }
 
         await tx.game.createMany({
