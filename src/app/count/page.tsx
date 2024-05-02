@@ -52,11 +52,13 @@ export default async function Count() {
   //   betweenData[winnerId] = !isNaN(betweenData[winnerId]) ? betweenData[winnerId] + 1 : 1
   // })
 
+  const start = getUtcStartOfMonth()
+  const end = getUtcStartOfMonth(-1)
   const stats = await prisma.ufcCompetitorStats.findMany({
     where: {
       periodStartedAt: {
-        gte: getUtcStartOfMonth(1),
-        lt: getUtcStartOfMonth(),
+        gte: start,
+        lt: end,
       },
     },
     include: {
@@ -97,40 +99,43 @@ export default async function Count() {
   const rest: Array<Data> = data.filter(item => item.games < 70)
 
   return (
-      <div className='flex flex-col gap-5 px-16 pt-3'>
-        {
-          ranked.map((competitorData: any, i: number) => {
-            return (
-              <>
-                <div className='flex flex-col gap-1' key={competitorData.competitorId}>
-                  <div className='font-bold'>{competitorData.nickname}:</div>
-                  <div>Winrate: {(competitorData.winRate * 100).toFixed()}%</div>
-                  <div>{competitorData.games} games, ({competitorData.wins}-{competitorData.losses}-{competitorData.draws})</div>
+    <div className='flex flex-col gap-5 px-16 pt-3'>
+      <div><b>Start</b>: {start.toUTCString()}, <b>End</b>: {end.toUTCString()}</div>
+      {
+        ranked.map((competitorData: any, i: number) => {
+          return (
+            <>
+              <div className='flex flex-col gap-1' key={competitorData.competitorId}>
+                <div className='font-bold'>{competitorData.nickname}:</div>
+                <div>Winrate: {(competitorData.winRate * 100).toFixed()}%</div>
+                <div>{competitorData.games} games,
+                  ({competitorData.wins}-{competitorData.losses}-{competitorData.draws})
                 </div>
-              </>
-            )
-          })
-        }
-        {
-          Boolean(rest.length) && (
-            <div className='text-orange-400'>
-              <div>Rest:</div>
-              {
-                rest.map((competitorData: any, i: number) => {
-                  return (
-                    <>
-                      <div className='mb-2' key={competitorData.competitorId}>
-                        {competitorData.nickname}:
-                        <div>{(competitorData.winRate * 100).toFixed()}% ({competitorData.games} games)</div>
-                      </div>
-                    </>
-                  )
-                })
-              }
-            </div>
+              </div>
+            </>
           )
-        }
-      </div>
+        })
+      }
+      {
+        Boolean(rest.length) && (
+          <div className='text-orange-400'>
+            <div>Rest:</div>
+            {
+              rest.map((competitorData: any, i: number) => {
+                return (
+                  <>
+                    <div className='mb-2' key={competitorData.competitorId}>
+                      {competitorData.nickname}:
+                      <div>{(competitorData.winRate * 100).toFixed()}% ({competitorData.games} games)</div>
+                    </div>
+                  </>
+                )
+              })
+            }
+          </div>
+        )
+      }
+    </div>
   )
 }
 
