@@ -63,7 +63,7 @@ const GameActions = ({ match, game }: MatchActionsProps) => {
       <GameStatusButton match={match} game={game} />
       <GameEditButton match={match} game={game} />
       {
-        game.status !== GameStatus.CANCELED && game.status !== GameStatus.FINISHED && (
+        game.status === GameStatus.ONGOING && (
           <GameCancelButton match={match} game={game} />
         )
       }
