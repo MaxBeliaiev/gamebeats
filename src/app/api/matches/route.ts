@@ -87,6 +87,9 @@ export async function GET(req: Request) {
         ...(results && {
           games: {
             select: {
+              startedAt: true,
+              endedAt: true,
+              matchId: true,
               winner: true,
               ufcResultDetails: true
             }
