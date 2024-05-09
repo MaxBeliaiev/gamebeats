@@ -87,10 +87,18 @@ export async function GET(req: Request) {
         ...(results && {
           games: {
             select: {
+              id: true,
               startedAt: true,
               endedAt: true,
               matchId: true,
-              winner: true,
+              winner: {
+                select: {
+                  id: true,
+                  nickname: true,
+                  image: true,
+                  imageSmall: true,
+                }
+              },
               ufcResultDetails: true
             }
           }
