@@ -30,6 +30,7 @@ export async function GET(req: Request) {
       select: {
         id: true,
         periodStartedAt: true,
+        games: true,
         wins: true,
         losses: true,
         knockouts: true,
