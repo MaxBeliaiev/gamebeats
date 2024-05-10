@@ -56,7 +56,7 @@ export function DateTimePicker({
 
   useInteractOutside({
     ref: contentRef,
-    onInteractOutside: (e) => {
+    onInteractOutside: () => {
       selectedDateTime && setDate(selectedDateTime.toJSDate())
       setOpen(false)
     },

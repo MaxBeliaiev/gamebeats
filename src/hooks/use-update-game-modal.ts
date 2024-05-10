@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { Game } from '@prisma/client'
 
-interface useFinishGameModal {
+interface useUpdateGameModal {
   isOpen: boolean
   open: () => void
   close: () => void
@@ -11,8 +11,8 @@ interface useFinishGameModal {
   setGame: (game: Game) => void
 }
 
-export const useFinishGameModal = create<useFinishGameModal>((set) => ({
-  matchId: null,
+export const useUpdateGameModal = create<useUpdateGameModal>((set) => ({
+  gameId: null,
   setGameId: (newGameId: number) => set({ gameId: newGameId }),
   setGame: (newGame: any) => set({ game: newGame }),
   isOpen: false,

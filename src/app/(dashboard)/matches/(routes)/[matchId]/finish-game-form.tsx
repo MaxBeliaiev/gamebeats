@@ -102,7 +102,7 @@ export function FinishGameForm({
     return [
       {
         label: 'Select end method',
-        value: ''
+        value: 'none'
       },
       ...Object.values(UfcEndMethods).map((method) => ({
         label: method,

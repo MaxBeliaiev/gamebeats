@@ -26,8 +26,7 @@ export const finishMatch = async (
 }
 
 export const cancelMatch = async (
-  id: number,
-  client: PrismaClientCommon = prisma
+  id: number
 ) => {
  return prisma.$transaction(async (tx) => {
     try {

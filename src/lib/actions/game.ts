@@ -4,6 +4,7 @@ import {
   Game,
   GameStatus,
   MatchStatus,
+  Prisma,
   UfcEndMethods,
 } from '@prisma/client'
 import { prisma } from '@/db'
@@ -12,6 +13,9 @@ import { finishMatch } from '@/lib/actions/match'
 import * as z from 'zod'
 import { ufcResultsDbColumns } from '@/lib/constants/results'
 import { getStartPeriod } from '@/lib/helpers/ufcStats'
+import JsonNull = Prisma.JsonNull
+import { gameFormSchema } from '@/lib/schemas/game'
+import { PrismaClientCommon } from '@/lib/types'
 
 export const finishUfcGame = async (props: {
   game: Game
@@ -84,8 +88,6 @@ export const finishUfcGame = async (props: {
       competitors,
     } = match
 
-    needsToFinish(match) && (await finishMatch(match, winnerId, tx))
-
     const competitorIds = competitors.map((c) => c.competitor.id)
 
     // Update score
@@ -101,6 +103,22 @@ export const finishUfcGame = async (props: {
           },
         },
       })
+    }
+
+    if (needsToFinish(match)) {
+      const currentScore = await tx.matchesOnCompetitors.findMany({
+        where: {
+          matchId
+        }
+      })
+
+      let matchWinner = null;
+
+      if (currentScore[0].score !== currentScore[1].score) {
+        matchWinner = currentScore[0].score > currentScore[1].score ? currentScore[0].competitorId : currentScore[1].competitorId;
+      }
+
+      await finishMatch(match, matchWinner, tx)
     }
 
     // Update competitors' stats
@@ -229,7 +247,7 @@ export const updateGameStatus = async (
   gameId: number,
   status: MatchStatus,
   startedAt: Date | null = null,
-  client = prisma
+  client: PrismaClientCommon = prisma
 ) => {
   try {
     await client.game.update({
@@ -238,9 +256,69 @@ export const updateGameStatus = async (
       },
       data: {
         status,
-        ...(status === MatchStatus.ONGOING && {
-          startedAt: startedAt || new Date(),
+        ...((status === MatchStatus.ONGOING && startedAt) && {
+          startedAt: startedAt,
         }),
+      },
+    })
+  } catch (e: any) {
+    throw e
+  }
+}
+
+export const refreshGame = async (
+  gameId: number,
+  client: PrismaClientCommon = prisma
+) => {
+  try {
+    await client.game.update({
+      where: {
+        id: gameId,
+      },
+      data: {
+        status: GameStatus.ONGOING,
+        liveStatistics: JsonNull,
+      },
+    })
+  } catch (e: any) {
+    throw e
+  }
+}
+
+export const updateUfcGame = async (
+  gameId: number,
+  data: any,
+  client: PrismaClientCommon = prisma
+) => {
+  try {
+    const { startedAt } =
+      gameFormSchema.parse(data)
+
+    await client.game.update({
+      where: {
+        id: gameId,
+      },
+      data: {
+        startedAt,
+      },
+    })
+  } catch (e: any) {
+    throw e
+  }
+}
+
+export const cancelGame = async (
+  gameId: number,
+  client: PrismaClientCommon = prisma
+) => {
+  try {
+    await client.game.update({
+      where: {
+        id: gameId,
+      },
+      data: {
+        status: GameStatus.CANCELED,
+        liveStatistics: JsonNull,
       },
     })
   } catch (e: any) {
