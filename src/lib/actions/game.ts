@@ -88,8 +88,6 @@ export const finishUfcGame = async (props: {
       competitors,
     } = match
 
-    needsToFinish(match) && (await finishMatch(match, winnerId, tx))
-
     const competitorIds = competitors.map((c) => c.competitor.id)
 
     // Update score
@@ -105,6 +103,22 @@ export const finishUfcGame = async (props: {
           },
         },
       })
+    }
+
+    if (needsToFinish(match)) {
+      const currentScore = await tx.matchesOnCompetitors.findMany({
+        where: {
+          matchId
+        }
+      })
+
+      let matchWinner = null;
+
+      if (currentScore[0].score !== currentScore[1].score) {
+        matchWinner = currentScore[0].score > currentScore[1].score ? currentScore[0].competitorId : currentScore[1].competitorId;
+      }
+
+      await finishMatch(match, matchWinner, tx)
     }
 
     // Update competitors' stats
