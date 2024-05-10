@@ -75,6 +75,8 @@ export async function GET(req: Request) {
               select: {
                 id: true,
                 nickname: true,
+                image: true,
+                imageSmall: true,
               },
             },
           },
