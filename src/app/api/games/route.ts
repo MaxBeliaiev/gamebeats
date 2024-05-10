@@ -44,6 +44,21 @@ export async function GET(req: Request) {
         startedAt: true,
         endedAt: true,
         status: true,
+        winner: {
+          select: {
+            id: true,
+            nickname: true,
+            imageSmall: true,
+          }
+        },
+        ufcResultDetails: {
+          select: {
+            endMethod: true,
+            endTime: true,
+            isDraw: true,
+            round: true,
+          }
+        },
         match: {
           select: {
             competitors: {

@@ -184,8 +184,6 @@ model Game {
   @@index([status, endedAt], name: "status_endedAt")
 }
 
-// GameDetails?
-
 enum UfcEndMethods {
   KO
   SUB
