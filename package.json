@@ -68,12 +68,13 @@
     "@prisma/client": "^5.5.2",
     "@types/bcrypt": "^5.0.0",
     "@types/luxon": "^3.3.0",
-    "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-unused-imports": "^3.1.0",
     "nodemon": "^3.0.1",
-    "prettier": "3.0.0",
     "prisma": "^5.5.2",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.2.4",
+    "prettier-plugin-tailwindcss": "^0.5.11"
   },
   "browser": {
     "fs": false,

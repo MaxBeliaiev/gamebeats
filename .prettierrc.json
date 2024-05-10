@@ -1,0 +1,10 @@
+{
+  "trailingComma": "es5",
+  "semi": false,
+  "tabWidth": 2,
+  "proseWrap": "always",
+  "bracketSameLine": false,
+  "bracketSpacing": true,
+  "parser": "typescript",
+  "plugins": ["prettier-plugin-tailwindcss"]
+}
