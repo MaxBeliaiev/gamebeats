@@ -1,17 +1,5 @@
 import { prisma } from '@/db'
-import { getUtcStartOfMonth } from '@/lib/helpers/date'
 import {MatchStatus} from "@prisma/client";
-
-type Data = {
-  games: number,
-  wins: number,
-  winRate: number,
-  competitorId: number,
-  losses: number,
-  draws: number,
-  nickname: string
-}
-
 export default async function Count() {
   const sets = await prisma.match.findMany({
     where: {
