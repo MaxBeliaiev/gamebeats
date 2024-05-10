@@ -181,6 +181,7 @@ model Game {
 
   @@index([matchId])
   @@index([winnerId])
+  @@index([status, endedAt], name: "status_endedAt")
 }
 
 // GameDetails?
