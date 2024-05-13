@@ -37,6 +37,7 @@ export async function GET(req: Request) {
         losses: true,
         knockouts: true,
         decisions: true,
+        draws: true,
         splitDecisions: true,
         submissions: true,
         competitorId: true,
