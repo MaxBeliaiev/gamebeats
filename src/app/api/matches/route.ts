@@ -15,13 +15,13 @@ export async function GET(req: Request) {
     const statuses = searchParams.get('status') || ''
     const sortBy = searchParams.get('sortBy') || ''
     const sort = searchParams.get('sort') || ''
+    const orderBy: any = (sort && sortBy) ? [{ [sortBy]: sort }] : [{ startedAt: 'asc' }]
     const tournamentId = searchParams.get('tournamentId') || ''
     const results = searchParams.get('results') || ''
     const external = searchParams.get('external') || ''
     const startedFrom = searchParams.get('startedFrom') || ''
     const startedTo = searchParams.get('startedTo') || ''
     const isAdmin = !external && Boolean(getAuthSession())
-    const orderBy: any = (sort && sortBy) ? [{ [sortBy]: sort }] : [{ startedAt: 'asc' }]
     const adminOrderBy = [
       {
         status: 'asc',

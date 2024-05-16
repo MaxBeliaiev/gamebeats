@@ -12,17 +12,21 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url)
     const take = Number(searchParams.get('size')) || 10
     const page = Number(searchParams.get('page')) || 0
+    const status = searchParams.get('status') || null
+    const sortBy = searchParams.get('sortBy') || ''
+    const sort = searchParams.get('sort') || ''
+    const orderBy: any = (sort && sortBy) ? [{ [sortBy]: sort }] : [{ id: 'desc' }]
+
     const data = await prisma.tournament.findMany({
       take,
       skip: page ? (page - 1) * take : 0,
       where: {
         status: {
-          in: [TournamentStatus.UPCOMING, TournamentStatus.ONGOING]
+          in: status ? [status as TournamentStatus] :
+            [TournamentStatus.UPCOMING, TournamentStatus.ONGOING]
         }
       },
-      orderBy: {
-        id: 'desc'
-      }
+      orderBy
     })
 
     const response = {
@@ -31,7 +35,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json(response, { headers: corsHeaders })
   } catch (error) {
-    console.log('[MATCHES_GET]', error)
+    console.log('[TOURNAMENTS_GET]', error)
     return new NextResponse('Internal error', { status: 500 })
   }
 }
