@@ -12,7 +12,7 @@ export async function GET(req: Request) {
     const statuses = searchParams.get('status') || ''
     const sortBy = searchParams.get('sortBy') || ''
     const sort = searchParams.get('sort') || ''
-    const tournamentId = searchParams.get('tournamentId') || ''
+    const matchId = searchParams.get('matchId') || ''
     const startedFrom = searchParams.get('startedFrom') || ''
     const startedTo = searchParams.get('startedTo') || ''
     const orderBy: any = (sort && sortBy) ? [{ [sortBy]: sort }] : [{ startedAt: 'asc' }]
@@ -22,8 +22,8 @@ export async function GET(req: Request) {
         : {}
 
     const query = {
-      ...(tournamentId && {
-        tournamentId: Number(tournamentId),
+      ...(matchId && {
+        matchId: Number(matchId),
       }),
       ...(statuses && {
         status: statuses.toUpperCase() as GameStatus,

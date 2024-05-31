@@ -23,7 +23,7 @@ export default async function middleware(req: NextRequest) {
     }
 
   } else {
-    if (path !== '/login') {
+    if (path !== '/login' && path !== '/api-doc-odds') {
       return NextResponse.redirect(new URL('/login', req.url))
     }
   }
