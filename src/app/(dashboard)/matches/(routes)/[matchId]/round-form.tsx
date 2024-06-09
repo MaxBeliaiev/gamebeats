@@ -209,7 +209,6 @@ const RoundForm = ({
                   </div>
                 </div>
               </div>
-              <h3 className='mb-1.5'>Stamina</h3>
               <StaminaForm
                 initialData={
                   currentLiveData && {
