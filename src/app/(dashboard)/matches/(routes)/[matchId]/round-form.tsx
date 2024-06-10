@@ -104,8 +104,8 @@ const RoundForm = ({
         const { knockdowns, cuts, lungs, submissions, crashes } =
           currentLiveData.competitors[competitor.value].rounds[round]
         return (
-          <Fragment key={`${competitor.value}_block`}>
-            <div className='px-2' key={competitor.value}>
+          <div className='flex flex-col' key={`${competitor.value}_block`}>
+            <div className='px-2 w-60' key={competitor.value}>
               <h3 className='mb-3 font-semibold'>
                 {competitor.label}
               </h3>
@@ -209,20 +209,20 @@ const RoundForm = ({
                   </div>
                 </div>
               </div>
-              <StaminaForm
-                initialData={
-                  currentLiveData && {
-                    stamina:
-                    currentLiveData.competitors[String(competitor.value)]
-                      .stamina,
-                  }
-                }
-                competitor={competitor}
-                onSubmit={handleStaminaChange}
-              />
             </div>
+            <StaminaForm
+              initialData={
+                currentLiveData && {
+                  stamina:
+                  currentLiveData.competitors[String(competitor.value)]
+                    .stamina,
+                }
+              }
+              competitor={competitor}
+              onSubmit={handleStaminaChange}
+            />
             <div>{i === 0 && <Separator orientation='vertical' />}</div>
-          </Fragment>
+          </div>
         )
       })}
     </div>
