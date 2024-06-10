@@ -4,7 +4,7 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from '@/components/ui/form'
+} from "@/components/ui/form"
 import { Button } from '@/components/ui/button'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -41,14 +41,19 @@ const StaminaForm = ({
   }
   return (
     <>
-      <h3 className="mb-1.5">Stamina: {stamina}</h3>
       <Form {...form} key={`${competitor.value}_form`}>
         <form
           id={`${competitor.value}_form`}
           onSubmit={form.handleSubmit(updateStamina)}
-          className="flex flex-row gap-4 items-center"
+          className="w-80 px-2"
           key={`${competitor.value}_form`}
         >
+          <div className="flex flex-row justify-between items-center mb-3.5">
+            <h3>Stamina: {stamina}</h3>
+            <Button variant="success" type="submit" disabled={loading}>
+              Save
+            </Button>
+          </div>
           <FormField
             control={form.control}
             name="stamina"
@@ -59,22 +64,19 @@ const StaminaForm = ({
                     value={[formValues.stamina]}
                     onValueChange={(values) => {
                       const value = values[0]
-                      form.setValue('stamina', value)
+                      form.setValue("stamina", value)
                       setStamina(value)
                     }}
                     max={100}
                     min={0}
                     step={5}
-                    className="min-w-[150px]"
+                    className="min-w-[200px]"
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button variant="success" type="submit" disabled={loading}>
-            Save
-          </Button>
         </form>
       </Form>
     </>
