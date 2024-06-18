@@ -105,14 +105,15 @@ const GameCancelButton = ({ game }: { match: Match & { games: Game[] }; game: Ga
 }
 
 const GameStatusButton = ({ game, match }: { match: Match & { games: Game[] }; game: Game }) => {
-  const { id, status } = game
+  const { id, status, startedAt } = game
   const finishGameModal = useFinishGameModal()
   const handleEnterResultClick = () => {
     finishGameModal.setGame(game)
     finishGameModal.open()
   }
   const cannotStart = match.status === MatchStatus.UPCOMING ||
-    match.games.some(g => g.id !== id && g.status === GameStatus.ONGOING)
+    match.games.some(g => g.id !== id && g.status === GameStatus.ONGOING) ||
+    match.games.some(g => g.startedAt && startedAt && g.startedAt < startedAt && g.status === GameStatus.UPCOMING)
   const router = useRouter()
   const handleUpdateGameStatus = async (status: GameStatus) => {
     const agree = confirm(

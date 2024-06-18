@@ -1,7 +1,6 @@
 import CrashBlock from '@/app/(dashboard)/matches/(routes)/[matchId]/crash-block'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
-import { Fragment } from 'react'
 import StaminaForm from '@/app/(dashboard)/matches/(routes)/[matchId]/stamina-form'
 import {
   damageLevel,
