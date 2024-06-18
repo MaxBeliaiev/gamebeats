@@ -74,19 +74,19 @@ enum CompetitorStatus {
 }
 
 model Competitor {
-  id         Int              @id @default(autoincrement())
-  nickname   String
-  name       String
-  surname    String
-  status     CompetitorStatus @default(ACTIVE)
-  image      String?
-  imageSmall String?
-  country    String?
-  birthDate  DateTime?
-  archivedAt DateTime?
-  createdAt  DateTime         @default(now())
-  updatedAt  DateTime         @updatedAt
-
+  id               Int              @id @default(autoincrement())
+  nickname         String
+  name             String
+  surname          String
+  status           CompetitorStatus @default(ACTIVE)
+  image            String?
+  imageSmall       String?
+  imageTransparent String?
+  country          String?
+  birthDate        DateTime?
+  archivedAt       DateTime?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
   matches    MatchesOnCompetitors[]
   wonMatches Match[]                @relation("WinnerToMatch")
   games      Game[]                 @relation("WinnerToGame")
