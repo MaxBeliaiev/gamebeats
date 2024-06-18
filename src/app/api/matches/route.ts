@@ -81,6 +81,7 @@ export async function GET(req: Request) {
                 surname: true,
                 image: true,
                 imageSmall: true,
+                imageTransparent: true,
               },
             },
           },
@@ -103,6 +104,7 @@ export async function GET(req: Request) {
                   nickname: true,
                   image: true,
                   imageSmall: true,
+                  imageTransparent: true,
                 }
               },
               ufcResultDetails: true

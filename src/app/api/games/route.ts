@@ -49,6 +49,7 @@ export async function GET(req: Request) {
             id: true,
             nickname: true,
             imageSmall: true,
+            imageTransparent: true,
           }
         },
         ufcResultDetails: {
@@ -75,6 +76,7 @@ export async function GET(req: Request) {
                     nickname: true,
                     image: true,
                     imageSmall: true,
+                    imageTransparent: true,
                   },
                 },
               },
