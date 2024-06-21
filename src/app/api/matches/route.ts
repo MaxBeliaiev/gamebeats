@@ -98,6 +98,7 @@ export async function GET(req: Request) {
               startedAt: true,
               endedAt: true,
               matchId: true,
+              status: true,
               winner: {
                 select: {
                   id: true,
