@@ -71,14 +71,14 @@ const GameActions = ({ match, game }: MatchActionsProps) => {
   )
 }
 
-const GameCancelButton = ({ game }: { match: Match & { games: Game[] }; game: Game }) => {
+const GameCancelButton = ({ match, game }: { match: Match & { games: Game[] }; game: Game }) => {
   const notOngoing = game.status !== GameStatus.ONGOING
   const router = useRouter()
   const handleClick = async () => {
     const agree = confirm(`Are you sure you want to cancel this game?`)
     if (agree) {
       try {
-        await cancelGame(Number(game.id))
+        await cancelGame(Number(game.id), Number(match.id))
         router.refresh()
         toast.success(`Game has been successfully canceled!`)
       } catch (e: any) {

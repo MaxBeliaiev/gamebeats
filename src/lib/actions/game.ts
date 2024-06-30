@@ -309,19 +309,46 @@ export const updateUfcGame = async (
 
 export const cancelGame = async (
   gameId: number,
+  matchId: number,
   client: PrismaClientCommon = prisma
 ) => {
-  try {
-    await client.game.update({
-      where: {
-        id: gameId,
-      },
-      data: {
-        status: GameStatus.CANCELED,
-        liveStatistics: JsonNull,
-      },
-    })
-  } catch (e: any) {
-    throw e
-  }
+  return prisma.$transaction(async (tx = client) => {
+    try {
+      await tx.game.update({
+        where: {
+          id: gameId,
+        },
+        data: {
+          status: GameStatus.CANCELED,
+          liveStatistics: JsonNull,
+        },
+      })
+
+      const match = await tx.match.findUnique({
+        where: {
+          id: matchId,
+        },
+        include: {
+          games: true,
+        }
+      })
+
+      if (match && needsToFinish(match)) {
+        const currentScore = await tx.matchesOnCompetitors.findMany({
+          where: {
+            matchId
+          }
+        })
+
+        let matchWinner = null;
+        if (currentScore[0].score !== currentScore[1].score) {
+          matchWinner = currentScore[0].score > currentScore[1].score ? currentScore[0].competitorId : currentScore[1].competitorId;
+        }
+
+        await finishMatch(match, matchWinner, tx)
+      }
+    } catch (e: any) {
+      throw e
+    }
+  }, { timeout: 5000 })
 }
