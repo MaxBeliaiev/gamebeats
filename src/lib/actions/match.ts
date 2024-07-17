@@ -39,25 +39,14 @@ export const cancelMatch = async (
         },
       })
 
-      const game = await tx.game.findFirst({
+      await tx.game.updateMany({
         where: {
           matchId: id,
+        },
+        data: {
+          status: GameStatus.CANCELED
         }
       })
-
-      if (game) {
-        await tx.game.update({
-          where: {
-            id: game.id
-          },
-          data: {
-            status: GameStatus.CANCELED,
-          }
-        })
-      }
-
-      return NextResponse.json(id)
-
     } catch (e: any) {
       throw e
     }

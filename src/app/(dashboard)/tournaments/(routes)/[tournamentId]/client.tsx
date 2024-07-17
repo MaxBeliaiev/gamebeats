@@ -69,7 +69,7 @@ const TournamentPageClient = ({ tournament }: TournamentPageClientProps) => {
         columns={getMatchColumns(tournament)}
         data={matches}
         pageSize={DEFAULT_MATCHES_PAGE_SIZE}
-        pageCount={pagination.total / DEFAULT_MATCHES_PAGE_SIZE}
+        pageCount={Math.ceil(pagination.total / DEFAULT_MATCHES_PAGE_SIZE)}
         page={currentPage}
         manualPagination
         headersConfig={{
