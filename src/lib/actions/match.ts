@@ -2,7 +2,6 @@
 import { GameStatus, Match, MatchStatus } from '@prisma/client'
 import { prisma } from '@/db'
 import { PrismaClientCommon } from '@/lib/types'
-import { NextResponse } from 'next/server'
 
 export const finishMatch = async (
   match: Match,
