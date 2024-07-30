@@ -30,7 +30,11 @@ const MatchPage = async ({ params: { matchId } }: MatchPageProps) => {
           },
         },
       },
-      games: true,
+      games: {
+        include: {
+          ufcResultDetails: true,
+        }
+      },
     },
   })
 
