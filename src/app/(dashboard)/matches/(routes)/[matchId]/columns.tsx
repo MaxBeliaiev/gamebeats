@@ -1,12 +1,12 @@
 'use client'
 import { ColumnDef } from '@tanstack/react-table'
 import { formatDateTime } from '@/lib/date-utils'
-import { Competitor, GameStatus, Match } from '@prisma/client'
+import { Competitor, GameStatus, Match, UfcResultDetails } from "@prisma/client"
 import GameStatusBadge from '@/app/(dashboard)/matches/components/game-badge'
 import GameActions from '@/app/(dashboard)/matches/components/game-actions'
 
 export const getGameColumns = (
-  match: Match & { competitors: Array<{ competitor: Competitor }> }
+  match: Match & { competitors: Array<{ competitor: Competitor }>, ufcResultDetails: Array<UfcResultDetails> }
 ): ColumnDef<any>[] => [
   {
     accessorKey: 'competitors',
@@ -58,6 +58,14 @@ export const getGameColumns = (
             : 'DRAW'
         }`}</span>
       ),
+  },
+  {
+    id: 'method',
+    header: 'Method',
+    cell: ({ row }) => {
+      const { ufcResultDetails } = row.original
+      return ufcResultDetails.length ? `${ufcResultDetails[0].endMethod} (R${ufcResultDetails[0].round} ${ufcResultDetails[0].endTime})` : ''
+    },
   },
   {
     id: 'actions',
