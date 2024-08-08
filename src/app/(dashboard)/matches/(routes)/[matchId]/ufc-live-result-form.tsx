@@ -101,7 +101,7 @@ export function UfcLiveResultForm({
       router.refresh()
       toast.success(`Stat updated!`, { duration: 1000 })
 
-      await axios.post('https://odds.solutions.eaisy.tech/live', {
+      await axios.post(`https://odds.solutions.eaisy.tech/live/updateLiveMatch/${gameId}`, {
         requestId: 'random_requestId'
       })
     } catch (e: any) {
