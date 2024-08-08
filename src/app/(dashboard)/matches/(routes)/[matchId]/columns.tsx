@@ -13,7 +13,7 @@ export const getGameColumns = (
     header: '',
     cell: ({ row: { index, original } }) => (
       <div className="flex flex-row gap-2 items-center">
-        <span className="font-semibold">Game {index + 1} (${original.id})</span>
+        <span className="font-semibold">Game {index + 1} ({original.id})</span>
       </div>
     ),
   },
