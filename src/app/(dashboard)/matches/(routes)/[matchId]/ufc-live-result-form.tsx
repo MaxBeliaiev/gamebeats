@@ -17,6 +17,7 @@ import {
 } from '@/lib/ufc/live-results'
 import { updateLiveStatistics } from '@/lib/actions/ufc'
 import useStore from '@/lib/store'
+import axios from "axios"
 
 interface UfcLiveResultFormProps {
   game: Game
@@ -99,6 +100,10 @@ export function UfcLiveResultForm({
       setLiveData(resp)
       router.refresh()
       toast.success(`Stat updated!`, { duration: 1000 })
+
+      await axios.post('https://odds.solutions.eaisy.tech/live', {
+        requestId: 'random_requestId'
+      })
     } catch (e: any) {
       toast.error(getAxiosErrorMessage(e))
     } finally {
