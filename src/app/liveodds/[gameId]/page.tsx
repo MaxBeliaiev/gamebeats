@@ -1,5 +1,6 @@
 import { prisma } from "@/db"
 import axios from "axios"
+import LiveOddsClient from "@/app/liveodds/[gameId]/client"
 
 const LiveOdds = async ({ params: { gameId }}: {params: { gameId: string}}) => {
   const competitors = await prisma.competitor.findMany()
@@ -25,18 +26,7 @@ const LiveOdds = async ({ params: { gameId }}: {params: { gameId: string}}) => {
     [result.competitorIds[2]]: result.winOdds[2]
   }
 
-  return (
-    <div className='p-4'>
-      {
-        Object.keys(resultsDisplay).map((key: any) => {
-          const competitor = competitors.find(comp => comp.id === Number(key))
-          return (
-            <div key={key}><b>{competitor?.nickname}</b> - {(resultsDisplay[key] * 100).toFixed(2)}%</div>
-          )
-        })
-      }
-    </div>
-  )
+  return <LiveOddsClient data={resultsDisplay} competitors={competitors} />
 }
 
 export default LiveOdds
