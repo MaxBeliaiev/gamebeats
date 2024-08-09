@@ -1,0 +1,1 @@
+export const oddsUrl = 'https://odds.solutions.eaisy.tech'

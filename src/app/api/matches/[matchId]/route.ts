@@ -5,6 +5,7 @@ import { matchPatchReqSchema, matchUpdateReqSchema } from '@/lib/schemas/match'
 import { GameStatus, MatchStatus } from '@prisma/client'
 import { updateGameStatus } from '@/lib/actions/game'
 import { addMinutes } from 'date-fns'
+import axios from "axios"
 
 export async function PUT(
   req: Request,
@@ -157,7 +158,12 @@ export async function PATCH(
 
       if (status === MatchStatus.ONGOING) {
         const [game] = match.games
-        game && (await updateGameStatus(game.id, GameStatus.ONGOING, match.startedAt, tx))
+        if (game) {
+          await updateGameStatus(game.id, GameStatus.ONGOING, match.startedAt, tx)
+          await axios.post(`https://odds.solutions.eaisy.tech/live/updateLiveMatch/${game.id}`, {
+            requestId: 'random_requestId'
+          })
+        }
       }
 
       return NextResponse.json(match)

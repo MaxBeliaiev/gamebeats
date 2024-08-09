@@ -10,6 +10,8 @@ import { getAxiosErrorMessage } from '@/lib/utils'
 import { refreshGame, updateGameStatus } from '@/lib/actions/game'
 import { useUpdateGameModal } from '@/hooks/use-update-game-modal'
 import { cancelGame } from '@/lib/actions/game'
+import axios from "axios"
+import { oddsUrl } from "@/lib/constants/odds"
 
 interface MatchActionsProps {
   match: any
@@ -124,6 +126,9 @@ const GameStatusButton = ({ game, match }: { match: Match & { games: Game[] }; g
         await updateGameStatus(id, status)
         router.refresh()
         toast.success(`Game is ${status.toLowerCase()} now!`)
+        await axios.post(`${oddsUrl}/live/updateLiveMatch/${id}`, {
+          requestId: 'random_requestId'
+        })
       } catch (e: any) {
         toast.error(getAxiosErrorMessage(e))
       }
